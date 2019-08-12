@@ -1,10 +1,21 @@
 'use strict';
 
+const childProcess = require('child_process');
+const path = require('path');
 const glob = require('glob');
 
 module.exports.FaaSController = class {
     cloneOrUpdate(repoInfo) {
-        console.log(repoInfo);
+        if(repoInfo.repository.clone_url){
+            childProcess.exec(`git clone ${body.repository.clone_url} . || git pull origin master`, {
+                cwd: path.join(__dirname, '../function/')
+            }, (error,stdout, stderr)=>{
+                if(error){
+                    console.log(stderr);
+                }
+                console.log('functions updated ==> ' + stdout);
+            });
+        }
     }
 
     getNames() {
