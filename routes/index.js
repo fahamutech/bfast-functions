@@ -1,0 +1,16 @@
+'use strict';
+
+const express = require('express');
+const functions = require('../bfastfunction');
+const router = express.Router();
+
+router.all('/:name', (request, response) => {
+    const functionName = request.params.name;
+    if (functionName && functions && functions[functionName]) {
+        functions[functionName](request, response);
+    } else {
+        response.status(503).json({message: `${functionName} function is not available`});
+    }
+});
+
+module.exports = router;
