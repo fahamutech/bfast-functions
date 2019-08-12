@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 
-app.use('/function', indexRouter);
-app.use('/manage', manageRouter);
+app.use('/faas/function', indexRouter);
+app.use('/faas/manage', manageRouter);
 
 module.exports = app;
