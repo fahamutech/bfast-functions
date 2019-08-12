@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "devStart": "nodemon ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "glob": "^7.1.4",
-    "morgan": "~1.9.1"
+    "mongodb": "^3.3.0-beta2",
+    "morgan": "~1.9.1",
+    "nodemon": "^1.19.1"
   }
 }
