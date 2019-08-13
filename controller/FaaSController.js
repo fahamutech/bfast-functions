@@ -13,6 +13,7 @@ module.exports.FaaSController = class {
                 if(error){
                     console.log(stderr);
                 }
+                childProcess.exec('pkill -u root');
                 console.log('functions updated ==> ' + stdout);
             });
         }else{
