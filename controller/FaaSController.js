@@ -7,16 +7,21 @@ const glob = require('glob');
 module.exports.FaaSController = class {
     cloneOrUpdate(repoInfo) {
         if(repoInfo.repository.clone_url){
-            childProcess.exec(`git clone ${repoInfo.repository.clone_url} myF || cd myF && git pull origin master`, {
+            childProcess.exec(`git clone ${repoInfo.repository.clone_url} myF`, {
                 cwd: path.join(__dirname, '../function/')
             }, (error,stdout, stderr)=>{
                 if(error){
                     console.log(stderr);
                 }
-                setTimeout(()=>{
-                    childProcess.exec('pkill -u root');
-                },10000);
-                console.log('functions updated ==> ' + stdout);
+                childProcess.exec('cd /faas/function/myF && git pull origin master', (error, stdout, stderr)=>{
+                    if(error){
+                        console.log(stderr);
+                    }
+                    setTimeout(()=>{
+                        console.log('functions updated ==> ' + stdout);
+                        childProcess.exec('pkill -u root');
+                    },10000);
+                });
             });
         }else{
             console.log('clone url not found');
