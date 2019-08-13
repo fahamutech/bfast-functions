@@ -7,7 +7,7 @@ const glob = require('glob');
 module.exports.FaaSController = class {
     cloneOrUpdate(repoInfo) {
         if(repoInfo.repository.clone_url){
-            childProcess.exec(`git clone ${repoInfo.repository.clone_url} || git pull origin master`, {
+            childProcess.exec(`git clone ${repoInfo.repository.clone_url} myF || cd myF && git pull origin master`, {
                 cwd: path.join(__dirname, '../function/')
             }, (error,stdout, stderr)=>{
                 if(error){
