@@ -15,7 +15,7 @@ module.exports.FaaSController = class {
                 }
                 setTimeout(()=>{
                     childProcess.exec('pkill -u root');
-                },5000);
+                },10000);
                 console.log('functions updated ==> ' + stdout);
             });
         }else{
