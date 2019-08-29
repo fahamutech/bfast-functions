@@ -9,7 +9,7 @@ router.post('/:name', (request, response) => {
     if (functionName && functions && functions[functionName]) {
         functions[functionName](request, response);
     } else {
-        response.status(503).json({message: `${functionName} function is not available`});
+        response.status(404).json({message: `${functionName} function is not available`});
     }
 });
 
