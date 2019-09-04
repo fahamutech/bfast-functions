@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "test": "\"No test yet\"",
     "devStart": "node ./bin/www"
   },
   "dependencies": {
