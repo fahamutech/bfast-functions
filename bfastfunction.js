@@ -1,5 +1,10 @@
 'use strict';
 const glob = require('glob');
+const MongoClient = require('mongodb').MongoClient;
+// const url = 'mongodb://mdb:27017/daas';
+// const client = new MongoClient(url, { useNewUrlParser: true });
+// global.BFast = {};
+// BFast.database = client;
 
 let BFastFunction;
 (function () {
@@ -11,7 +16,7 @@ let BFastFunction;
         instance = this;
         return instance;
     };
-}());
+})();
 
 (function () {
     try {
