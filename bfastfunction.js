@@ -23,7 +23,7 @@ let BFastFunction;
         const files = glob.sync(`**/*.js`, {
             cwd:`${__dirname}/function/`,
             absolute: true,
-            ignore: ['**/node_modules/**.js']
+            ignore: ['**/node_modules/**']
         });
         files.forEach(element => {
             // console.log(element);
