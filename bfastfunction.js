@@ -20,8 +20,13 @@ let BFastFunction;
 
 (function () {
     try {
-        const files = glob.sync(`${__dirname}/function/**/*.js`);
+        const files = glob.sync(`**/*.js`, {
+            cwd:`${__dirname}/function/`,
+            absolute: true,
+            ignore: ['**/node_modules/**.js']
+        });
         files.forEach(element => {
+            // console.log(element);
             const functionModule = require(element);
             const functionNames = Object.keys(functionModule);
             functionNames.forEach(functionName => {
