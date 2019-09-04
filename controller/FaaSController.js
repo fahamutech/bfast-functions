@@ -31,7 +31,9 @@ module.exports.FaaSController = class {
     getNames() {
         return new Promise((resolve, reject) => {
             const result = [];
-            glob(`${__dirname}/../function/**/*.js`, null, (err, files) => {
+            glob(`${__dirname}/../function/**/*.js`, {
+                ignore: ['**/node_modules/**']
+            }, (err, files) => {
                 if (err) {
                     reject({message: err});
                 }
