@@ -9,12 +9,12 @@ module.exports.FaaSController = class {
     async cloneOrUpdate(repoInfo) {
         if(repoInfo.repository.clone_url){
             try{
-                const deleteMyF = childProcess.execSync(`rm -r myF`,{cwd: path.join(__dirname, '../function/')});
-                console.log(deleteMyF);
-                const cloneMyF = childProcess.execSync(`git clone ${repoInfo.repository.clone_url} myF`, {cwd: path.join(__dirname, '../function/')});
-                console.log(cloneMyF);
-                const installMyF = childProcess.execSync(`npm install`, {cwd: path.join(__dirname, '../function/myF/')});
-                console.log(installMyF);
+                const deleteMyF = childProcess.execSync(`rm -r myF || echo 'continues...'`,{cwd: path.join(__dirname, '../function/')});
+                console.log(deleteMyF.toString());
+                const cloneMyF = childProcess.execSync(`git clone ${repoInfo.repository.clone_url} myF || echo 'continues...'`, {cwd: path.join(__dirname, '../function/')});
+                console.log(cloneMyF.toString());
+                const installMyF = childProcess.execSync(`npm install || echo'continues...'`, {cwd: path.join(__dirname, '../function/myF/')});
+                console.log(installMyF.toString());
                 setTimeout(()=>{
                     console.log('functions updated, engine will restart');
                     childProcess.exec('pkill -u root');
