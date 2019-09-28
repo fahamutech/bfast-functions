@@ -36,7 +36,11 @@ module.exports.FaaSController = class {
     }
 
     getFunctions() {
-        let __fun;
+        let __fun = {
+            mambo: function (req, response) {
+                response.json({message: 'Powa!'});
+            }
+        };
         try {
             const files = glob.sync(`${__dirname}/../function/**/*.js`, {
                 // cwd: path.join(__dirname, `../function/`),
