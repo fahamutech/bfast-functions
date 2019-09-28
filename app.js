@@ -7,7 +7,6 @@ const cors = require('cors');
 
 const app = express();
 
-app.user()
 app.use(cors());
 
 app.use(logger('dev'));
