@@ -1,7 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const indexRouter = require('./routes/index');
+const functionRouter = require('./routes/function');
 const manageRouter = require('./routes/manage');
 const cors = require('cors');
 
@@ -16,7 +16,7 @@ app.use(express.json({
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 
-app.use('/faas/function', indexRouter);
+app.use('/faas/function', functionRouter);
 app.use('/faas/manage', manageRouter);
 
 module.exports = app;

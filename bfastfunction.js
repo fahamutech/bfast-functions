@@ -1,10 +1,5 @@
 'use strict';
 const glob = require('glob');
-const MongoClient = require('mongodb').MongoClient;
-// const url = 'mongodb://mdb:27017/daas';
-// const client = new MongoClient(url, { useNewUrlParser: true });
-// global.BFast = {};
-// BFast.database = client;
 
 let BFastFunction;
 (function () {
@@ -26,7 +21,6 @@ let BFastFunction;
             ignore: ['**/node_modules/**']
         });
         files.forEach(element => {
-            // console.log(element);
             const functionModule = require(element);
             const functionNames = Object.keys(functionModule);
             functionNames.forEach(functionName => {

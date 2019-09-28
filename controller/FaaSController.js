@@ -5,25 +5,29 @@ const path = require('path');
 const glob = require('glob');
 
 module.exports.FaaSController = class {
-    
+
     async cloneOrUpdate(repoInfo) {
-        if(repoInfo.repository.clone_url){
-            try{
-                const deleteMyF = childProcess.execSync(`rm -r myF || echo 'continues...'`,{cwd: path.join(__dirname, '../function/')});
+        if (repoInfo.repository.clone_url) {
+            try {
+                const deleteMyF = childProcess.execSync(`rm -r myF || echo 'continues...'`,
+                    {cwd: path.join(__dirname, '../function/')});
                 console.log(deleteMyF.toString());
-                const cloneMyF = childProcess.execSync(`git clone ${repoInfo.repository.clone_url} myF || echo 'continues...'`, {cwd: path.join(__dirname, '../function/')});
+                const cloneMyF = childProcess.execSync(
+                    `git clone ${repoInfo.repository.clone_url} myF || echo 'continues...'`,
+                    {cwd: path.join(__dirname, '../function/')});
                 console.log(cloneMyF.toString());
-                const installMyF = childProcess.execSync(`npm install || echo'continues...'`, {cwd: path.join(__dirname, '../function/myF/')});
+                const installMyF = childProcess.execSync(`npm install || echo'continues...'`,
+                    {cwd: path.join(__dirname, '../function/myF/')});
                 console.log(installMyF.toString());
-                setTimeout(()=>{
+                setTimeout(() => {
                     console.log('functions updated, engine will restart');
                     childProcess.exec('pkill -u root');
-                },5000);
-            }catch(e){
+                }, 5000);
+            } catch (e) {
                 // send notification to email
                 console.log(e);
             }
-        }else{
+        } else {
             console.log('clone url not found');
         }
     }

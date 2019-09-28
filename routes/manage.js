@@ -10,7 +10,7 @@ router.post('/deploy', function (request, response) {
     response.json({});
 });
 
-router.post('/names', function (request, response) {
+router.all('/names', function (request, response) {
     faasController.getNames().then(names => {
         response.json(names);
     }).catch(reason => {
@@ -18,7 +18,4 @@ router.post('/names', function (request, response) {
     });
 });
 
-// router.post('/cli', function(request, response){
-
-// });
 module.exports = router;

@@ -4,7 +4,7 @@ const express = require('express');
 const functions = require('../bfastfunction');
 const router = express.Router();
 
-router.post('/:name', (request, response) => {
+router.all('/:name', (request, response) => {
     const functionName = request.params.name;
     if (functionName && functions && functions[functionName]) {
         functions[functionName](request, response);
