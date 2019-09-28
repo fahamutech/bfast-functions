@@ -6,6 +6,7 @@ const glob = require('glob');
 
 module.exports.FaaSController = class {
 
+    
     cloneOrUpdate(repoInfo) {
         return new Promise((resolve, reject) => {
             if (repoInfo.repository.clone_url) {
@@ -22,10 +23,16 @@ module.exports.FaaSController = class {
                     console.log(installMyF.toString());
                     setTimeout(() => {
                         console.log('functions updated, engine will restart');
-                        childProcess.exec('pkill -u root');
+                        childProcess.exec('reboot', function(error, stdout, stderr){
+                            if(error){
+                                console.log(stderr);
+                            }else{
+                                console.log(stdout);
+                            }
+                        });
                     }, 5000);
                 } catch (e) {
-                    // send notification to email
+                    // todo: send notification to email
                     console.log(e);
                 }
             } else {
