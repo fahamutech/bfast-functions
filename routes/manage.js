@@ -6,7 +6,7 @@ const FaasController = require('../controller/FaaSController').FaaSController;
 const faasController = new FaasController();
 
 router.post('/deploy', function (request, response) {
-    faasController.cloneOrUpdate(request.body);
+    faasController.cloneOrUpdate(request.body).catch(reason => console.log(reason));
     response.json({});
 });
 
