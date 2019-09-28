@@ -12,6 +12,7 @@ function initiatesFunctions(req, res, next) {
         next();
     } else {
         BFastFunction = _faasController.getFunctions();
+        console.log(BFastFunction);
         next();
     }
 }

@@ -36,7 +36,7 @@ module.exports.FaaSController = class {
     }
 
     getFunctions() {
-        const _functions = {};
+        let __fun;
         try {
             const files = glob.sync(`${__dirname}/../function/**/*.js`, {
                 // cwd: path.join(__dirname, `../function/`),
@@ -47,13 +47,13 @@ module.exports.FaaSController = class {
                 const functionModule = require(element);
                 const functionNames = Object.keys(functionModule);
                 functionNames.forEach(functionName => {
-                    _functions[functionName] = functionModule[functionName];
+                    __fun[functionName] = functionModule[functionName];
                 });
             });
         } catch (e) {
             console.log(e);
         }
-        return _functions;
+        return __fun;
     }
 
     getNames() {
