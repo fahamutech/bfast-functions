@@ -36,7 +36,7 @@ module.exports.FaaSController = class {
     }
 
     getFunctions() {
-        let __fun = {
+        let fun = {
             mambo: function (req, response) {
                 response.json({message: 'Powa!'});
             }
@@ -47,17 +47,20 @@ module.exports.FaaSController = class {
                 absolute: true,
                 ignore: ['**/node_modules/**']
             });
+            console.log(files);
             files.forEach(element => {
                 const functionModule = require(element);
                 const functionNames = Object.keys(functionModule);
                 functionNames.forEach(functionName => {
-                    __fun[functionName] = functionModule[functionName];
+                    console.log(fun);
+                    fun[functionName] = functionModule[functionName];
                 });
             });
+            return fun;
         } catch (e) {
             console.log(e);
+            return fun;
         }
-        return __fun;
     }
 
     getNames() {

@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/FaaSController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controller/FaaSController.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -105,7 +106,7 @@
       <option name="presentableId" value="Default" />
       <updated>1565609181288</updated>
       <workItem from="1565609192516" duration="18785000" />
-      <workItem from="1569662166857" duration="7384000" />
+      <workItem from="1569662166857" duration="8655000" />
     </task>
     <task id="LOCAL-00001" summary="add controller to return all function names and deploy using git">
       <created>1565628198021</created>
@@ -170,7 +171,14 @@
       <option name="project" value="LOCAL" />
       <updated>1569677122714</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="fix circular dependency when try to construct functions object">
+      <created>1569677185917</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1569677185917</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
