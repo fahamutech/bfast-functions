@@ -4,3 +4,6 @@ logs
 /logs
 .ide
 .vscode
+.env
+src/function/myF
+/src/function/myF
