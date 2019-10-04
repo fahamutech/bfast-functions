@@ -3,27 +3,41 @@
 const childProcess = require('child_process');
 const path = require('path');
 const glob = require('glob');
+const git = require('isomorphic-git');
+const fs = require('fs');
+git.plugins.set('fs', fs);
 
 module.exports.FaaSController = class {
 
     /**
      * fetch functions from a git host, like github by provide repository information.
-     * @param repoInfo =  {
+     * @param repo =  {
      *      repository: {
      *          clone_url: GIT_REMOTE_REPOSITORY
+     *      },
+     *      user: {
+     *          username: GIT_REMOTE_USERNAME,
+     *          token: ACCESS_TOKEN
      *      }
      * }
      * @returns {Promise<void>}
      */
-    async cloneOrUpdate(repoInfo) {
-        if (repoInfo && repoInfo.repository && repoInfo.repository.clone_url) {
+    async cloneOrUpdate(repo) {
+        if (repo && repo.repository && repo.repository.clone_url) {
             try {
                 childProcess.execSync(`rm -r myF || echo 'continues...'`,
                     {cwd: path.join(__dirname, '../function/')});
                 console.log('clear function folder');
-                childProcess.execSync(
-                    `git clone ${repoInfo.repository.clone_url} myF'`,
-                    {cwd: path.join(__dirname, '../function/')});
+                await git.clone({
+                    url: repo.repository.clone_url,
+                    dir: path.join(__dirname, '../function/myF'),
+                    depth: 1,
+                    username: repo.user.username,
+                    token: repo.user.token
+                });
+                // childProcess.execSync(
+                //     `git clone ${repo.repository.clone_url} myF'`,
+                //     {cwd: path.join(__dirname, '../function/')});
                 console.log('done cloning git repository');
                 childProcess.execSync(`npm install`,
                     {cwd: path.join(__dirname, '../function/myF/')});

@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="fix circular dependency when try to construct functions object - debug for ci">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/dictionaries/joshua.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/joshua.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/bin_www.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/bin_www.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/www" beforeDir="false" afterPath="$PROJECT_DIR$/bin/www" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/FaaSController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/FaaSController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/function/_example.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/function/_example.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/function.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/function.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/manage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/manage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/FaaSController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/FaaSController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/function.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/function.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -125,7 +119,7 @@
       <workItem from="1570083675261" duration="1413000" />
       <workItem from="1570094211999" duration="46000" />
       <workItem from="1570095788472" duration="3429000" />
-      <workItem from="1570186149733" duration="6346000" />
+      <workItem from="1570186149733" duration="8561000" />
     </task>
     <task id="LOCAL-00001" summary="add controller to return all function names and deploy using git">
       <created>1565628198021</created>
@@ -211,7 +205,14 @@
       <option name="project" value="LOCAL" />
       <updated>1569678590987</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="refresh">
+      <created>1570193042912</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1570193042913</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -236,6 +237,7 @@
     <MESSAGE value="update functions to fetch functions" />
     <MESSAGE value="fix circular dependency when try to construct functions object" />
     <MESSAGE value="fix circular dependency when try to construct functions object - debug for ci" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix circular dependency when try to construct functions object - debug for ci" />
+    <MESSAGE value="refresh" />
+    <option name="LAST_COMMIT_MESSAGE" value="refresh" />
   </component>
 </project>

@@ -11,11 +11,17 @@ function initiatesFunctions(req, res, next) {
     if (BFastFunction && typeof BFastFunction === 'object' && Object.keys(BFastFunction).length > 1) {
         next();
     } else {
-        BFastFunction = _faasController.getFunctions();
-        console.log(BFastFunction);
-        next();
+        _faasController.getFunctions().then(functions => {
+            BFastFunction = functions;
+            console.log(BFastFunction);
+        }).catch(reason => {
+            console.log(reason);
+        }).finally(() => {
+            next();
+        });
     }
 }
+
 
 router.all('/:name', function (req, res, next) {
     initiatesFunctions(req, res, next)
