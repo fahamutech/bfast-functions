@@ -6,9 +6,9 @@ function startDev(cb){
         env: {
             APPLICATION_ID: 'faas',
             GIT_USERNAME: 'joshuamshana',
-            GIT_TOKEN: '86ihkjtgytujh',
+            GIT_TOKEN: '8a5bcde4879365e109ec7c3454145494892446b6',
             PROJECT_ID: 'demofaas',
-            GIT_CLONE_URL: 'https://demo.com'
+            GIT_CLONE_URL: 'https://github.com/joshuamshana/BFastFunctionExample.git'
         }
     });
 

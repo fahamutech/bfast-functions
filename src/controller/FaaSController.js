@@ -3,9 +3,6 @@
 const childProcess = require('child_process');
 const path = require('path');
 const glob = require('glob');
-const git = require('isomorphic-git');
-const fs = require('fs');
-git.plugins.set('fs', fs);
 
 module.exports.FaaSController = class {
 
