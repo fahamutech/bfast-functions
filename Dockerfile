@@ -12,11 +12,11 @@ RUN apk add git
 
 # RUN cp -r /faas/BFastFunction-1.4.10/* /faas
 # RUN rm -r /faas/BFastFunction-1.4.10
-COPY *.json .
+COPY *.json ./
 RUN npm ci --only=production
 # RUN apk del unzip
 # RUN rm /tmp/app.zip
 
-COPY . .
+COPY . ./
 
 CMD [ "npm","run","start" ]

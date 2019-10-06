@@ -32,7 +32,7 @@ function startDev(cb){
     });
 }
 
-function buildDockerImage(){
+function buildDockerImage(cb){
     const buildImage = process.exec(`sudo docker build -t joshuamshana/bfastfaas:v${pkg.version} .`);
 
     buildImage.on('exit', (code, signal)=>{
@@ -54,7 +54,7 @@ function buildDockerImage(){
     });
 }
 
-function pushToDocker(){
+function pushToDocker(cb){
     const pushImage = process.exec(`sudo docker push joshuamshana/bfastfaas:v${pkg.version}`);
 
     pushImage.on('exit', (code, signal)=>{
