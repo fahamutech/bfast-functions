@@ -6,7 +6,8 @@
     "start": "node ./bin/proxy.js",
     "test": "\"No test yet\"",
     "devStart": "gulp startDev",
-    "gulp": "gulp"
+    "gulp": "gulp",
+    "push": "gulp publishContainer"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

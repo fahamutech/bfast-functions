@@ -13,7 +13,6 @@ function initiatesFunctions(req, res, next) {
     } else {
         _faasController.getFunctions().then(functions => {
             BFastFunction = functions;
-            console.log(BFastFunction);
         }).catch(reason => {
             console.log(reason);
         }).finally(() => {
@@ -22,10 +21,9 @@ function initiatesFunctions(req, res, next) {
     }
 }
 
+initiatesFunctions(null, null, ()=>{});
 
-router.all('/:name', function (req, res, next) {
-    initiatesFunctions(req, res, next)
-}, (request, response) => {
+router.all('/:name' , (request, response) => {
     const functionName = request.params.name;
     if (functionName && BFastFunction && BFastFunction[functionName]) {
         BFastFunction[functionName](request, response);

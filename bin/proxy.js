@@ -1,5 +1,5 @@
 
-const server = require('http');
+const http = require('http');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -16,6 +16,7 @@ const token = process.env.GIT_TOKEN;
 const cloneUrl = process.env.GIT_CLONE_URL;
 const appId = process.env.APPLICATION_ID;
 const projectId  = process.env.PROJECT_ID;
+let faasForkPid = undefined;
 
 app.use(cors());
 app.use(logger('dev'));
@@ -27,10 +28,6 @@ app.use(cookieParser());
 
 function auth(request, response, next){
     const aId = request.get('bfast-application-id');
-
-    console.log(appId);
-    console.log(aId);
-
     if(appId && appId!=='' && appId === aId){
         next();
     }else {
@@ -38,41 +35,56 @@ function auth(request, response, next){
     }
 }
 
-app.use('/deploy',(request, response, next)=>{auth(request, response, next)}, (request, response)=>{
-    cloneFunctionsFromGit().then(value=>{
+app.all('/deploy',(request, response, next)=>{auth(request, response, next)}, (request, response)=>{
+    cloneFunctionsFromGit().then(value => {
         response.json({message: 'functions deployed'});
-    }).catch(reason=>{
-        response.status(403).json({err: reason.toString()});
+    }).catch(reason => {
+        response.status(401).json(reason);
+    }).finally(() => {
+        startFaaSApp();
     });
 });
 
-app.use('/functions', (request, response, next)=>{auth(request, response, next)}, (request, response)=>{
-    response.json({message: 'proxy to function server'});
+app.all('/functions/:name', (request1, response1, next1)=>{auth(request1, response1, next1)}, (request, response)=>{
+    const fName = request.params.name;
+    const faasRequestFunction = http.request('http://localhost:3443/faas/function/' + fName,{
+        method: request.method,
+        hostname: request.hostname,
+        headers: request.headers,
+    }, faasResponse=>{
+        response.headers = faasResponse.headers;
+        response.statusCode = faasResponse.statusCode;
+        faasResponse.pipe(response);
+    });
+    faasRequestFunction.on('error', (e) => {
+        response.status(503).json({message: e.toString()});
+    });
+    faasRequestFunction.write(JSON.stringify(request.body));
+    faasRequestFunction.end();
 });
 
-const startFaaSApp = ()=>{
-    const faasSpawn = childProcess.exec(`node www`, {
+const startFaaSApp = () => {
+    if(faasForkPid){
+        process.kill(faasForkPid);
+    }
+    const faasFork = childProcess.fork(`www`,[], {
         env: {
             APPLICATION_ID: appId,
             PROJECT_ID: projectId
         },
         cwd: path.join(__dirname)
     });
-    faasSpawn.on('exit', (code, signal)=>{
+    faasForkPid = faasFork.pid;
+    
+    faasFork.on('exit', (code, signal)=>{
         console.log(`faas childProcess end with code: ${code} and signal: ${signal}`);
     });
-    faasSpawn.stdout.on('data', (data)=>{
-        console.log(data);
-    });
-    faasSpawn.on('error', (err)=>{
+    faasFork.on('error', (err)=>{
         console.log(err);
-    });
-    faasSpawn.stderr.on('data', (data)=>{
-        console.log(data);
     });
 };
 
-const cloneFunctionsFromGit = async ()=>{
+const cloneFunctionsFromGit = async ()=> {
     if(username && username !=='' && token && token !=='' && cloneUrl && cloneUrl !==''){
         try {
             childProcess.execSync(`rm -r myF || echo 'continues...'`,
@@ -100,11 +112,11 @@ const cloneFunctionsFromGit = async ()=>{
     }
 }
 
-cloneFunctionsFromGit().then(value=>{
-    server.createServer(app).listen('3000').on('listening', async ()=>{
+cloneFunctionsFromGit().catch(reason=>{
+    console.log(reason);
+}).finally(_=>{
+    http.createServer(app).listen('3000').on('listening', async ()=>{
+        console.log('proxy server start listening on port 3000');
         startFaaSApp();
     });
-}).catch(reason=>{
-    console.log(reason);
-    process.kill(process.pid);
 });

@@ -1,7 +1,7 @@
 'use strict';
 
-const childProcess = require('child_process');
-const path = require('path');
+// const childProcess = require('child_process');
+// const path = require('path');
 const glob = require('glob');
 
 module.exports.FaaSController = class {
@@ -19,41 +19,41 @@ module.exports.FaaSController = class {
      * }
      * @returns {Promise<void>}
      */
-    async cloneOrUpdate(repo) {
-        if (repo && repo.repository && repo.repository.clone_url) {
-            try {
-                childProcess.execSync(`rm -r myF || echo 'continues...'`,
-                    {cwd: path.join(__dirname, '../function/')});
-                console.log('clear function folder');
-                await git.clone({
-                    url: repo.repository.clone_url,
-                    dir: path.join(__dirname, '../function/myF'),
-                    depth: 1,
-                    username: repo.user.username,
-                    token: repo.user.token
-                });
-                // childProcess.execSync(
-                //     `git clone ${repo.repository.clone_url} myF'`,
-                //     {cwd: path.join(__dirname, '../function/')});
-                console.log('done cloning git repository');
-                childProcess.execSync(`npm install`,
-                    {cwd: path.join(__dirname, '../function/myF/')});
-                console.log('done install npm package');
-                setTimeout(() => {
-                    console.log('functions updated, engine will restart');
-                    process.kill(process.pid);
-                }, 3000);
-                return await Promise.resolve()
-            } catch (e) {
-                // todo: send notification to email
-                console.log(e);
-                throw {message: e.toString()};
-            }
-        } else {
-            console.log('clone url not found');
-            throw {message: 'clone url not found'};
-        }
-    }
+    // async cloneOrUpdate(repo) {
+    //     if (repo && repo.repository && repo.repository.clone_url) {
+    //         try {
+    //             childProcess.execSync(`rm -r myF || echo 'continues...'`,
+    //                 {cwd: path.join(__dirname, '../function/')});
+    //             console.log('clear function folder');
+    //             await git.clone({
+    //                 url: repo.repository.clone_url,
+    //                 dir: path.join(__dirname, '../function/myF'),
+    //                 depth: 1,
+    //                 username: repo.user.username,
+    //                 token: repo.user.token
+    //             });
+    //             // childProcess.execSync(
+    //             //     `git clone ${repo.repository.clone_url} myF'`,
+    //             //     {cwd: path.join(__dirname, '../function/')});
+    //             console.log('done cloning git repository');
+    //             childProcess.execSync(`npm install`,
+    //                 {cwd: path.join(__dirname, '../function/myF/')});
+    //             console.log('done install npm package');
+    //             setTimeout(() => {
+    //                 console.log('functions updated, engine will restart');
+    //                 process.kill(process.pid);
+    //             }, 3000);
+    //             return await Promise.resolve()
+    //         } catch (e) {
+    //             // todo: send notification to email
+    //             console.log(e);
+    //             throw {message: e.toString()};
+    //         }
+    //     } else {
+    //         console.log('clone url not found');
+    //         throw {message: 'clone url not found'};
+    //     }
+    // }
 
     /**
      * get function from uploaded files. This function return an object which contain name of function as object property

@@ -1,12 +1,13 @@
-const gulp = require('gulp');
 const process = require('child_process');
+const pkg = require('./package');
+const gulp = require('gulp');
 
 function startDev(cb){
     const devProcess = process.exec(`npm start`, {
         env: {
             APPLICATION_ID: 'faas',
             GIT_USERNAME: 'joshuamshana',
-            GIT_TOKEN: '8a5bcde4879365e109ec7c3454145494892446b6',
+            GIT_TOKEN: '36d3da758d681decdfba47c5d2506a03dbbab332',
             PROJECT_ID: 'demofaas',
             GIT_CLONE_URL: 'https://github.com/joshuamshana/BFastFunctionExample.git'
         }
@@ -31,4 +32,49 @@ function startDev(cb){
     });
 }
 
+function buildDockerImage(){
+    const buildImage = process.exec(`sudo docker build -t joshuamshana/bfastfaas:v${pkg.version} .`);
+
+    buildImage.on('exit', (code, signal)=>{
+        console.log('build image task exit');
+        cb();
+    });
+
+    buildImage.on('error', (err)=>{
+        console.error(err);
+        cb();
+    });
+
+    buildImage.stdout.on('data', (data)=>{
+        console.log(data);
+    });
+
+    buildImage.stderr.on('data', (data)=>{
+        console.log(data);
+    });
+}
+
+function pushToDocker(){
+    const pushImage = process.exec(`sudo docker push joshuamshana/bfastfaas:v${pkg.version}`);
+
+    pushImage.on('exit', (code, signal)=>{
+        console.log('push image exit');
+        cb();
+    });
+
+    pushImage.on('error', (err)=>{
+        console.error(err);
+        cb();
+    });
+
+    pushImage.stdout.on('data', (data)=>{
+        console.log(data);
+    });
+
+    pushImage.stderr.on('data', (data)=>{
+        console.log(data);
+    });
+}
+
 exports.startDev = startDev;
+exports.publishContainer = gulp.series(buildDockerImage, pushToDocker);
