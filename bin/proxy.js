@@ -47,7 +47,7 @@ app.all('/deploy',(request, response, next)=>{auth(request, response, next)}, (r
 
 app.all('/functions/:name', (request1, response1, next1)=>{auth(request1, response1, next1)}, (request, response)=>{
     const fName = request.params.name;
-    const faasRequestFunction = http.request('http://localhost:3443/faas/function/' + fName,{
+    const faasRequestFunction = http.request('http://127.0.0.1:3443/faas/function/' + fName,{
         method: request.method,
         hostname: request.hostname,
         headers: request.headers,
