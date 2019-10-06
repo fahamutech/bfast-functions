@@ -50,15 +50,6 @@ app.use('/functions', (request, response, next)=>{auth(request, response, next)}
     response.json({message: 'proxy to function server'});
 });
 
-server.createServer(app).listen('3000').on('listening', async ()=>{
-   try{
-    await cloneFunctionsFromGit();
-    startFaaSApp();
-   }catch(reason){
-       console.log(reason);
-   }
-});
-
 const startFaaSApp = ()=>{
     const faasSpawn = childProcess.exec(`node www`, {
         env: {
@@ -108,3 +99,12 @@ const cloneFunctionsFromGit = async ()=>{
         throw {message: 'please provide clone url and token to fetch your functions'};
     }
 }
+
+cloneFunctionsFromGit().then(value=>{
+    server.createServer(app).listen('3000').on('listening', async ()=>{
+        startFaaSApp();
+    });
+}).catch(reason=>{
+    console.log(reason);
+    process.kill(process.pid);
+});
