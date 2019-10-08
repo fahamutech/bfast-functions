@@ -2,14 +2,13 @@
 const http = require('http');
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+// const logger = require('morgan');
 const cors = require('cors');
 const app = express();
 const path = require('path');
 const childProcess = require('child_process');
 const git = require('isomorphic-git');
-const httpProxy = require('http-proxy');
-const proxy = httpProxy.createProxyServer();
+const httpProxy = require('express-http-proxy');
 const fs = require('fs');
 git.plugins.set('fs', fs);
 
@@ -21,7 +20,7 @@ const projectId  = process.env.PROJECT_ID;
 let faasForkPid = undefined;
 
 app.use(cors());
-app.use(logger('dev'));
+// app.use(logger('dev'));
 app.use(express.json({
     limit: '2024mb'
 }));
@@ -47,9 +46,7 @@ app.all('/deploy',(request, response, next)=>{auth(request, response, next)}, (r
     });
 });
 
-app.all('/functions/:name', (request1, response1, next1)=>{auth(request1, response1, next1)}, (request, response)=>{
-    proxy.web(request, response, { target: 'http://localhost:3443'});
-});
+app.all('/functions/:name', (request1, response1, next1)=>{auth(request1, response1, next1)}, httpProxy('http://localhost:3443'));
 
 const startFaaSApp = () => {
     try{
@@ -68,9 +65,6 @@ const startFaaSApp = () => {
         faasFork.on('exit', (code, signal)=>{
             console.log(`faas childProcess end with code: ${code} and signal: ${signal}`);
             faasForkPid = undefined;
-        });
-        faasFork.on('error', (err)=>{
-            console.log(err);
         });
     }catch(e){
         console.log(e);

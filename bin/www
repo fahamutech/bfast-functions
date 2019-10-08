@@ -6,7 +6,6 @@
 
 const app = require('../src/app');
 // const debug = require('debug')('bfastfunction:server');
-const childProcess = require('child_process');
 const http = require('http');
 
 /**
