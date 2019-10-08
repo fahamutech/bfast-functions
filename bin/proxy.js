@@ -8,6 +8,9 @@ const app = express();
 const path = require('path');
 const childProcess = require('child_process');
 const git = require('isomorphic-git');
+var httpProxy = require('http-proxy');
+
+var proxy = httpProxy.createProxyServer();
 const fs = require('fs');
 git.plugins.set('fs', fs);
 
@@ -36,7 +39,7 @@ function auth(request, response, next){
 }
 
 app.all('/deploy',(request, response, next)=>{auth(request, response, next)}, (request, response)=>{
-    cloneFunctionsFromGit().then(value => {
+    cloneFunctionsFromGit().then(_ => {
         response.json({message: 'functions deployed'});
     }).catch(reason => {
         response.status(401).json(reason);
@@ -46,21 +49,7 @@ app.all('/deploy',(request, response, next)=>{auth(request, response, next)}, (r
 });
 
 app.all('/functions/:name', (request1, response1, next1)=>{auth(request1, response1, next1)}, (request, response)=>{
-    const fName = request.params.name;
-    const faasRequestFunction = http.request('http://localhost:3443/faas/function/' + fName,{
-        method: request.method,
-        hostname: 'localhost',
-        headers: request.headers,
-    }, faasResponse=>{
-        response.headers = faasResponse.headers;
-        response.statusCode = faasResponse.statusCode;
-        faasResponse.pipe(response);
-    });
-    faasRequestFunction.on('error', (e) => {
-        response.status(503).json({message: e.toString()});
-    });
-    faasRequestFunction.write(JSON.stringify(request.body));
-    faasRequestFunction.end();
+    proxy.web(request, response, { target: 'http://localhost:3443'});
 });
 
 const startFaaSApp = () => {
