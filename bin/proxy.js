@@ -46,7 +46,7 @@ app.all('/deploy',(request, response, next)=>{auth(request, response, next)}, (r
     });
 });
 
-app.all('/functions/:name', (request1, response1, next1)=>{auth(request1, response1, next1)}, httpProxy('http://localhost:3443'));
+app.all('/functions/:name', (request1, response1, next1)=>{auth(request1, response1, next1)}, httpProxy('http://localhost:3443', {limit: '2024mb'}));
 
 const startFaaSApp = () => {
     try{
