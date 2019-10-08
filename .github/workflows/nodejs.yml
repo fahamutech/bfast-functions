@@ -21,10 +21,10 @@ jobs:
       run: |
         npm install
         npm run build --if-present
-        docker login -u$DOCKER_USERNAME -p$DOCKER_PASSWORD
+        docker login -u${DOCKER_USERNAME} -p${DOCKER_PASSWORD}
         # npm test
         npm run push
       env:
-        DOCKER_USERNAME:  ${{DOCKER_USERNAME}}
+        DOCKER_USERNAME: ${{DOCKER_USERNAME}}
         DOCKER_PASSWORD: ${{DOCKER_PASSWORD}}
         CI: true
