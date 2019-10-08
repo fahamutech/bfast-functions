@@ -64,24 +64,30 @@ app.all('/functions/:name', (request1, response1, next1)=>{auth(request1, respon
 });
 
 const startFaaSApp = () => {
-    if(faasForkPid){
-        process.kill(faasForkPid);
+    try{
+        if(faasForkPid){
+            process.kill(faasForkPid);
+            faasForkPid = undefined;
+        }
+        const faasFork = childProcess.fork(`www`,[], {
+            env: {
+                APPLICATION_ID: appId,
+                PROJECT_ID: projectId
+            },
+            cwd: path.join(__dirname)
+        });
+        faasForkPid = faasFork.pid;
+        faasFork.on('exit', (code, signal)=>{
+            console.log(`faas childProcess end with code: ${code} and signal: ${signal}`);
+            faasForkPid = undefined;
+        });
+        faasFork.on('error', (err)=>{
+            console.log(err);
+        });
+    }catch(e){
+        console.log(e);
+        faasForkPid = undefined;
     }
-    const faasFork = childProcess.fork(`www`,[], {
-        env: {
-            APPLICATION_ID: appId,
-            PROJECT_ID: projectId
-        },
-        cwd: path.join(__dirname)
-    });
-    faasForkPid = faasFork.pid;
-    
-    faasFork.on('exit', (code, signal)=>{
-        console.log(`faas childProcess end with code: ${code} and signal: ${signal}`);
-    });
-    faasFork.on('error', (err)=>{
-        console.log(err);
-    });
 };
 
 const cloneFunctionsFromGit = async ()=> {
