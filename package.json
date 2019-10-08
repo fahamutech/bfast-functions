@@ -1,6 +1,6 @@
 {
   "name": "bfastfunction",
-  "version": "1.5.0-beta4",
+  "version": "1.5.0-beta5",
   "private": true,
   "scripts": {
     "start": "node ./bin/proxy.js",
