@@ -25,6 +25,6 @@ jobs:
         # npm test
         npm run push
       env:
-        DOCKER_USERNAME: ${{DOCKER_USERNAME}}
-        DOCKER_PASSWORD: ${{DOCKER_PASSWORD}}
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         CI: true
