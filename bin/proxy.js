@@ -8,9 +8,8 @@ const app = express();
 const path = require('path');
 const childProcess = require('child_process');
 const git = require('isomorphic-git');
-var httpProxy = require('http-proxy');
-
-var proxy = httpProxy.createProxyServer();
+const httpProxy = require('http-proxy');
+const proxy = httpProxy.createProxyServer();
 const fs = require('fs');
 git.plugins.set('fs', fs);
 
@@ -98,7 +97,6 @@ const cloneFunctionsFromGit = async ()=> {
             console.log('done install npm package');
             return await Promise.resolve()
         } catch (e) {
-            // todo: send notification to email
             console.log(e);
             throw {message: e.toString()};
         }
@@ -107,9 +105,9 @@ const cloneFunctionsFromGit = async ()=> {
     }
 }
 
-cloneFunctionsFromGit().catch(reason=>{
+cloneFunctionsFromGit().catch(reason => {
     console.log(reason);
-}).finally(_=>{
+}).finally(_ => {
     http.createServer(app).listen('3000').on('listening', async ()=>{
         console.log('proxy server start listening on port 3000');
         startFaaSApp();
