@@ -2,19 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/specs/faasController.specs.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/specs/proxy.specs.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/faas.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dictionaries/joshua.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/joshua.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/proxy.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/proxy.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/www" beforeDir="false" afterPath="$PROJECT_DIR$/src/www" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gulpfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/gulpfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/FaaSController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/FaaSController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/function/_example.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/function/_example.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/function.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/specs/proxy.specs.js" beforeDir="false" afterPath="$PROJECT_DIR$/specs/proxy.specs.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/proxy.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/proxy.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/www" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -145,7 +141,7 @@
       <workItem from="1570094211999" duration="46000" />
       <workItem from="1570095788472" duration="3429000" />
       <workItem from="1570186149733" duration="8962000" />
-      <workItem from="1570901665595" duration="12807000" />
+      <workItem from="1570901665595" duration="18121000" />
     </task>
     <task id="LOCAL-00001" summary="add controller to return all function names and deploy using git">
       <created>1565628198021</created>
@@ -245,7 +241,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570195270784</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="start to integrate test and change how functions initialized">
+      <created>1570915291542</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1570915291542</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -272,6 +275,7 @@
     <MESSAGE value="fix circular dependency when try to construct functions object - debug for ci" />
     <MESSAGE value="refresh" />
     <MESSAGE value="support username and token when deploy functions from git servers" />
-    <option name="LAST_COMMIT_MESSAGE" value="support username and token when deploy functions from git servers" />
+    <MESSAGE value="start to integrate test and change how functions initialized" />
+    <option name="LAST_COMMIT_MESSAGE" value="start to integrate test and change how functions initialized" />
   </component>
 </project>

@@ -1,31 +1,10 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const cors = require('cors');
-const _FaaSController = require('./controller/FaaSController').FaaSController;
+const FaasProxy = require('./proxy');
+const proxyServer = new FaasProxy({
+    appId: process.env.APPLICATION_ID,
+    projectId: process.env.PROJECT_ID,
+    gitUsername: process.env.GIT_USERNAME,
+    gitToken: process.env.GIT_TOKEN,
+    gitCloneUrl: process.env.GIT_CLONE_URL
+}).startProxyServer();
 
-const _faaSController = new _FaaSController();
-const _app = express();
-_app.use(cors());
-_app.use(logger('dev'));
-_app.use(express.json({
-    limit: '2024mb'
-}));
-_app.use(express.urlencoded({extended: false}));
-_app.use(cookieParser());
-
-_faaSController.getFunctions().then(functions => {
-    if (typeof functions === 'object') {
-        Object.keys(functions).forEach(functionName => {
-            if (typeof functions[functionName] === 'function') {
-                _app.use(`/functions/${functionName}`, functions[functionName]);
-            }
-        });
-    } else {
-        throw {message: 'It\'s not object'};
-    }
-}).catch(reason => {
-    console.log(reason);
-});
-
-module.exports = _app;
+module.exports = proxyServer;
