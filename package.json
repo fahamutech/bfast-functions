@@ -1,10 +1,10 @@
 {
   "name": "bfastfunction",
-  "version": "1.5.0-alpha1",
+  "version": "1.6.0-alpha",
   "private": true,
   "scripts": {
-    "start": "node ./bin/proxy.js",
-    "test": "\"No test yet\"",
+    "start": "node src/proxy.js",
+    "test": "mocha ./specs",
     "devStart": "gulp startDev",
     "gulp": "gulp",
     "push": "gulp publishContainer"
@@ -17,10 +17,12 @@
     "express-http-proxy": "^1.6.0",
     "glob": "^7.1.4",
     "isomorphic-git": "^0.67.2",
-    "mongodb": "^3.3.0-beta2",
     "morgan": "~1.9.1"
   },
   "devDependencies": {
-    "gulp": "^4.0.2"
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "gulp": "^4.0.2",
+    "mocha": "^6.2.1"
   }
 }

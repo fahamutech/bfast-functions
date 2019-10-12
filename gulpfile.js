@@ -1,14 +1,13 @@
 const process = require('child_process');
 const pkg = require('./package');
 const gulp = require('gulp');
-const http = require('http');
 
 function startDev(cb){
     const devProcess = process.exec(`npm start`, {
         env: {
             APPLICATION_ID: 'faas',
             GIT_USERNAME: 'joshuamshana',
-            GIT_TOKEN: '2ddc6429d89d3b50a6f484f0e01f0a0748537fec',
+            GIT_TOKEN: '4583b8d19a8cb1ef403fe4d3b6eeff98b763345c',
             PROJECT_ID: 'demofaas',
             GIT_CLONE_URL: 'https://github.com/joshuamshana/BFastFunctionExample.git'
         }

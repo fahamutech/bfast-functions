@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-const app = require('../src/app');
+const app = require('./index');
 // const debug = require('debug')('bfastfunction:server');
 const http = require('http');
 
