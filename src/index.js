@@ -5,6 +5,6 @@ const proxyServer = new FaasProxy({
     gitUsername: process.env.GIT_USERNAME,
     gitToken: process.env.GIT_TOKEN,
     gitCloneUrl: process.env.GIT_CLONE_URL
-}).startProxyServer();
+}).startProxyServer({port: '3000', autoInitializeClone: true});
 
 module.exports = proxyServer;

@@ -2,15 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/faas.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dictionaries/joshua.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/joshua.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gulpfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/gulpfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/specs/proxy.specs.js" beforeDir="false" afterPath="$PROJECT_DIR$/specs/proxy.specs.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/proxy.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/proxy.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/www" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -51,6 +48,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="settings.nodejs" />
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
@@ -73,13 +71,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="npm.devStart">
-    <configuration name="bfastfunction.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="bfastfunction.js" working-dir="$PROJECT_DIR$">
-      <method v="2" />
-    </configuration>
-    <configuration name="function.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/routes/function.js" working-dir="$PROJECT_DIR$/src/routes">
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Mocha.Proxy.Deploy.should accept to deploy functions because appId is supplied as query param">
     <configuration name="devStart" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -115,13 +107,47 @@
       </test-names>
       <method v="2" />
     </configuration>
+    <configuration name="Proxy.Deploy.should accept to deploy functions because appId is supplied as header" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options />
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/specs/proxy.specs.js</test-file>
+      <test-names>
+        <name value="Proxy" />
+        <name value="Deploy" />
+        <name value="should accept to deploy functions because appId is supplied as header" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="Proxy.Deploy.should accept to deploy functions because appId is supplied as query param" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options />
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/specs/proxy.specs.js</test-file>
+      <test-names>
+        <name value="Proxy" />
+        <name value="Deploy" />
+        <name value="should accept to deploy functions because appId is supplied as query param" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.devStart" />
+        <item itemvalue="Mocha.Proxy.Deploy.should accept to deploy functions because appId is supplied as query param" />
         <item itemvalue="Mocha.Proxy" />
+        <item itemvalue="npm.devStart" />
+        <item itemvalue="Mocha.Proxy.Deploy.should accept to deploy functions because appId is supplied as header" />
         <item itemvalue="npm.start" />
-        <item itemvalue="Node.js.bfastfunction.js" />
-        <item itemvalue="Node.js.function.js" />
       </list>
     </recent_temporary>
   </component>
@@ -141,7 +167,8 @@
       <workItem from="1570094211999" duration="46000" />
       <workItem from="1570095788472" duration="3429000" />
       <workItem from="1570186149733" duration="8962000" />
-      <workItem from="1570901665595" duration="18121000" />
+      <workItem from="1570901665595" duration="18253000" />
+      <workItem from="1571126862164" duration="5550000" />
     </task>
     <task id="LOCAL-00001" summary="add controller to return all function names and deploy using git">
       <created>1565628198021</created>
@@ -248,7 +275,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570915291542</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="refresh">
+      <created>1570920632185</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1570920632185</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -273,9 +307,9 @@
     <MESSAGE value="update functions to fetch functions" />
     <MESSAGE value="fix circular dependency when try to construct functions object" />
     <MESSAGE value="fix circular dependency when try to construct functions object - debug for ci" />
-    <MESSAGE value="refresh" />
     <MESSAGE value="support username and token when deploy functions from git servers" />
     <MESSAGE value="start to integrate test and change how functions initialized" />
-    <option name="LAST_COMMIT_MESSAGE" value="start to integrate test and change how functions initialized" />
+    <MESSAGE value="refresh" />
+    <option name="LAST_COMMIT_MESSAGE" value="refresh" />
   </component>
 </project>
