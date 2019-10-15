@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="" />
+    <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/nodejs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/nodejs.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,8 +19,12 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="ProjectId" id="1RSYrpWdkyxXtIav7h0tdkJ2liN" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -32,17 +39,21 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs.mocha.mocha_node_package_dir" value="$PROJECT_DIR$/node_modules/mocha" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="settings.nodejs" />
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/specs" />
       <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/specs/gitMock" />
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="C:\Users\mama2\WebstormProjects\BFastFunction" />
     </key>
   </component>
@@ -58,16 +69,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="npm.start">
-    <configuration name="bfastfunction.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="bfastfunction.js" working-dir="$PROJECT_DIR$">
-      <method v="2" />
-    </configuration>
-    <configuration name="function.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/routes/function.js" working-dir="$PROJECT_DIR$/src/routes">
-      <method v="2" />
-    </configuration>
-    <configuration name="index.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="index.js" working-dir="$PROJECT_DIR$/src/function">
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="npm.test">
     <configuration name="devStart" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -78,22 +80,58 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+    <configuration name="startGitServer" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
       <scripts>
-        <script value="start" />
+        <script value="startGitServer" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
       <method v="2" />
     </configuration>
+    <configuration name="stopGitServer" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="stopGitServer" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="test" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="test" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="ProxyServer Routes" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options />
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/specs/proxy.specs.js</test-file>
+      <test-names>
+        <name value="ProxyServer Routes" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.start" />
+        <item itemvalue="npm.test" />
+        <item itemvalue="Mocha.ProxyServer Routes" />
         <item itemvalue="npm.devStart" />
-        <item itemvalue="Node.js.bfastfunction.js" />
-        <item itemvalue="Node.js.function.js" />
+        <item itemvalue="npm.stopGitServer" />
+        <item itemvalue="npm.startGitServer" />
       </list>
     </recent_temporary>
   </component>
@@ -113,6 +151,11 @@
       <workItem from="1570094211999" duration="46000" />
       <workItem from="1570095788472" duration="3429000" />
       <workItem from="1570186149733" duration="8962000" />
+      <workItem from="1570901665595" duration="18253000" />
+      <workItem from="1571126862164" duration="5653000" />
+      <workItem from="1571132762372" duration="274000" />
+      <workItem from="1571133079516" duration="1818000" />
+      <workItem from="1571134900961" duration="13610000" />
     </task>
     <task id="LOCAL-00001" summary="add controller to return all function names and deploy using git">
       <created>1565628198021</created>
@@ -212,7 +255,35 @@
       <option name="project" value="LOCAL" />
       <updated>1570195270784</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="start to integrate test and change how functions initialized">
+      <created>1570915291542</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1570915291542</updated>
+    </task>
+    <task id="LOCAL-00016" summary="refresh">
+      <created>1570920632185</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1570920632185</updated>
+    </task>
+    <task id="LOCAL-00017" summary="update test cases for proxy controller">
+      <created>1571132479068</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1571132479068</updated>
+    </task>
+    <task id="LOCAL-00018" summary="add more test coverage and expose proxy class as entry to faas engine">
+      <created>1571151310972</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1571151310972</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -237,8 +308,11 @@
     <MESSAGE value="update functions to fetch functions" />
     <MESSAGE value="fix circular dependency when try to construct functions object" />
     <MESSAGE value="fix circular dependency when try to construct functions object - debug for ci" />
-    <MESSAGE value="refresh" />
     <MESSAGE value="support username and token when deploy functions from git servers" />
-    <option name="LAST_COMMIT_MESSAGE" value="support username and token when deploy functions from git servers" />
+    <MESSAGE value="start to integrate test and change how functions initialized" />
+    <MESSAGE value="refresh" />
+    <MESSAGE value="update test cases for proxy controller" />
+    <MESSAGE value="add more test coverage and expose proxy class as entry to faas engine" />
+    <option name="LAST_COMMIT_MESSAGE" value="add more test coverage and expose proxy class as entry to faas engine" />
   </component>
 </project>

@@ -5,5 +5,7 @@ logs
 .ide
 .vscode
 .env
+*.pid
+
 src/function/myF
 /src/function/myF

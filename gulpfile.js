@@ -1,78 +1,77 @@
 const process = require('child_process');
 const pkg = require('./package');
 const gulp = require('gulp');
-const http = require('http');
 
-function startDev(cb){
+function startDev(cb) {
     const devProcess = process.exec(`npm start`, {
         env: {
             APPLICATION_ID: 'faas',
-            GIT_USERNAME: 'joshuamshana',
-            GIT_TOKEN: '2ddc6429d89d3b50a6f484f0e01f0a0748537fec',
+            // GIT_USERNAME: 'joshuamshana',
+            // GIT_TOKEN: 'b4ec4eac383a46215cd8e7f9ea00a20b9996549a',
             PROJECT_ID: 'demofaas',
             GIT_CLONE_URL: 'https://github.com/joshuamshana/BFastFunctionExample.git'
         }
     });
 
-    devProcess.on('exit', (code, signal)=>{
+    devProcess.on('exit', (code, signal) => {
         console.log('dev server stops');
         cb();
     });
 
-    devProcess.on('error', (err)=>{
+    devProcess.on('error', (err) => {
         console.error(err);
         cb();
     });
 
-    devProcess.stdout.on('data', (data)=>{
+    devProcess.stdout.on('data', (data) => {
         console.log(data);
     });
 
-    devProcess.stderr.on('data', (data)=>{
+    devProcess.stderr.on('data', (data) => {
         console.log(data);
     });
 }
 
-function buildDockerImage(cb){
+function buildDockerImage(cb) {
     const buildImage = process.exec(`sudo docker build -t joshuamshana/bfastfaas:v${pkg.version} .`);
 
-    buildImage.on('exit', (code, signal)=>{
+    buildImage.on('exit', (code, signal) => {
         console.log('build image task exit');
         cb();
     });
 
-    buildImage.on('error', (err)=>{
+    buildImage.on('error', (err) => {
         console.error(err);
         cb();
     });
 
-    buildImage.stdout.on('data', (data)=>{
+    buildImage.stdout.on('data', (data) => {
         console.log(data);
     });
 
-    buildImage.stderr.on('data', (data)=>{
+    buildImage.stderr.on('data', (data) => {
         console.log(data);
     });
 }
 
-function pushToDocker(cb){
+function pushToDocker(cb) {
     const pushImage = process.exec(`sudo docker push joshuamshana/bfastfaas:v${pkg.version}`);
 
-    pushImage.on('exit', (code, signal)=>{
+    pushImage.on('exit', (code, signal) => {
         console.log('push image exit');
         cb();
     });
 
-    pushImage.on('error', (err)=>{
+    pushImage.on('error', (err) => {
         console.error(err);
         cb();
     });
 
-    pushImage.stdout.on('data', (data)=>{
+    pushImage.stdout.on('data', (data) => {
         console.log(data);
     });
 
-    pushImage.stderr.on('data', (data)=>{
+    pushImage.stderr.on('data', (data) => {
         console.log(data);
     });
 }
