@@ -2,67 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/HEAD" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/config" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/description" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/hooks/applypatch-msg.sample" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/hooks/commit-msg.sample" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/hooks/fsmonitor-watchman.sample" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/hooks/post-update.sample" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/hooks/pre-applypatch.sample" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/hooks/pre-commit.sample" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/hooks/pre-push.sample" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/hooks/pre-rebase.sample" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/hooks/pre-receive.sample" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/hooks/prepare-commit-msg.sample" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/hooks/update.sample" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/info/exclude" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/04/7bed1fccb8171704d2c712ce67c0255a6cda84" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/0b/11aaf64ebe3e28166bb5a14a413dd4fcccf847" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/0d/c5122011b7907563f7658eef3766832c76e9dd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/14/7dbb78e4e4fc6875c289af5a26417581b41619" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/21/1584f3a1b98e723e623756134e54ff9805a755" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/25/411ef9bd68ddc3a6858b53789bdc88d20cfa16" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/2b/c5f49f850c869b0ad6e24100278a4f8bc518c8" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/31/146332b63d778d4f415eae705d12e195318187" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/33/e60e2923456339d5a4ada0f9dc8c10e1aa83a4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/36/a33ce916bab8613cd9a0a14d925393e12daf64" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/46/4d793a0b2e6050d1597144db928e5c3e44d77c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/4e/e4a5d3476abaabb5b953ca93e7ed00a5ce8aa4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/5e/c8a7ae029698432fdfc87ad52e10f2005225dc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/60/ede77d896d105f4c84e16a30820100496b1fa8" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/64/bf510d1e864d9cc4f8ef821c140d54e9f53902" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/69/e6d9cd3c8374b330fdc31c398d5cb3c554a167" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/71/b3850837988aea224310851693a0319656d1f0" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/79/5a13225c227d1d4564c6941f72598dc3bfecb3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/7a/ecface2c28e17aeaa364bbabb8c5207eeec492" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/7f/37f50fe2bf5f229277ae784ede6f494fc08120" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/81/0f463403ba491b5d18e7909a0db6910ae6c2c2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/90/9dea01811bd148e765ed71d826841d53b03285" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/95/f3e2e7e809493f053074406044a6d52e9c834c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/98/09cf09f8ffebf33d71c54706f6e0b5f1bcc3ed" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/ab/db54ecf057fd41916f1970795dca4c215f2f7e" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/ac/0ae6f9483059114c89eb33837468de5f347d1a" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/b2/ff793eeba60eff9ec070043ac4edb4d06a73ea" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/c4/b58b30a56813482245f85ca915002861f49e0f" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/c9/731db2d3c16a2455f7fd12bf8645b792b002dd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/cc/65727dac4b71f1b71043a73407bd51aaa560f0" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/db/ef20ee9fa1a0a0f50aa6dfe56a1084e4239525" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/e1/474cb6bfe8fb1ae3c4dcb2eba390ef1f20b3df" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/e7/6bb4977904bfd55ae2d3325f681378064a7f33" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/f7/a2be4bf3b3e1153275e345db93e09c70960491" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/f9/178956476fa539ce2cf00b80595a2444b11fa0" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/objects/fa/fb89925393ae21024bd2a19043b041cfeb9c79" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BFastFunctionExample.git/packed-refs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/specs/gitMock/gitMockSetup.specs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/nodejs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/nodejs.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gulpfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/gulpfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/specs/proxy.specs.js" beforeDir="false" afterPath="$PROJECT_DIR$/specs/proxy.specs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/proxy.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/proxy.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -214,7 +155,7 @@
       <workItem from="1571126862164" duration="5653000" />
       <workItem from="1571132762372" duration="274000" />
       <workItem from="1571133079516" duration="1818000" />
-      <workItem from="1571134900961" duration="13252000" />
+      <workItem from="1571134900961" duration="13610000" />
     </task>
     <task id="LOCAL-00001" summary="add controller to return all function names and deploy using git">
       <created>1565628198021</created>
@@ -335,7 +276,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571132479068</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="add more test coverage and expose proxy class as entry to faas engine">
+      <created>1571151310972</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1571151310972</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -364,6 +312,7 @@
     <MESSAGE value="start to integrate test and change how functions initialized" />
     <MESSAGE value="refresh" />
     <MESSAGE value="update test cases for proxy controller" />
-    <option name="LAST_COMMIT_MESSAGE" value="update test cases for proxy controller" />
+    <MESSAGE value="add more test coverage and expose proxy class as entry to faas engine" />
+    <option name="LAST_COMMIT_MESSAGE" value="add more test coverage and expose proxy class as entry to faas engine" />
   </component>
 </project>
