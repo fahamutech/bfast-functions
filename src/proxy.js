@@ -23,25 +23,25 @@ class FaasProxy {
 
     /**
      * initialize proxy server and mount deploy route endpoint and functions endpoints
-     * @param options is object = {
-            appId: BFAST_CLOUD_APPLICATION_ID_OR_ANY_TO IDENTIFY_YOUR_APPLICATION,
-            projectId: BFAST_PROJECT_ID_OR_ANY',
-            gitCloneUrl: GIT_REMOTE_URL_FOR_CLONE_FUNCTIONS,
-            gitUsername: GIT_USERNAME,
-            gitToken: GIT_PERSONA_ACCESS_TOKEN
-        }
+     * @param {string}  appId application id to authenticate request
+     * @param {string} projectId project id from bfast cloud or any ( options )
+     * @param {string} gitToken personal access token from github or bitbucket ( required if repository is private )
+     * @param {string} gitCloneUrl functions git repository url
+     * @param {string} gitUsername git repository username ( required if repository is private )
+     * @param {boolean} autoStartFaasEngine either to start faas engine every time we deploy functions ( default to true )
+     * @param {boolean} testMode if system is under test ( default is false )
      */
-    constructor(options) {
-        this._options = options;
+    constructor({appId, projectId, gitCloneUrl, gitUsername, gitToken, autoStartFaasEngine, testMode}) {
+        this._options = {
+            appId,
+            projectId,
+            gitCloneUrl,
+            gitUsername,
+            gitToken,
+            autoStartFaasEngine,
+            testMode
+        };
         this._faaSForkEngine = undefined;
-
-        // _initiateEnv({gitUsername, gitToken, gitCloneUrl, appId, projectId}) {
-        //     process.env.GIT_USERNAME = gitUsername | process.env.GIT_USERNAME;
-        //     process.env.GIT_TOKEN = gitToken | process.env.GIT_TOKEN;
-        //     process.env.GIT_CLONE_URL = gitCloneUrl | process.env.GIT_CLONE_URL;
-        //     process.env.APPLICATION_ID = appId | process.env.APPLICATION_ID;
-        //     process.env.PROJECT_ID = projectId | process.env.PROJECT_ID;
-        // }
 
         /**
          * middleware to authenticate incoming http requests against application id you provide
@@ -72,13 +72,15 @@ class FaasProxy {
         };
 
         /**
-         * mount route endpoints for deploy functions
+         * mount route endpoint for deploy functions
          * @private
          */
-        this._deployRoute = function () {
+        this._deployRoute = (autoStartFaasEngine) => {
             app.all('/deploy', (request1, response1, next1) => this._auth(request1, response1, next1), (request, response) => {
                 this._cloneFunctionsFromGit().then(_ => {
-                    this._startFaaSEngine();
+                    if (autoStartFaasEngine && autoStartFaasEngine === true) {
+                        this._startFaaSEngine();
+                    }
                     response.json({message: 'functions deployed'});
                 }).catch(reason => {
                     console.log(reason);
@@ -93,7 +95,7 @@ class FaasProxy {
          */
         this._functionsRoute = function () {
             app.all('/functions/:name', (request, response, next) => this._auth(request, response, next),
-                httpProxy('http://localhost:3443', {limit: '2024mb'})
+                httpProxy('http://localhost:3443', {limit: '2024mb'}),
             );
         };
 
@@ -103,13 +105,13 @@ class FaasProxy {
          * @private
          */
         // test case needed
-        this._cloneFunctionsFromGit = async function () {
-            if (this._faaSForkEngine && !this._faaSForkEngine.killed) {
-                process.kill(this._faaSForkEngine.pid, 'SIGTERM');
-            }
-            if (this._options.gitUsername && this._options.gitUsername !== '' &&
-                this._options.gitToken && this._options.gitToken !== '' &&
-                this._options.gitCloneUrl && this._options.gitCloneUrl !== '') {
+        this._cloneFunctionsFromGit = async () => {
+            this._stopFaasEngine();
+            //
+            // this._options.gitUsername && this._options.gitUsername !== '' &&
+            // this._options.gitToken && this._options.gitToken !== '' &&
+            //
+            if (this._options.gitCloneUrl && this._options.gitCloneUrl !== '') {
                 try {
                     childProcess.execSync(`rm -r myF || echo 'continues...'`,
                         {cwd: path.join(__dirname, './function/')});
@@ -118,12 +120,16 @@ class FaasProxy {
                         url: this._options.gitCloneUrl,
                         dir: path.join(__dirname, './function/myF'),
                         depth: 1,
-                        username: this._options.gitUsername,
-                        token: this._options.gitToken
+                        username: this._options.gitUsername && this._options.gitToken ? this._options.gitUsername : null,
+                        token: this._options.gitUsername && this._options.gitToken ? this._options.gitToken : null
                     });
                     console.log('done cloning git repository');
-                    childProcess.execSync(`npm install`, {cwd: path.join(__dirname, './function/myF/')});
-                    console.log('done install npm package');
+                    if (this._options.testMode && this._options.testMode === true) {
+                        console.log('skip install npm package');
+                    } else {
+                        childProcess.execSync(`npm install`, {cwd: path.join(__dirname, './function/myF/')});
+                        console.log('done install npm package');
+                    }
                     return await Promise.resolve()
                 } catch (e) {
                     console.log(e);
@@ -134,33 +140,14 @@ class FaasProxy {
             }
         };
 
-        /**
-         * start faas engine to host user defined functions
-         * @private
-         */
-        this._startFaaSEngine = function () {
-            const faasFork = childProcess.fork(`faas`, [], {
-                env: {
-                    APPLICATION_ID: this._options.appId,
-                    PROJECT_ID: this._options.projectId
-                },
-                cwd: path.join(__dirname)
-            });
-            this._faaSForkEngine = faasFork;
-            faasFork.on('exit', (code, signal) => {
-                console.log(`faas child process end with code: ${code} and signal: ${signal}`);
-                this._faaSForkEngine = undefined;
-            });
-        };
-
-        // this._initiateEnv(this._options);
-        this._deployRoute();
+        // mount routes
+        this._deployRoute(this._options.autoStartFaasEngine | true);
         this._functionsRoute();
     };
 
     /**
      * Start faas proxy server for deploy and manage functions server
-     * @param {String} port for faas proxy server listen
+     * @param {string} port for faas proxy server listen
      * @param {boolean} autoInitializeClone flag for clone git remote repository
      * @returns {Server}
      */
@@ -169,16 +156,55 @@ class FaasProxy {
         proxyServer.listen(port);
         proxyServer.on('listening', async () => {
             console.log('proxy server start listening on port ' + port);
-            if (autoInitializeClone && autoInitializeClone === true) {
-                this._cloneFunctionsFromGit().then(_ => {
-                    this._startFaaSEngine();
-                }).catch(reason => {
-                    console.log(reason);
-                });
-            }
         });
+        if (autoInitializeClone && autoInitializeClone === true) {
+            this._cloneFunctionsFromGit().then(_ => {
+                this._startFaaSEngine();
+            }).catch(reason => {
+                console.log(reason);
+            });
+        }
         return proxyServer;
     }
+
+    /**
+     * start faas engine to host user defined functions
+     * @private
+     */
+    _startFaaSEngine() {
+        const faasFork = childProcess.fork(`faas`, [], {
+            env: {
+                APPLICATION_ID: this._options.appId,
+                PROJECT_ID: this._options.projectId
+            },
+            cwd: path.join(__dirname)
+        });
+        this._faaSForkEngine = faasFork;
+        faasFork.on('exit', (code, signal) => {
+            console.log(`faas child process end with code: ${code} and signal: ${signal}`);
+            this._faaSForkEngine = undefined;
+        });
+    }
+
+    /**
+     * stop faas engine which hold user defined functions
+     * @private
+     */
+    _stopFaasEngine() {
+        if (this._faaSForkEngine && !this._faaSForkEngine.killed) {
+            process.kill(this._faaSForkEngine.pid, 'SIGTERM');
+        }
+    }
+
+    /**
+     * restart faas engine
+     * @private
+     */
+    _restartFaasEngine() {
+        this._stopFaasEngine();
+        this._startFaaSEngine();
+    }
+
 }
 
 module.exports = FaasProxy;

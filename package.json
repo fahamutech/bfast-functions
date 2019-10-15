@@ -1,11 +1,13 @@
 {
   "name": "bfastfunction",
-  "version": "1.6.0-alpha",
+  "version": "1.7.0-alpha",
   "private": true,
   "scripts": {
     "start": "node src/index.js",
-    "test": "mocha ./specs",
+    "test": "npm run stopGitServer && npm run startGitServer start && mocha ./specs && npm run stopGitServer",
     "devStart": "gulp startDev",
+    "startGitServer": "git-http-mock-server",
+    "stopGitServer": "git-http-mock-server stop",
     "gulp": "gulp",
     "push": "gulp publishContainer"
   },
@@ -22,6 +24,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "git-http-mock-server": "^1.2.0",
     "gulp": "^4.0.2",
     "mocha": "^6.2.1"
   }
