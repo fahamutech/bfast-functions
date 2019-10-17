@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,10 +20,11 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="joshua" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="SYNC" />
   </component>
   <component name="ProjectId" id="1RSYrpWdkyxXtIav7h0tdkJ2liN" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -68,7 +69,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="npm.test">
+  <component name="RunManager" selected="npm.devStart">
     <configuration name="devStart" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -126,9 +127,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.devStart" />
         <item itemvalue="npm.test" />
         <item itemvalue="Mocha.ProxyServer Routes" />
-        <item itemvalue="npm.devStart" />
         <item itemvalue="npm.stopGitServer" />
         <item itemvalue="npm.startGitServer" />
       </list>
