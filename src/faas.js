@@ -15,6 +15,14 @@ _app.use(express.json({
 _app.use(express.urlencoded({extended: false}));
 _app.use(cookieParser());
 
+_app.use('/names', function (request, response) {
+    _faaSController.getNames().then(names => {
+        response.json(names);
+    }).catch(reason => {
+        response.status(503).json(reason);
+    });
+});
+
 _faaSController.getFunctions().then(functions => {
     if (typeof functions === 'object') {
         Object.keys(functions).forEach(functionName => {

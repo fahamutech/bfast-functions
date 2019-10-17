@@ -69,9 +69,9 @@ module.exports.FaaSController = class {
                     resolve({names: names});
                 });
             } catch (e) {
-                reject({message: e});
+                reject({message: e.toString()});
             }
-        }))
+        }));
     }
 
 };

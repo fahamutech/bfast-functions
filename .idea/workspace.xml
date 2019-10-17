@@ -2,7 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/nodejs.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/nodejs.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/specs/proxy.specs.js" beforeDir="false" afterPath="$PROJECT_DIR$/specs/proxy.specs.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/FaaSController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/FaaSController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/faas.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/faas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/proxy.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/proxy.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -44,7 +51,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="settings.nodejs" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
   <component name="RecentsManager">
@@ -127,8 +134,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="npm.test" />
-        <item itemvalue="Mocha.ProxyServer Routes" />
         <item itemvalue="npm.devStart" />
+        <item itemvalue="Mocha.ProxyServer Routes" />
         <item itemvalue="npm.stopGitServer" />
         <item itemvalue="npm.startGitServer" />
       </list>
@@ -155,6 +162,7 @@
       <workItem from="1571132762372" duration="274000" />
       <workItem from="1571133079516" duration="1818000" />
       <workItem from="1571134900961" duration="13610000" />
+      <workItem from="1571313986715" duration="15024000" />
     </task>
     <task id="LOCAL-00001" summary="add controller to return all function names and deploy using git">
       <created>1565628198021</created>
@@ -289,7 +297,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571151757004</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="refresh">
+      <created>1571152986663</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1571152986663</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -309,6 +324,9 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/src/function/myF" />
+    </ignored-roots>
     <MESSAGE value="add controller to return all function names and deploy using git" />
     <MESSAGE value="all all method to call a function and leave routing to function itself" />
     <MESSAGE value="update functions to fetch functions" />
@@ -316,9 +334,9 @@
     <MESSAGE value="fix circular dependency when try to construct functions object - debug for ci" />
     <MESSAGE value="support username and token when deploy functions from git servers" />
     <MESSAGE value="start to integrate test and change how functions initialized" />
-    <MESSAGE value="refresh" />
     <MESSAGE value="update test cases for proxy controller" />
     <MESSAGE value="add more test coverage and expose proxy class as entry to faas engine" />
-    <option name="LAST_COMMIT_MESSAGE" value="add more test coverage and expose proxy class as entry to faas engine" />
+    <MESSAGE value="refresh" />
+    <option name="LAST_COMMIT_MESSAGE" value="refresh" />
   </component>
 </project>
