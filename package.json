@@ -1,6 +1,6 @@
 {
   "name": "bfastfunction",
-  "version": "1.7.0-alpha",
+  "version": "1.7.1-alpha",
   "private": true,
   "scripts": {
     "start": "node src/index.js",
@@ -19,7 +19,8 @@
     "express-http-proxy": "^1.6.0",
     "glob": "^7.1.4",
     "isomorphic-git": "^0.67.2",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "pm2": "^4.1.2"
   },
   "devDependencies": {
     "chai": "^4.2.0",

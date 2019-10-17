@@ -10,6 +10,8 @@ const httpProxy = require('express-http-proxy');
 const fs = require('fs');
 git.plugins.set('fs', fs);
 
+const pm2 = require('pm2');
+
 const app = express();
 app.use(cors());
 app.use(logger('dev'));
@@ -38,10 +40,9 @@ class FaasProxy {
             gitCloneUrl,
             gitUsername,
             gitToken,
-            autoStartFaasEngine,
+            autoStartFaasEngine: autoStartFaasEngine !== undefined ? autoStartFaasEngine : true,
             testMode
         };
-        this._faaSForkEngine = undefined;
 
         /**
          * middleware to authenticate incoming http requests against application id you provide
@@ -76,17 +77,28 @@ class FaasProxy {
          * @private
          */
         this._deployRoute = (autoStartFaasEngine) => {
-            app.all('/deploy', (request1, response1, next1) => this._auth(request1, response1, next1), (request, response) => {
-                this._cloneFunctionsFromGit().then(_ => {
-                    if (autoStartFaasEngine && autoStartFaasEngine === true) {
-                        this._startFaaSEngine();
+            app.all('/deploy', (request1, response1, next1) => this._auth(request1, response1, next1),
+                async (request, response) => {
+                    try {
+                        await this._stopFaasEngine();
+                        await this._cloneFunctionsFromGit();
+                    } catch (reason) {
+                        console.log(reason);
+                        response.status('403').json({message: 'Fails to deploy functions'});
                     }
-                    response.json({message: 'functions deployed'});
-                }).catch(reason => {
-                    console.log(reason);
-                    response.status('403').json({message: 'Fails to deploy functions'});
-                });
-            });
+                    if (autoStartFaasEngine && autoStartFaasEngine === true) {
+                        this._startFaaSEngine().then(value => {
+                            console.log(value);
+                            response.json({message: 'functions deployed'});
+                        }).catch(reason => {
+                            console.log(reason);
+                            response.status('403').json({message: 'Fails to deploy functions'});
+                        });
+                    } else {
+                        response.status('403').json({message: 'Fails to auto start faas engine'});
+                    }
+                }
+            );
         };
 
         /**
@@ -100,13 +112,21 @@ class FaasProxy {
         };
 
         /**
+         * get all functions names available
+         */
+        this._namesRoute = function () {
+            app.all('/names', (request, response, next) => this._auth(request, response, next),
+                httpProxy('http://localhost:3443', {limit: '2024mb'}),
+            );
+        };
+
+        /**
          * clone functions from remote repository and deploy to faas engine, and restart faas engine
          * @returns {Promise<void>}
          * @private
          */
         // test case needed
         this._cloneFunctionsFromGit = async () => {
-            this._stopFaasEngine();
             //
             // this._options.gitUsername && this._options.gitUsername !== '' &&
             // this._options.gitToken && this._options.gitToken !== '' &&
@@ -130,18 +150,41 @@ class FaasProxy {
                         childProcess.execSync(`npm install`, {cwd: path.join(__dirname, './function/myF/')});
                         console.log('done install npm package');
                     }
-                    return await Promise.resolve()
                 } catch (e) {
                     console.log(e);
-                    throw {message: e.toString()};
                 }
+                return await Promise.resolve();
             } else {
                 throw {message: 'please provide clone url and token to fetch your functions'};
             }
         };
 
+        /**
+         * start faas engine when faas proxy start
+         * @private
+         */
+        // test case needed
+        this._initialStartOfFaasEngine = async (autoInitializeClone) => {
+            try {
+                if (autoInitializeClone && autoInitializeClone === true) {
+                    await this._stopFaasEngine();
+                    await this._cloneFunctionsFromGit();
+                } else {
+                    console.log('faas engine not auto initialized');
+                }
+            } catch (reason) {
+                console.log(reason);
+            }
+            this._startFaaSEngine().then(value => {
+                console.log(value);
+            }).catch(reason => {
+                console.log(reason);
+            });
+        };
+
         // mount routes
-        this._deployRoute(this._options.autoStartFaasEngine | true);
+        this._deployRoute(this._options.autoStartFaasEngine);
+        this._namesRoute();
         this._functionsRoute();
     };
 
@@ -156,14 +199,8 @@ class FaasProxy {
         proxyServer.listen(port);
         proxyServer.on('listening', async () => {
             console.log('proxy server start listening on port ' + port);
+            this._initialStartOfFaasEngine(autoInitializeClone);
         });
-        if (autoInitializeClone && autoInitializeClone === true) {
-            this._cloneFunctionsFromGit().then(_ => {
-                this._startFaaSEngine();
-            }).catch(reason => {
-                console.log(reason);
-            });
-        }
         return proxyServer;
     }
 
@@ -172,37 +209,40 @@ class FaasProxy {
      * @private
      */
     _startFaaSEngine() {
-        const faasFork = childProcess.fork(`faas`, [], {
-            env: {
-                APPLICATION_ID: this._options.appId,
-                PROJECT_ID: this._options.projectId
-            },
-            cwd: path.join(__dirname)
-        });
-        this._faaSForkEngine = faasFork;
-        faasFork.on('exit', (code, signal) => {
-            console.log(`faas child process end with code: ${code} and signal: ${signal}`);
-            this._faaSForkEngine = undefined;
+        return new Promise((resolve, reject) => {
+            pm2.start('faas.js', {
+                name: 'faas',
+                watch: true,
+                force: true,
+                cwd: __dirname
+            }, (err, _) => {
+                if (err) {
+                    console.log(err.toString());
+                    reject(err);
+                } else {
+                    // console.log('faas engine started');
+                    resolve('faas engine started');
+                }
+            });
         });
     }
 
     /**
-     * stop faas engine which hold user defined functions
+     * stop faas engine
      * @private
      */
     _stopFaasEngine() {
-        if (this._faaSForkEngine && !this._faaSForkEngine.killed) {
-            process.kill(this._faaSForkEngine.pid, 'SIGTERM');
-        }
-    }
-
-    /**
-     * restart faas engine
-     * @private
-     */
-    _restartFaasEngine() {
-        this._stopFaasEngine();
-        this._startFaaSEngine();
+        return new Promise((resolve, _) => {
+            pm2.delete('faas', (err, _) => {
+                if (err) {
+                    console.log(err.toString());
+                    resolve(err);
+                } else {
+                    console.log('faas engine deleted');
+                    resolve('faas engine deleted');
+                }
+            });
+        });
     }
 
 }
