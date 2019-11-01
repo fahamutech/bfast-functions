@@ -1,6 +1,6 @@
 {
   "name": "bfastfunction",
-  "version": "1.7.1-alpha",
+  "version": "1.7.2",
   "private": true,
   "scripts": {
     "start": "node src/index.js",

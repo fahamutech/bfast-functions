@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/faas.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/faas.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -156,6 +158,7 @@
       <workItem from="1571132762372" duration="274000" />
       <workItem from="1571133079516" duration="1818000" />
       <workItem from="1571134900961" duration="13610000" />
+      <workItem from="1572620388292" duration="238000" />
     </task>
     <task id="LOCAL-00001" summary="add controller to return all function names and deploy using git">
       <created>1565628198021</created>
@@ -283,7 +286,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571151310972</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="add more test coverage and expose proxy class as entry to faas engine">
+      <created>1571329437634</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1571329437634</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
