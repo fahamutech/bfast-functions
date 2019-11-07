@@ -77,7 +77,8 @@ class FaasProxy {
          * @private
          */
         this._deployRoute = (autoStartFaasEngine) => {
-            app.all('/deploy', (request1, response1, next1) => this._auth(request1, response1, next1),
+            app.all('/deploy',
+                (request1, response1, next1) => this._auth(request1, response1, next1),
                 async (request, response) => {
                     try {
                         await this._stopFaasEngine();

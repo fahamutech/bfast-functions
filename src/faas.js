@@ -26,9 +26,7 @@ _app.use('/names', function (request, response) {
 _faaSController.getFunctions().then(functions => {
     if (typeof functions === 'object') {
         Object.keys(functions).forEach(functionName => {
-            // if (typeof functions[functionName] === 'function' || Array.isArray(functions[functionName])) {
             _app.use(`/functions/${functionName}`, functions[functionName]);
-            //  }
         });
     } else {
         throw {message: 'It\'s not object'};
