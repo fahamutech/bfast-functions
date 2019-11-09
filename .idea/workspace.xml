@@ -2,18 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/.dockerignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/joshua.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/joshua.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-entrypoint.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker-entrypoint.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/controller/FaaSController.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/FaaSController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/faas.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/faas.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/function/_example.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/function/_example.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/proxy.js" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -43,7 +35,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="10.16.3" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../smartstockfunctions" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -227,7 +219,8 @@
       <workItem from="1572620388292" duration="1076000" />
       <workItem from="1573113501120" duration="5100000" />
       <workItem from="1573145379176" duration="31000" />
-      <workItem from="1573237179989" duration="18516000" />
+      <workItem from="1573237179989" duration="18585000" />
+      <workItem from="1573296960271" duration="1471000" />
     </task>
     <task id="LOCAL-00001" summary="add controller to return all function names and deploy using git">
       <created>1565628198021</created>
@@ -376,7 +369,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573120279961</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="remove pm2 dependency and proxy node">
+      <created>1573293922394</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1573293922394</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -411,6 +411,7 @@
     <MESSAGE value="add more test coverage and expose proxy class as entry to faas engine" />
     <MESSAGE value="when register function in function object allow all type of callback i.e (function, array or an express router or app" />
     <MESSAGE value="start migration to remove proxy faas and shift deploy to master bfastapp" />
-    <option name="LAST_COMMIT_MESSAGE" value="start migration to remove proxy faas and shift deploy to master bfastapp" />
+    <MESSAGE value="remove pm2 dependency and proxy node" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove pm2 dependency and proxy node" />
   </component>
 </project>

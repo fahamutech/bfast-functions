@@ -87,13 +87,13 @@ class FaaS {
             const functions = await this._functionsController.getFunctions();
             if (typeof functions === 'object') {
                 Object.keys(functions).forEach(functionName => {
-                    console.log(functions[functionName]);
-                    console.log(Array.isArray(functions[functionName]));
-                    console.log(typeof functions[functionName]);
-                    _app.use(
-                        `/functions/${functionName}`,
-                        (req, res, next) => this._auth(req, res, next),
-                        functions[functionName]);
+                    if (functions[functionName] && typeof functions[functionName] === "object"
+                        && functions[functionName].onRequest) {
+                        _app.use(
+                            `/functions/${functionName}`,
+                            (req, res, next) => this._auth(req, res, next),
+                            functions[functionName].onRequest);
+                    }
                 });
                 return Promise.resolve();
             } else {
