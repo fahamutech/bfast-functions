@@ -2,7 +2,7 @@
 
 const glob = require('glob');
 
-module.exports.FaaSController = class {
+class FaaSController {
 
     /**
      * get function from uploaded files. This function return an object which contain name of function as object property
@@ -16,24 +16,34 @@ module.exports.FaaSController = class {
     getFunctions() {
         return new Promise((resolve, reject) => {
             try {
+                const bfastConfig = require('../function/myF/bfast.json');
+                // console.log(bfastConfig);
+                // console.log(bfastConfig && bfastConfig.ignore && Array.isArray(bfastConfig.ignore));
                 glob(`${__dirname}/../function/**/*.js`, {
                     // cwd: path.join(__dirname, `../function/`),
                     absolute: true,
-                    ignore: ['**/node_modules/**', '**/specs/**', '**/*.specs.js']
+                    ignore: bfastConfig && bfastConfig.ignore && Array.isArray(bfastConfig.ignore) ?
+                        bfastConfig.ignore :
+                        ['**/node_modules/**', '**/specs/**', '**/*.specs.js']
                 }, (err, files) => {
                     if (err) {
                         reject({message: err});
                     }
                     let functions = {
-                        mambo: function (req, response) {
-                            response.json({message: 'Powa!'});
+                        mambo: {
+                            onRequest: function (req, response) {
+                                response.json({message: 'Powa!'});
+                            }
                         }
                     };
                     files.forEach(file => {
                         const fileModule = require(file);
                         const functionNames = Object.keys(fileModule);
                         functionNames.forEach(name => {
-                            functions[name] = fileModule[name];
+                            if (fileModule[name] && typeof fileModule[name] === "object"
+                                && fileModule[name].onRequest) {
+                                functions[name] = fileModule[name];
+                            }
                         });
                     });
                     resolve(functions);
@@ -52,9 +62,14 @@ module.exports.FaaSController = class {
     getNames() {
         return new Promise(((resolve, reject) => {
             try {
+                const bfastConfig = require('../function/myF/bfast.json');
+                // console.log(bfastConfig);
+                // console.log(bfastConfig && bfastConfig.ignore && Array.isArray(bfastConfig.ignore));
                 const names = [];
                 glob(`${__dirname}/../function/**/*.js`, {
-                    ignore: ['**/node_modules/**', '**/specs/**', '**/*.specs.js']
+                    ignore: bfastConfig && bfastConfig.ignore && Array.isArray(bfastConfig.ignore) ?
+                        bfastConfig.ignore :
+                        ['**/node_modules/**', '**/specs/**', '**/*.specs.js']
                 }, (err, files) => {
                     if (err) {
                         reject({message: err});
@@ -63,7 +78,10 @@ module.exports.FaaSController = class {
                         const fileModule = require(file);
                         const functionNames = Object.keys(fileModule);
                         functionNames.forEach(name => {
-                            names.push(name);
+                            if (fileModule[name] && typeof fileModule[name] === "object"
+                                && fileModule[name].onRequest) {
+                                names.push(name);
+                            }
                         });
                     });
                     resolve({names: names});
@@ -74,4 +92,6 @@ module.exports.FaaSController = class {
         }));
     }
 
-};
+}
+
+module.exports = FaaSController;

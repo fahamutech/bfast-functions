@@ -3,7 +3,11 @@ node_modules
 specs
 .env
 .gitignore
-Dockerfile
+.github
 gulpfile.js
 README.md
+src/function/myF
+/BFastFunctionExample.git
+BFastFunctionExample.git
+.npmrc
 src/function/myF
