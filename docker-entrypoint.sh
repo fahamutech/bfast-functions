@@ -1,8 +1,10 @@
 #!/bin/bash
 set -e
 
-if [ "$1" = 'npm run start' ]; then
-  rm -r /faas/src/function/myF || echo "continue..."
+#if [ "$1" = 'npm run start' ]; then
+
+rm -r /faas/src/function/myF || echo "continue..."
+# git clone "${GIT_CLONE_URL}" /faas/src/function/myF
 #
 #  if [ -z "${GIT_TOKEN}" ]; then
 #    git clone "${GIT_CLONE_URL}" /faas/src/function/myF
@@ -13,6 +15,6 @@ if [ "$1" = 'npm run start' ]; then
 #  fi
 #
 #  exec gosu postgres "$@"
-fi
+#fi
 
-exec "$@"
+exec npm run start "$@"

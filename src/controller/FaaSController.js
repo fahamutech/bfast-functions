@@ -2,7 +2,7 @@
 
 const glob = require('glob');
 
-module.exports.FaaSController = class {
+class FaaSController {
 
     /**
      * get function from uploaded files. This function return an object which contain name of function as object property
@@ -74,4 +74,6 @@ module.exports.FaaSController = class {
         }));
     }
 
-};
+}
+
+module.exports = FaaSController;
