@@ -119,7 +119,7 @@ class FaaS {
         };
 
         this._installFunctionDependency = () => {
-            const results = childProcess.execSync(`npm ci --only=production`, {
+            const results = childProcess.execSync(`npm install`, {
                 cwd: path.join(__dirname, './function/myF')
             });
             console.log(results.toString());
