@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <list default="true" id="0f6b3590-d442-4824-9e9f-d614dd76d777" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/faas.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/faas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/function/_example.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/function/_example.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,11 +32,16 @@
   </component>
   <component name="ProjectId" id="1RSYrpWdkyxXtIav7h0tdkJ2liN" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="10.16.3" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../smartstockfunctions" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -54,18 +65,6 @@
       <recent name="$PROJECT_DIR$/src" />
       <recent name="C:\Users\mama2\WebstormProjects\BFastFunction" />
     </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager" selected="npm.devStart">
     <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
@@ -161,8 +160,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Docker.Dockerfile" />
         <item itemvalue="npm.devStart" />
+        <item itemvalue="Docker.Dockerfile" />
         <item itemvalue="npm.test" />
         <item itemvalue="Mocha.ProxyServer Routes" />
         <item itemvalue="npm.stopGitServer" />
@@ -170,24 +169,15 @@
     </recent_temporary>
   </component>
   <component name="ServiceViewManager">
-    <option name="allServicesViewState">
-      <serviceView>
-        <option name="contentProportion" value="0.21885087" />
-        <treeState>
-          <expand>
-            <path>
-              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
-              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@2fc3c37b" type="9fbbdea:ServiceModel$ServiceNode" />
-            </path>
-            <path>
-              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
-              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@2fc3c37b" type="9fbbdea:ServiceModel$ServiceNode" />
-              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@16d36d6" type="9fbbdea:ServiceModel$ServiceNode" />
-            </path>
-          </expand>
-          <select />
-        </treeState>
-      </serviceView>
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
     </option>
   </component>
   <component name="SvnConfiguration">
@@ -217,6 +207,11 @@
       <workItem from="1573237179989" duration="18585000" />
       <workItem from="1573296960271" duration="1471000" />
       <workItem from="1573298945197" duration="637000" />
+      <workItem from="1573409179546" duration="250000" />
+      <workItem from="1573409825791" duration="7000" />
+      <workItem from="1574677416368" duration="180000" />
+      <workItem from="1574677693444" duration="52000" />
+      <workItem from="1580225179275" duration="1599000" />
     </task>
     <task id="LOCAL-00001" summary="add controller to return all function names and deploy using git">
       <created>1565628198021</created>
@@ -379,7 +374,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573299088224</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="remove ci --production when install functions dependencies">
+      <created>1573409252435</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1573409252436</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -415,6 +417,29 @@
     <MESSAGE value="when register function in function object allow all type of callback i.e (function, array or an express router or app" />
     <MESSAGE value="start migration to remove proxy faas and shift deploy to master bfastapp" />
     <MESSAGE value="remove pm2 dependency and proxy node" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove pm2 dependency and proxy node" />
+    <MESSAGE value="remove ci --production when install functions dependencies" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove ci --production when install functions dependencies" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="536" y="177" width="524" height="512" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1580225656058">
+      <screen x="52" y="27" width="1548" height="873" />
+    </state>
+    <state x="536" y="177" width="524" height="512" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/52.27.1548.873@52.27.1548.873" timestamp="1580225656058" />
+    <state width="1578" height="281" key="GridCell.Tab.0.bottom" timestamp="1580226934929">
+      <screen x="52" y="27" width="1548" height="873" />
+    </state>
+    <state width="1578" height="281" key="GridCell.Tab.0.bottom/52.27.1548.873@52.27.1548.873" timestamp="1580226934929" />
+    <state width="1578" height="281" key="GridCell.Tab.0.center" timestamp="1580226934927">
+      <screen x="52" y="27" width="1548" height="873" />
+    </state>
+    <state width="1578" height="281" key="GridCell.Tab.0.center/52.27.1548.873@52.27.1548.873" timestamp="1580226934927" />
+    <state width="1578" height="281" key="GridCell.Tab.0.left" timestamp="1580226934925">
+      <screen x="52" y="27" width="1548" height="873" />
+    </state>
+    <state width="1578" height="281" key="GridCell.Tab.0.left/52.27.1548.873@52.27.1548.873" timestamp="1580226934925" />
+    <state width="1578" height="281" key="GridCell.Tab.0.right" timestamp="1580226934928">
+      <screen x="52" y="27" width="1548" height="873" />
+    </state>
+    <state width="1578" height="281" key="GridCell.Tab.0.right/52.27.1548.873@52.27.1548.873" timestamp="1580226934928" />
   </component>
 </project>

@@ -64,6 +64,7 @@ class FaaS {
         /**
          * deploy endpoints for getting functions names.
          * @private
+         * @deprecated Will be removed in 1.9.x version(s)
          */
         this._deployNamesRouter = () => {
             _app.use(
@@ -89,10 +90,17 @@ class FaaS {
                 Object.keys(functions).forEach(functionName => {
                     if (functions[functionName] && typeof functions[functionName] === "object"
                         && functions[functionName].onRequest) {
-                        _app.use(
-                            `/functions/${functionName}`,
-                            (req, res, next) => this._auth(req, res, next),
-                            functions[functionName].onRequest);
+                        if (functions[functionName].path) {
+                            _app.use(
+                                functions[functionName].path,
+                                (req, res, next) => this._auth(req, res, next),
+                                functions[functionName].onRequest);
+                        } else {
+                            _app.use(
+                                `/functions/${functionName}`,
+                                (req, res, next) => this._auth(req, res, next),
+                                functions[functionName].onRequest);
+                        }
                     }
                 });
                 return Promise.resolve();
