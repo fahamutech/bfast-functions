@@ -7,6 +7,8 @@ logs
 .env
 /.env
 *.pid
+.idea
+/.idea
 
 src/function/myF
 /src/function/myF
