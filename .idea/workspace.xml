@@ -389,13 +389,17 @@
     <option name="LAST_COMMIT_MESSAGE" value="remove pm2 dependency and proxy node" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="553" y="69" width="489" height="738" key="VCS.ChangeListViewerDialog" timestamp="1580227043137">
+    <state x="385" y="22" width="825" height="878" key="CommitChangelistDialog2" timestamp="1580227053703">
       <screen x="52" y="27" width="1548" height="873" />
     </state>
-    <state x="553" y="69" width="489" height="738" key="VCS.ChangeListViewerDialog/52.27.1548.873@52.27.1548.873" timestamp="1580227043137" />
-    <state x="584" y="347" width="432" height="182" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1580227038162">
+    <state x="385" y="22" width="825" height="878" key="CommitChangelistDialog2/52.27.1548.873@52.27.1548.873" timestamp="1580227053703" />
+    <state x="553" y="64" width="489" height="738" key="VCS.ChangeListViewerDialog" timestamp="1580227064852">
       <screen x="52" y="27" width="1548" height="873" />
     </state>
-    <state x="584" y="347" width="432" height="182" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/52.27.1548.873@52.27.1548.873" timestamp="1580227038162" />
+    <state x="553" y="64" width="489" height="738" key="VCS.ChangeListViewerDialog/52.27.1548.873@52.27.1548.873" timestamp="1580227064852" />
+    <state x="584" y="342" width="432" height="182" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1580227057739">
+      <screen x="52" y="27" width="1548" height="873" />
+    </state>
+    <state x="584" y="342" width="432" height="182" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/52.27.1548.873@52.27.1548.873" timestamp="1580227057739" />
   </component>
 </project>
