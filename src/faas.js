@@ -48,17 +48,20 @@ class FaaS {
          * @private
          */
         this._auth = function (request, response, next) {
-            const applicationIdFromHeader = request.get('bfast-application-id');
-            const applicationIdFromQueryParams = request.query.appId;
-            request.headers['x-bfast-app-id'] = this._appId;
-            request.headers['x-bfast-project-id'] = this._projectId;
-            if (this._appId && this._appId !== '' && this._appId === applicationIdFromHeader) {
-                next();
-            } else if (applicationIdFromQueryParams && applicationIdFromQueryParams === this._appId) {
-                next();
-            } else {
-                response.status(401).json({message: 'Unauthorized request'});
-            }
+//             const applicationIdFromHeader = request.get('bfast-application-id');
+//             const applicationIdFromQueryParams = request.query.appId;
+//             request.headers['x-bfast-app-id'] = this._appId;
+//             request.headers['x-bfast-project-id'] = this._projectId;
+//             if (this._appId && this._appId !== '' && this._appId === applicationIdFromHeader) {
+//                 next();
+//             } else if (applicationIdFromQueryParams && applicationIdFromQueryParams === this._appId) {
+//                 next();
+//             } else {
+//                 response.status(401).json({message: 'Unauthorized request'});
+//             }
+            
+            // user required to implement authentication logic to his/her functions
+            next();
         };
 
         /**
