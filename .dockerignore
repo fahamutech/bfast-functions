@@ -1,6 +1,7 @@
 .idea
 node_modules
 specs
+/specs
 .env
 .gitignore
 .github
