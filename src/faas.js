@@ -18,6 +18,8 @@ _app.use(express.json({
 }));
 _app.use(express.urlencoded({extended: false}));
 _app.use(cookieParser());
+const faasServer = http.createServer(_app);
+const _io = require('socket.io')(faasServer);
 
 class FaaS {
     /**
@@ -59,7 +61,7 @@ class FaaS {
 //             } else {
 //                 response.status(401).json({message: 'Unauthorized request'});
 //             }
-            
+
             // user required to implement authentication logic to his/her functions
             next();
         };
@@ -90,6 +92,7 @@ class FaaS {
         this._deployFunctionsRouter = async () => {
             const functions = await this._functionsController.getFunctions();
             if (typeof functions === 'object') {
+
                 Object.keys(functions).forEach(functionName => {
                     if (functions[functionName] && typeof functions[functionName] === "object"
                         && functions[functionName].onRequest) {
@@ -106,6 +109,37 @@ class FaaS {
                         }
                     }
                 });
+
+                // add events
+                _io.on('connection', (socket) => {
+                    Object.keys(functions).forEach(functionName => {
+                        if (functions[functionName] && typeof functions[functionName] === "object") {
+                            if (functions[functionName].onEvent) {
+                                if (functions[functionName].name) {
+                                    socket.on(functions[functionName].name, (event) => {
+                                        functions[functionName].onEvent({
+                                            auth: event.auth,
+                                            payload: event.payload,
+                                            socket: socket
+                                        });
+                                    });
+                                } else {
+                                    socket.on(`functions-${functionName}`.name, (event) => {
+                                        functions[functionName].onEvent({
+                                            auth: event.auth,
+                                            payload: event.payload,
+                                            socket: socket
+                                        });
+                                    });
+                                }
+                                // socket.on('disconnect', () => {
+                                //     console.log('user disconnected');
+                                // });
+                            }
+                        }
+                    });
+                });
+
                 return Promise.resolve();
             } else {
                 throw {message: 'functions must be an object'};
@@ -141,7 +175,6 @@ class FaaS {
          * @private
          */
         this._startFaasServer = () => {
-            const faasServer = http.createServer(_app);
             faasServer.listen(this._port);
             faasServer.on('listening', () => {
                 console.log('FaaS Engine Listening on ' + this._port);
@@ -153,7 +186,7 @@ class FaaS {
     async start() {
         try {
             await this._cloneFunctionsFromGit();
-            await this._deployNamesRouter();
+            // await this._deployNamesRouter();
             await this._deployFunctionsRouter();
             this._startFaasServer();
         } catch (e) {

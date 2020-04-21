@@ -7,11 +7,7 @@ class FaaSController {
     /**
      * get function from uploaded files. This function return an object which contain name of function as object property
      * and value of that property expected to be a function which accept Request (from express) and Response(from express)
-     * @return functions = {
-     *     [name]: function(request, response){
-     *            // business logic
-     *     }
-     * }
+     * @return Promise<any>
      */
     getFunctions() {
         return new Promise((resolve, reject) => {
@@ -40,8 +36,7 @@ class FaaSController {
                         const fileModule = require(file);
                         const functionNames = Object.keys(fileModule);
                         functionNames.forEach(name => {
-                            if (fileModule[name] && typeof fileModule[name] === "object"
-                                && fileModule[name].onRequest) {
+                            if (fileModule[name] && typeof fileModule[name] === "object") {
                                 functions[name] = fileModule[name];
                             }
                         });
