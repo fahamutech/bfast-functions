@@ -1,5 +1,5 @@
 {
-  "name": "bfastfunction",
+  "name": "bfast-faas",
   "version": "1.10.0",
   "private": false,
   "main": "src/faas.js",
