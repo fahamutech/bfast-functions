@@ -5,7 +5,7 @@ WORKDIR /faas
 RUN apk update
 RUN apk upgrade
 RUN apk add curl
-RUN apk add git
+# RUN apk add git
 RUN apk add bash
 
 COPY *.json ./

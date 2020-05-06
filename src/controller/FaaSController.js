@@ -13,8 +13,6 @@ class FaaSController {
         return new Promise((resolve, reject) => {
             try {
                 const bfastConfig = require('../function/myF/bfast.json');
-                // console.log(bfastConfig);
-                // console.log(bfastConfig && bfastConfig.ignore && Array.isArray(bfastConfig.ignore));
                 glob(`${__dirname}/../function/**/*.js`, {
                     // cwd: path.join(__dirname, `../function/`),
                     absolute: true,

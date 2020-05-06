@@ -6,8 +6,8 @@ const http = require('http');
 const _app = express();
 const git = require('isomorphic-git');
 const fs = require('fs');
+const fse = require('fs-extra');
 const childProcess = require('child_process');
-git.plugins.set('fs', fs);
 const path = require('path');
 const FaasController = require('./controller/FaaSController');
 const faasController = new FaasController();
@@ -32,15 +32,26 @@ class FaaS {
      * @param projectId {string}
      * @param functionsController {FaaSController}
      */
-    constructor({port, gitCloneUrl, gitUsername, gitToken, appId, projectId, functionsController}) {
+    constructor({
+                    port,
+                    gitCloneUrl,
+                    gitUsername,
+                    gitToken,
+                    appId,
+                    projectId,
+                    functionsController
+                }) {
         this._port = port;
         this._gitCloneUrl = gitCloneUrl;
         this._gitUsername = gitUsername;
         this._gitToken = gitToken;
         this._appId = appId;
         this._projectId = projectId;
-        if (functionsController) this._functionsController = functionsController;
-        else this._functionsController = faasController;
+        if (functionsController) {
+            this._functionsController = functionsController;
+        } else {
+            this._functionsController = faasController;
+        }
 
         /**
          * middleware to authenticate incoming http requests against application id you provide
@@ -93,6 +104,7 @@ class FaaS {
             const functions = await this._functionsController.getFunctions();
             if (typeof functions === 'object') {
 
+                // http
                 Object.keys(functions).forEach(functionName => {
                     if (functions[functionName] && typeof functions[functionName] === "object"
                         && functions[functionName].onRequest) {
@@ -110,7 +122,7 @@ class FaaS {
                     }
                 });
 
-                // add events
+                // events
                 _io.on('connection', (socket) => {
                     Object.keys(functions).forEach(functionName => {
                         if (functions[functionName] && typeof functions[functionName] === "object") {
@@ -132,9 +144,6 @@ class FaaS {
                                         });
                                     });
                                 }
-                                // socket.on('disconnect', () => {
-                                //     console.log('user disconnected');
-                                // });
                             }
                         }
                     });
@@ -153,21 +162,38 @@ class FaaS {
          */
         this._cloneFunctionsFromGit = async () => {
             await git.clone({
+                fs: fs,
                 url: this._gitCloneUrl,
                 dir: path.join(__dirname, './function/myF'),
                 depth: 1,
-                username: this._gitUsername && this._gitToken ? this._gitUsername : null,
-                token: this._gitUsername && this._gitToken ? this._gitToken : null
+                onMessage: message => {
+                    console.log(message);
+                },
+                noTags: true,
+                singleBranch: true,
+                onAuth: _ => {
+                    return {
+                        username: this._gitUsername && this._gitToken ? this._gitUsername : null,
+                        password: this._gitUsername && this._gitToken ? this._gitToken : null
+                    }
+                },
             });
-            console.log('done cloning functions');
-            this._installFunctionDependency();
+            console.log('functions cloned');
         };
 
-        this._installFunctionDependency = () => {
-            const results = childProcess.execSync(`npm install`, {
-                cwd: path.join(__dirname, './function/myF')
+        this._installFunctionDependency = async () => {
+            return new Promise((resolve, reject) => {
+                childProcess.exec(`npm install --production`, {
+                    cwd: path.join(__dirname, './function/myF')
+                }, (error, stdout, stderr) => {
+                    if (error) {
+                        console.log(stderr.toString());
+                        reject(error);
+                    }
+                    console.log(stdout.toString());
+                    resolve(stdout.toString());
+                });
             });
-            console.log(results.toString());
         };
 
         /**
@@ -177,16 +203,32 @@ class FaaS {
         this._startFaasServer = () => {
             faasServer.listen(this._port);
             faasServer.on('listening', () => {
-                console.log('FaaS Engine Listening on ' + this._port);
+                console.log('BFast::Functions Engine Listening on ' + this._port);
             });
+        }
+
+        /**
+         * clone functions from a directory/file
+         * @param functionsPath {string} path to clone functions
+         * @private
+         */
+        this._copyFunctionFromFolder = async (functionsPath) => {
+            await fse.copy(functionsPath, await fse.ensureDir(path.join(__dirname, './function/myF')));
+            console.log('functions copied');
         }
 
     }
 
     async start() {
         try {
-            await this._cloneFunctionsFromGit();
-            // await this._deployNamesRouter();
+            if (this._gitCloneUrl.startsWith('http')) {
+                await this._cloneFunctionsFromGit();
+            } else if (fs.existsSync(this._gitCloneUrl)) {
+                await this._copyFunctionFromFolder(this._gitCloneUrl);
+            } else {
+                console.warn('fails to get functions from git/directory');
+            }
+            await this._installFunctionDependency();
             await this._deployFunctionsRouter();
             this._startFaasServer();
         } catch (e) {
@@ -196,4 +238,6 @@ class FaaS {
     }
 }
 
-module.exports = FaaS;
+module.exports = {
+    FaaS
+};
