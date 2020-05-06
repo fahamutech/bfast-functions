@@ -1,7 +1,6 @@
-const FaaS = require('./faas');
-
+const {FaaS} = require('./faas');
 const faasServer = new FaaS({
-    port: '3000',
+    port: ((process.env.PORT !== 'undefined') && (process.env.PORT !== 'null')) ? process.env.PORT : '3000',
     projectId: process.env.PROJECT_ID,
     appId: process.env.APPLICATION_ID,
     gitUsername: process.env.GIT_USERNAME,
@@ -10,5 +9,5 @@ const faasServer = new FaaS({
 });
 
 faasServer.start().then(_ => {
-    console.log('faas engine is ready');
+    console.log('BFast::Cloud Faas Started');
 });

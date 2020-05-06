@@ -7,16 +7,30 @@ class FaaSController {
     /**
      * get function from uploaded files. This function return an object which contain name of function as object property
      * and value of that property expected to be a function which accept Request (from express) and Response(from express)
-     * @return Promise<any>
+     *  options to specify functions folder and bfast.json path to get configuration
+     *  like files to ignore
+     * @param options {{
+        functionsDirPath: string,
+        bfastJsonPath: string
+    }}
+     * @return Promise<{[string]:{path: string,onRequest: Function}}>
      */
-    getFunctions() {
+    getFunctions(options) {
+        if (!options) {
+            options = {
+                functionsDirPath: `${__dirname}/../function`,
+                bfastJsonPath: `${__dirname}/../function/myF/bfast.json`
+            }
+        }
         return new Promise((resolve, reject) => {
             try {
-                const bfastConfig = require('../function/myF/bfast.json');
-                // console.log(bfastConfig);
-                // console.log(bfastConfig && bfastConfig.ignore && Array.isArray(bfastConfig.ignore));
-                glob(`${__dirname}/../function/**/*.js`, {
-                    // cwd: path.join(__dirname, `../function/`),
+                let bfastConfig;
+                try {
+                    bfastConfig = require(options.bfastJsonPath);
+                } catch (e) {
+                    console.warn('cant find bfast.json');
+                }
+                glob(`${options.functionsDirPath}/**/*.js`, {
                     absolute: true,
                     ignore: bfastConfig && bfastConfig.ignore && Array.isArray(bfastConfig.ignore) ?
                         bfastConfig.ignore :
@@ -50,43 +64,8 @@ class FaaSController {
         })
     }
 
-    /**
-     * Return names of all available function which user upload
-     * @returns {Promise<{names: string[]}>}
-     */
-    getNames() {
-        return new Promise(((resolve, reject) => {
-            try {
-                const bfastConfig = require('../function/myF/bfast.json');
-                // console.log(bfastConfig);
-                // console.log(bfastConfig && bfastConfig.ignore && Array.isArray(bfastConfig.ignore));
-                const names = [];
-                glob(`${__dirname}/../function/**/*.js`, {
-                    ignore: bfastConfig && bfastConfig.ignore && Array.isArray(bfastConfig.ignore) ?
-                        bfastConfig.ignore :
-                        ['**/node_modules/**', '**/specs/**', '**/*.specs.js']
-                }, (err, files) => {
-                    if (err) {
-                        reject({message: err});
-                    }
-                    files.forEach(file => {
-                        const fileModule = require(file);
-                        const functionNames = Object.keys(fileModule);
-                        functionNames.forEach(name => {
-                            if (fileModule[name] && typeof fileModule[name] === "object"
-                                && fileModule[name].onRequest) {
-                                names.push(name);
-                            }
-                        });
-                    });
-                    resolve({names: names});
-                });
-            } catch (e) {
-                reject({message: e.toString()});
-            }
-        }));
-    }
-
 }
 
-module.exports = FaaSController;
+module.exports = {
+    FaaSController
+};

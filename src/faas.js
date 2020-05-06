@@ -5,12 +5,11 @@ const cors = require('cors');
 const http = require('http');
 const _app = express();
 const git = require('isomorphic-git');
+const gitHttp = require("isomorphic-git/http/node");
 const fs = require('fs');
 const childProcess = require('child_process');
-git.plugins.set('fs', fs);
 const path = require('path');
-const FaasController = require('./controller/FaaSController');
-const faasController = new FaasController();
+const {FaaSController} = require('./controller/FaaSController');
 _app.use(cors());
 _app.use(logger('dev'));
 _app.use(express.json({
@@ -30,17 +29,34 @@ class FaaS {
      * @param gitToken {string}
      * @param appId {string}
      * @param projectId {string}
+     * @param functionsConfig {{
+        functionsDirPath: string,
+        bfastJsonPath: string
+    }}
      * @param functionsController {FaaSController}
      */
-    constructor({port, gitCloneUrl, gitUsername, gitToken, appId, projectId, functionsController}) {
+    constructor({
+                    port,
+                    gitCloneUrl,
+                    gitUsername,
+                    gitToken,
+                    appId,
+                    projectId,
+                    functionsConfig,
+                    functionsController
+                }) {
         this._port = port;
         this._gitCloneUrl = gitCloneUrl;
         this._gitUsername = gitUsername;
         this._gitToken = gitToken;
+        this._functionsConfig = functionsConfig;
         this._appId = appId;
         this._projectId = projectId;
-        if (functionsController) this._functionsController = functionsController;
-        else this._functionsController = faasController;
+        if (functionsController) {
+            this._functionsController = functionsController;
+        } else {
+            this._functionsController = new FaaSController();
+        }
 
         /**
          * middleware to authenticate incoming http requests against application id you provide
@@ -50,38 +66,7 @@ class FaaS {
          * @private
          */
         this._auth = function (request, response, next) {
-//             const applicationIdFromHeader = request.get('bfast-application-id');
-//             const applicationIdFromQueryParams = request.query.appId;
-//             request.headers['x-bfast-app-id'] = this._appId;
-//             request.headers['x-bfast-project-id'] = this._projectId;
-//             if (this._appId && this._appId !== '' && this._appId === applicationIdFromHeader) {
-//                 next();
-//             } else if (applicationIdFromQueryParams && applicationIdFromQueryParams === this._appId) {
-//                 next();
-//             } else {
-//                 response.status(401).json({message: 'Unauthorized request'});
-//             }
-
-            // user required to implement authentication logic to his/her functions
             next();
-        };
-
-        /**
-         * deploy endpoints for getting functions names.
-         * @private
-         * @deprecated Will be removed in 1.9.x version(s)
-         */
-        this._deployNamesRouter = () => {
-            _app.use(
-                '/names',
-                (req, res, next) => this._auth(req, res, next),
-                (request, response) => {
-                    this._functionsController.getNames().then(names => {
-                        response.json(names);
-                    }).catch(reason => {
-                        response.status(404).json(reason);
-                    });
-                });
         };
 
         /**
@@ -90,9 +75,8 @@ class FaaS {
          * @private
          */
         this._deployFunctionsRouter = async () => {
-            const functions = await this._functionsController.getFunctions();
+            const functions = await this._functionsController.getFunctions(this._functionsConfig);
             if (typeof functions === 'object') {
-
                 Object.keys(functions).forEach(functionName => {
                     if (functions[functionName] && typeof functions[functionName] === "object"
                         && functions[functionName].onRequest) {
@@ -109,8 +93,6 @@ class FaaS {
                         }
                     }
                 });
-
-                // add events
                 _io.on('connection', (socket) => {
                     Object.keys(functions).forEach(functionName => {
                         if (functions[functionName] && typeof functions[functionName] === "object") {
@@ -132,14 +114,10 @@ class FaaS {
                                         });
                                     });
                                 }
-                                // socket.on('disconnect', () => {
-                                //     console.log('user disconnected');
-                                // });
                             }
                         }
                     });
                 });
-
                 return Promise.resolve();
             } else {
                 throw {message: 'functions must be an object'};
@@ -153,21 +131,44 @@ class FaaS {
          */
         this._cloneFunctionsFromGit = async () => {
             await git.clone({
+                fs: fs,
+                http: gitHttp,
                 url: this._gitCloneUrl,
                 dir: path.join(__dirname, './function/myF'),
                 depth: 1,
-                username: this._gitUsername && this._gitToken ? this._gitUsername : null,
-                token: this._gitUsername && this._gitToken ? this._gitToken : null
+                onMessage: message => {
+                    console.log(message);
+                },
+                noTags: true,
+                singleBranch: true,
+                onAuth: _ => {
+                    return {
+                        username: this._gitUsername && this._gitToken ? this._gitUsername : null,
+                        password: this._gitUsername && this._gitToken ? this._gitToken : null
+                    }
+                },
             });
-            console.log('done cloning functions');
-            this._installFunctionDependency();
+            console.log('functions cloned');
         };
 
-        this._installFunctionDependency = () => {
-            const results = childProcess.execSync(`npm install`, {
-                cwd: path.join(__dirname, './function/myF')
+        /**
+         * install dependencies from function installed by git
+         * @return {Promise}
+         * @private
+         */
+        this._installFunctionDependency = async () => {
+            return new Promise((resolve, reject) => {
+                childProcess.exec(`npm install --production`, {
+                    cwd: path.join(__dirname, './function/myF')
+                }, (error, stdout, stderr) => {
+                    if (error) {
+                        console.log(stderr.toString());
+                        reject(error);
+                    }
+                    console.log(stdout.toString());
+                    resolve(stdout.toString());
+                });
             });
-            console.log(results.toString());
         };
 
         /**
@@ -177,7 +178,7 @@ class FaaS {
         this._startFaasServer = () => {
             faasServer.listen(this._port);
             faasServer.on('listening', () => {
-                console.log('FaaS Engine Listening on ' + this._port);
+                console.log('BFast::Functions Engine Listening on ' + this._port);
             });
         }
 
@@ -185,8 +186,12 @@ class FaaS {
 
     async start() {
         try {
-            await this._cloneFunctionsFromGit();
-            // await this._deployNamesRouter();
+            if (this._gitCloneUrl && this._gitCloneUrl.startsWith('http')) {
+                await this._cloneFunctionsFromGit();
+                await this._installFunctionDependency();
+            } else if (!this._functionsConfig) {
+                throw new Error("functionConfig option is required of supplied gitCloneUrl");
+            }
             await this._deployFunctionsRouter();
             this._startFaasServer();
         } catch (e) {
@@ -196,4 +201,6 @@ class FaaS {
     }
 }
 
-module.exports = FaaS;
+module.exports = {
+    FaaS
+};

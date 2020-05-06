@@ -12,3 +12,4 @@ src/function/myF
 BFastFunctionExample.git
 .npmrc
 src/function/myF
+.npmignore
