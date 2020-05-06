@@ -1,6 +1,6 @@
 {
   "name": "bfast-faas",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "private": false,
   "main": "src/faas.js",
   "scripts": {
@@ -17,7 +17,6 @@
     "cors": "^2.8.5",
     "debug": "^4.1.1",
     "express": "^4.17.1",
-    "fs-extra": "^9.0.0",
     "glob": "^7.1.6",
     "isomorphic-git": "^1.4.0",
     "morgan": "^1.10.0",

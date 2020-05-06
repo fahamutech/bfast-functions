@@ -6,8 +6,8 @@ function startDev(cb) {
     const devProcess = process.exec(`npm start`, {
         env: {
             APPLICATION_ID: 'faas',
-            // GIT_USERNAME: 'joshuamshana',
-            // GIT_TOKEN: 'b4ec4eac383a46215cd8e7f9ea00a20b9996549a',
+            // GIT_USERNAME: '',
+            PORT: '3000',
             PROJECT_ID: 'demofaas',
             GIT_CLONE_URL: 'https://github.com/joshuamshana/BFastFunctionExample.git'
         }

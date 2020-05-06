@@ -1,5 +1,4 @@
 const {FaaS} = require('./faas');
-
 const faasServer = new FaaS({
     port: ((process.env.PORT !== 'undefined') && (process.env.PORT !== 'null')) ? process.env.PORT : '3000',
     projectId: process.env.PROJECT_ID,
