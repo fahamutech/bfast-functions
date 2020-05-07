@@ -13,3 +13,4 @@ BFastFunctionExample.git
 .npmrc
 src/function/myF
 .npmignore
+example-functions

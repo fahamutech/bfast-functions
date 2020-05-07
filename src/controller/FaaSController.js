@@ -1,5 +1,3 @@
-'use strict';
-
 const glob = require('glob');
 
 class FaaSController {
@@ -7,7 +5,7 @@ class FaaSController {
     /**
      * get function from uploaded files. This function return an object which contain name of function as object property
      * and value of that property expected to be a function which accept Request (from express) and Response(from express)
-     *  options to specify functions folder and bfast.json path to get configuration
+     *  options to specify example-functions folder and bfast.json path to get configuration
      *  like files to ignore
      * @param options {{
         functionsDirPath: string,
@@ -41,7 +39,7 @@ class FaaSController {
                     }
                     let functions = {
                         mambo: {
-                            onRequest: function (req, response) {
+                            onRequest: function (request, response) {
                                 response.json({message: 'Powa!'});
                             }
                         }
@@ -58,7 +56,7 @@ class FaaSController {
                     resolve(functions);
                 });
             } catch (e) {
-                console.log(e);
+                // console.log(e);
                 reject({message: e});
             }
         })

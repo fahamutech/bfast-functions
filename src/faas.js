@@ -70,7 +70,7 @@ class FaaS {
         };
 
         /**
-         * deploy function endpoint from user defined functions
+         * deploy function endpoint from user defined example-functions
          * @returns {Promise<void>}
          * @private
          */
@@ -120,7 +120,7 @@ class FaaS {
                 });
                 return Promise.resolve();
             } else {
-                throw {message: 'functions must be an object'};
+                throw {message: 'example-functions must be an object'};
             }
         };
 
@@ -148,7 +148,7 @@ class FaaS {
                     }
                 },
             });
-            console.log('functions cloned');
+            console.log('example-functions cloned');
         };
 
         /**
@@ -180,10 +180,27 @@ class FaaS {
             faasServer.on('listening', () => {
                 console.log('BFast::Functions Engine Listening on ' + this._port);
             });
+            faasServer.on('close', () => {
+                console.log('BFast::Functions Engine Stop Listening');
+            });
+            return faasServer;
         }
 
     }
 
+    /**
+     * stop a running faas engine
+     * @return {Promise<void>}
+     */
+    async stop() {
+        faasServer.emit("close");
+        process.exit(0);
+    }
+
+    /**
+     *
+     * @return {Promise<Server>}
+     */
     async start() {
         try {
             if (this._gitCloneUrl && this._gitCloneUrl.startsWith('http')) {
@@ -193,7 +210,7 @@ class FaaS {
                 throw new Error("functionConfig option is required of supplied gitCloneUrl");
             }
             await this._deployFunctionsRouter();
-            this._startFaasServer();
+            return this._startFaasServer();
         } catch (e) {
             console.log(e);
             process.exit(1);
