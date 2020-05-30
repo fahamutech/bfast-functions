@@ -1,14 +1,13 @@
 {
   "name": "bfast-faas",
-  "version": "1.10.1",
+  "version": "1.10.2",
   "private": false,
   "main": "src/faas.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "npm run stopGitServer && npm run startGitServer start && mocha ./specs && npm run stopGitServer",
+    "pretest": "gulp removeFunctionsFolder",
+    "test": "npx mocha ./specs",
     "devStart": "gulp startDev",
-    "startGitServer": "git-http-mock-server",
-    "stopGitServer": "git-http-mock-server stop",
     "gulp": "gulp",
     "push": "gulp publishContainer"
   },
@@ -25,7 +24,6 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
-    "git-http-mock-server": "^1.2.1",
     "gulp": "^4.0.2",
     "mocha": "^7.1.2"
   }

@@ -12,69 +12,47 @@ function startDev(cb) {
             GIT_CLONE_URL: 'https://github.com/joshuamshana/BFastFunctionExample.git'
         }
     });
-
-    devProcess.on('exit', (code, signal) => {
-        console.log('dev server stops');
-        cb();
-    });
-
-    devProcess.on('error', (err) => {
-        console.error(err);
-        cb();
-    });
-
-    devProcess.stdout.on('data', (data) => {
-        console.log(data);
-    });
-
-    devProcess.stderr.on('data', (data) => {
-        console.log(data);
-    });
+    handleEvents(devProcess, cb);
 }
 
 function buildDockerImage(cb) {
     const buildImage = process.exec(`sudo docker build -t joshuamshana/bfastfaas:v${pkg.version} .`);
-
-    buildImage.on('exit', (code, signal) => {
-        console.log('build image task exit');
-        cb();
-    });
-
-    buildImage.on('error', (err) => {
-        console.error(err);
-        cb();
-    });
-
-    buildImage.stdout.on('data', (data) => {
-        console.log(data);
-    });
-
-    buildImage.stderr.on('data', (data) => {
-        console.log(data);
-    });
+    handleEvents(buildImage, cb);
 }
 
 function pushToDocker(cb) {
     const pushImage = process.exec(`sudo docker push joshuamshana/bfastfaas:v${pkg.version}`);
+    handleEvents(pushImage, cb);
+}
 
-    pushImage.on('exit', (code, signal) => {
-        console.log('push image exit');
+function removeFunctionsFolder(cb) {
+    const devProcess = process.exec(`rm -r ./src/function/myF`, {
+        cwd: __dirname
+    });
+    handleEvents(devProcess, cb);
+}
+
+function handleEvents(childProcess, cb) {
+
+    childProcess.on('exit', (code, signal) => {
+        // console.log('remove example-functions stops');
         cb();
     });
 
-    pushImage.on('error', (err) => {
+    childProcess.on('error', (err) => {
         console.error(err);
         cb();
     });
 
-    pushImage.stdout.on('data', (data) => {
+    childProcess.stdout.on('data', (data) => {
         console.log(data);
     });
 
-    pushImage.stderr.on('data', (data) => {
+    childProcess.stderr.on('data', (data) => {
         console.log(data);
     });
 }
 
 exports.startDev = startDev;
+exports.removeFunctionsFolder = removeFunctionsFolder;
 exports.publishContainer = gulp.series(buildDockerImage, pushToDocker);
