@@ -22,3 +22,5 @@ specs
 .github
 src/index.js
 example-functions
+.dockerignore
+src/function/_example.js

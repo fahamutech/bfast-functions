@@ -11,7 +11,7 @@ class FaaSController {
         functionsDirPath: string,
         bfastJsonPath: string
     }}
-     * @return Promise<{[string]:{path: string,onRequest: Function}}>
+     * @return Promise<{[string]:{path: string,onRequest: Function, method: string,onGuard: Function}}>
      */
     getFunctions(options) {
         if (!options) {
@@ -44,22 +44,22 @@ class FaaSController {
                             }
                         }
                     };
-                    files.forEach(file => {
-                        const fileModule = require(file);
-                        const functionNames = Object.keys(fileModule);
-                        functionNames.forEach(name => {
-                            if (fileModule[name] && typeof fileModule[name] === "object") {
-                                functions[name] = fileModule[name];
+                    for (const file of files) {
+                        const functionsFile = require(file);
+                        const functionNames = Object.keys(functionsFile);
+                        for (const functionName of functionNames) {
+                            if (functionsFile[functionName] && typeof functionsFile[functionName] === "object") {
+                                functions[functionName] = functionsFile[functionName];
                             }
-                        });
-                    });
+                        }
+                    }
+                    delete functions.mambo;
                     resolve(functions);
                 });
             } catch (e) {
-                // console.log(e);
                 reject({message: e});
             }
-        })
+        });
     }
 
 }
