@@ -23,16 +23,16 @@ const _io = require('socket.io')(faasServer);
 class FaaS {
     /**
      *
-     * @param port {string}
-     * @param gitCloneUrl {string}
-     * @param gitUsername {string}
-     * @param gitToken {string}
-     * @param appId {string}
-     * @param projectId {string}
+     * @param port {string} http server to listen to
+     * @param gitCloneUrl {string} a remote git repository
+     * @param gitUsername {string} a git username
+     * @param gitToken {string} personal access token ( if a git repository is private )
+     * @param appId {string} bfast::cloud application id
+     * @param projectId {string} bfast::cloud projectId
      * @param functionsConfig {{
         functionsDirPath: string,
         bfastJsonPath: string
-    }}
+    }} if functions folder is local supply this, if exist faas engine will not use a git clone url
      * @param functionsController {FaaSController}
      */
     constructor({
@@ -59,73 +59,56 @@ class FaaS {
         }
 
         /**
-         * middleware to authenticate incoming http requests against application id you provide
-         * @param request node {XMLHttpRequest}
-         * @param response node {HttpResponse}
-         * @param next function to call next route
-         * @private
-         */
-        this._auth = function (request, response, next) {
-            next();
-        };
-
-        /**
          * deploy function endpoint from user defined example-functions
          * @returns {Promise<void>}
          * @private
          */
-        this._deployFunctionsRouter = async () => {
+        this._deployFunctions = async () => {
             const functions = await this._functionsController.getFunctions(this._functionsConfig);
             if (typeof functions === 'object') {
-
-                Object.keys(functions).forEach(functionName => {
-                    if (functions[functionName] && typeof functions[functionName] === "object"
-                        && functions[functionName].onRequest) {
-                        const method = typeof functions[functionName].method === 'string'
-                            ? functions[functionName].method.toString().toLowerCase()
-                            : 'use';
-                        if (functions[functionName].path) {
-                            _app[method](
-                                functions[functionName].path,
-                                (req, res, next) => this._auth(req, res, next),
-                                functions[functionName].onRequest);
-                        } else {
-                            _app[method](
-                                `/functions/${functionName}`,
-                                (req, res, next) => this._auth(req, res, next),
-                                functions[functionName].onRequest);
-                        }
+                const httpRequestFunctions = Object.keys(functions).filter(x => {
+                    return (functions[x] && typeof functions[x] === "object"
+                        && functions[x]['onRequest'] !== null && functions[x]['onRequest'] !== undefined);
+                });
+                const eventRequestFunctions = Object.keys(functions).filter(x => {
+                    return (
+                        functions[x]
+                        && typeof functions[x] === "object"
+                        && functions[x]['onEvent'] !== null
+                        && functions[x]['onEvent'] !== undefined
+                        && functions[x]['name']
+                        && typeof functions[x]['name'] === "string"
+                    );
+                });
+                const httpGuardFunctions = Object.keys(functions).filter(x => {
+                    return (functions[x] && typeof functions[x] === "object"
+                        && functions[x]['onGuard'] !== null && functions[x]['onGuard'] !== undefined);
+                });
+                httpGuardFunctions.forEach(functionName => {
+                    _app.use(functions[functionName].onGuard);
+                });
+                httpRequestFunctions.forEach(functionName => {
+                    const method = typeof functions[functionName].method === 'string'
+                        ? functions[functionName].method.toString().toLowerCase()
+                        : 'use';
+                    if (functions[functionName].path) {
+                        _app[method](functions[functionName].path, functions[functionName].onRequest);
+                    } else {
+                        _app[method](`/functions/${functionName}`, functions[functionName].onRequest);
                     }
                 });
-
-                _io.on('connection', (socket) => {
-                    Object.keys(functions).forEach(functionName => {
-                        if (functions[functionName] && typeof functions[functionName] === "object") {
-                            if (functions[functionName].onEvent) {
-                                if (functions[functionName].name) {
-                                    socket.on(functions[functionName].name, (event) => {
-                                        functions[functionName].onEvent({
-                                            auth: event.auth,
-                                            payload: event.payload,
-                                            socket: socket,
-                                            serverSocket: _io,
-                                        });
-                                    });
-                                } else {
-                                    socket.on(`functions/${functionName}`, (event) => {
-                                        functions[functionName].onEvent({
-                                            auth: event.auth,
-                                            payload: event.payload,
-                                            socket: socket,
-                                            serverSocket: _io,
-                                        });
-                                    });
-                                }
-                            }
-                        }
+                eventRequestFunctions.forEach(functionName => {
+                    _io.of(functions[functionName].name).on('connection', socket => {
+                        socket.on(functions[functionName].name, (event) => {
+                            functions[functionName].onEvent({
+                                auth: event.auth,
+                                payload: event.payload,
+                                socket: socket,
+                             //   io: _io,
+                            });
+                        });
                     });
                 });
-
                 return Promise.resolve();
             } else {
                 throw {message: 'example-functions must be an object'};
@@ -186,10 +169,10 @@ class FaaS {
         this._startFaasServer = () => {
             faasServer.listen(this._port);
             faasServer.on('listening', () => {
-                console.log('BFast::Functions Engine Listening on ' + this._port);
+                console.log('BFast::Cloud::Functions Engine Listening on ' + this._port);
             });
             faasServer.on('close', () => {
-                console.log('BFast::Functions Engine Stop Listening');
+                console.log('BFast::Cloud::Functions Engine Stop Listening');
             });
             return faasServer;
         }
@@ -210,17 +193,13 @@ class FaaS {
      * @return {Promise<Server>}
      */
     async start() {
-        try {
-            if (this._gitCloneUrl && this._gitCloneUrl.startsWith('http')) {
-                await this._cloneFunctionsFromGit();
-                await this._installFunctionDependency();
-            } else if (!this._functionsConfig) {
-                throw new Error("functionConfig option is required or supplied gitCloneUrl");
-            }
-            await this._deployFunctionsRouter();
+        if (this._gitCloneUrl && this._gitCloneUrl.startsWith('http')) {
+            await this._cloneFunctionsFromGit();
+            await this._installFunctionDependency();
+            await this._deployFunctions();
             return Promise.resolve(this._startFaasServer());
-        } catch (e) {
-            console.log(e);
+        } else if (!this._functionsConfig) {
+            console.error('functionConfig option is required or supply gitCloneUrl');
             process.exit(1);
         }
     }

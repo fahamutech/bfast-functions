@@ -1,6 +1,6 @@
 {
   "name": "bfast-faas",
-  "version": "1.10.2",
+  "version": "1.10.3",
   "private": false,
   "main": "src/faas.js",
   "scripts": {
@@ -17,7 +17,7 @@
     "debug": "^4.1.1",
     "express": "^4.17.1",
     "glob": "^7.1.6",
-    "isomorphic-git": "^1.4.0",
+    "isomorphic-git": "^1.7.4",
     "morgan": "^1.10.0",
     "socket.io": "^2.3.0"
   },
@@ -25,6 +25,6 @@
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "gulp": "^4.0.2",
-    "mocha": "^7.1.2"
+    "mocha": "^8.0.1"
   }
 }
