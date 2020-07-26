@@ -109,13 +109,14 @@ class FaaS {
                 });
                 eventRequestFunctions.forEach(functionName => {
                     _io.of(functions[functionName].name).on('connection', socket => {
-                        socket.on(functions[functionName].name, (event) => {
-                            functions[functionName].onEvent({
-                                auth: event.auth,
-                                payload: event.payload,
-                                socket: socket,
-                                //   io: _io,
-                            });
+                        socket.on(functions[functionName].name, (data) => {
+                            functions[functionName].onEvent(
+                                {auth: data.auth, body: data.body},
+                                {
+                                    socket: socket,
+                                    emit: (responseData) => socket.emit(functions[functionName].name, {body: responseData})
+                                }
+                            );
                         });
                     });
                 });
