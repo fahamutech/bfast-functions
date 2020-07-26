@@ -1,6 +1,6 @@
 {
   "name": "bfast-faas",
-  "version": "1.10.3",
+  "version": "1.10.3-beta.0",
   "private": false,
   "main": "src/faas.js",
   "scripts": {
