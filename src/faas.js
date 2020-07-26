@@ -91,7 +91,11 @@ class FaaS {
                         && functions[functionName].path.startsWith('/'))
                         ? functions[functionName].path
                         : '/';
-                    _app.use(path, functions[functionName].onGuard);
+                    if (path === '/') {
+                        _app.use(functions[functionName].onGuard);
+                    } else {
+                        _app.use(path, functions[functionName].onGuard);
+                    }
                 });
                 httpRequestFunctions.forEach(functionName => {
                     const method = typeof functions[functionName].method === 'string'
