@@ -104,7 +104,7 @@ class FaaS {
                                 auth: event.auth,
                                 payload: event.payload,
                                 socket: socket,
-                             //   io: _io,
+                                //   io: _io,
                             });
                         });
                     });
@@ -196,12 +196,12 @@ class FaaS {
         if (this._gitCloneUrl && this._gitCloneUrl.startsWith('http')) {
             await this._cloneFunctionsFromGit();
             await this._installFunctionDependency();
-            await this._deployFunctions();
-            return Promise.resolve(this._startFaasServer());
         } else if (!this._functionsConfig) {
-            console.error('functionConfig option is required or supply gitCloneUrl');
+            console.log("functionConfig option is required or supply gitCloneUrl");
             process.exit(1);
         }
+        await this._deployFunctions();
+        this._startFaasServer();
     }
 }
 
