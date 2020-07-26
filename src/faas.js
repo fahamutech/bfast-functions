@@ -85,7 +85,13 @@ class FaaS {
                         && functions[x]['onGuard'] !== null && functions[x]['onGuard'] !== undefined);
                 });
                 httpGuardFunctions.forEach(functionName => {
-                    _app.use(functions[functionName].onGuard);
+                    const path = (functions[functionName].path !== undefined
+                        && functions[functionName].path !== null
+                        && functions[functionName].path !== ''
+                        && functions[functionName].path.startsWith('/'))
+                        ? functions[functionName].path
+                        : '/';
+                    _app.use(path, functions[functionName].onGuard);
                 });
                 httpRequestFunctions.forEach(functionName => {
                     const method = typeof functions[functionName].method === 'string'
