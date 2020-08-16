@@ -63,21 +63,21 @@ Full BfastFunctions engine option is as follows
 ```javascript
  /**
      *
-     * @param port {string} http server to listen to
-     * @param gitCloneUrl {string} a remote git repository
-     * @param gitUsername {string} a git username
-     * @param gitToken {string} personal access token ( if a git repository is private )
-     * @param appId {string} bfast::cloud application id
-     * @param projectId {string} bfast::cloud projectId
+     * @param port {string} a port http server to listen to [required]
+     * @param gitCloneUrl {string} a remote git repository [required]
+     * @param gitUsername {string} a git username [required]
+     * @param gitToken {string} personal access token ( if a git repository is private ) [optional, default is null]
+     * @param appId {string} bfast::cloud application id [optional, default is null]
+     * @param projectId {string} bfast::cloud projectId [optional, default is null]
      * @param functionsConfig {{
-        functionsDirPath: string,
+        functionsDirPath: string, 
         bfastJsonPath: string
-    }} if functions folder is local supply this, if exist faas engine will not use a git clone url
-     * @param functionsController {BfastFunctionsController} your implementation o bfast functions controller or null
+    }} if functionsDirPath is specified bfast::functions engine will not use a git clone url [optional, default is null]
+     * @param functionsController {BfastFunctionsController} your implementation o bfast functions controller or null [optional, default is null]
      */
 
   new BfastFunctions({
-    port: 3000,
+    port: "3000",
     gitCloneUrl: 'https://your-repo.git',
     gitUsername: 'git username',
     gitToken: 'your token',
@@ -90,5 +90,13 @@ Full BfastFunctions engine option is as follows
     functionsController: new MyCustomController()
 });
 
+```
+
+bfast.json file is a JSON file contain configurations of for bfast functions engine. Its example is;
+
+```json
+{
+  "ignore": ["**/node_modules/**"]
+}
 ```
 
