@@ -1,6 +1,6 @@
 const glob = require('glob');
 
-class FaaSController {
+class BfastFunctionsController {
 
     /**
      * get function from uploaded files. This function return an object which contain name of function as object property
@@ -13,7 +13,7 @@ class FaaSController {
     }}
      * @return Promise<{[string]:{path: string,onRequest: Function, method: string,onGuard: Function}}>
      */
-    getFunctions(options) {
+    async getFunctions(options) {
         if (!options) {
             options = {
                 functionsDirPath: `${__dirname}/../function`,
@@ -65,5 +65,5 @@ class FaaSController {
 }
 
 module.exports = {
-    FaaSController
+    BfastFunctionsController: BfastFunctionsController
 };
