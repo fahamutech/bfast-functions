@@ -1,4 +1,4 @@
-const {FaaSController} = require('../src/controller/FaaSController');
+const {BfastFunctionsController} = require('../src/controller/BfastFunctionsController');
 const mocha = require("mocha");
 const {it, describe, before, after, afterEach} = mocha
 const assert = require('assert');
@@ -6,7 +6,7 @@ const assert = require('assert');
 describe('Functions Generation', function () {
     let faaSController;
     before(function (done) {
-        faaSController = new FaaSController();
+        faaSController = new BfastFunctionsController();
         done();
     });
 
