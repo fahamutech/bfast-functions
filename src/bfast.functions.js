@@ -81,7 +81,7 @@ class BfastFunctions {
             console.log("functionConfig option is required or supply gitCloneUrl");
             process.exit(1);
         }
-        await this.deployFunctions(_app,nodeSchedule,_io);
+        await this.deployFunctions(_app, nodeSchedule, _io);
         return this.startFaasServer();
     }
 
@@ -290,6 +290,7 @@ class BfastFunctions {
                         {auth: data.auth, body: data.body},
                         {
                             socket: socket,
+                            broadcast: (responseData) => socket.broadcast(functions[functionName].name, {body: responseData}),
                             emit: (responseData) => socket.emit(functions[functionName].name, {body: responseData})
                         }
                     );
