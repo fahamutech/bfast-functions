@@ -5,6 +5,7 @@ const gulp = require('gulp');
 function startDev(cb) {
     const devProcess = process.exec(`npm start`, {
         env: {
+            NPM_TOKEN: 'no-token',
             APPLICATION_ID: 'faas',
             // GIT_USERNAME: '',
             PORT: '3000',
@@ -16,12 +17,22 @@ function startDev(cb) {
 }
 
 function buildDockerImage(cb) {
-    const buildImage = process.exec(`sudo docker build -t joshuamshana/bfastfaas:v${pkg.version} .`);
+    const buildImage = process.exec(`sudo docker build -t joshuamshana/bfastfunction:v${pkg.version} .`);
+    handleEvents(buildImage, cb);
+}
+
+function buildDockerLatestImage(cb) {
+    const buildImage = process.exec(`sudo docker build -t joshuamshana/bfastfunction:latest .`);
     handleEvents(buildImage, cb);
 }
 
 function pushToDocker(cb) {
-    const pushImage = process.exec(`sudo docker push joshuamshana/bfastfaas:v${pkg.version}`);
+    const pushImage = process.exec(`sudo docker push joshuamshana/bfastfunction:v${pkg.version}`);
+    handleEvents(pushImage, cb);
+}
+
+function pushToLatestDocker(cb) {
+    const pushImage = process.exec(`sudo docker push joshuamshana/bfastfunction:latest`);
     handleEvents(pushImage, cb);
 }
 
@@ -56,3 +67,4 @@ function handleEvents(childProcess, cb) {
 exports.startDev = startDev;
 exports.removeFunctionsFolder = removeFunctionsFolder;
 exports.publishContainer = gulp.series(buildDockerImage, pushToDocker);
+exports.publishContainerLatest = gulp.series(buildDockerLatestImage, pushToLatestDocker);

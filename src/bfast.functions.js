@@ -13,7 +13,7 @@ const {BfastFunctionsController} = require('./controller/BfastFunctionsControlle
 
 const _app = express();
 _app.use(cors());
-_app.use(logger('combined'));
+_app.use(logger('dev'));
 _app.use(express.json({
     limit: '2024mb'
 }));
@@ -81,7 +81,7 @@ class BfastFunctions {
             console.log("functionConfig option is required or supply gitCloneUrl");
             process.exit(1);
         }
-        await this.deployFunctions(_app,nodeSchedule,_io);
+        await this.deployFunctions(_app, nodeSchedule, _io);
         return this.startFaasServer();
     }
 
