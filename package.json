@@ -10,7 +10,7 @@
     "devStart": "gulp startDev",
     "gulp": "gulp",
     "push": "gulp publishContainer",
-    "push:lastest": "gulp publishContainerLatest"
+    "push:latest": "gulp publishContainerLatest"
   },
   "dependencies": {
     "cookie-parser": "^1.4.5",
