@@ -10,6 +10,7 @@ const fs = require('fs');
 const childProcess = require('child_process');
 const path = require('path');
 const {BfastFunctionsController} = require('./controller/BfastFunctionsController');
+const {join} = require('path');
 
 const _app = express();
 
@@ -20,7 +21,8 @@ _app.use(express.json({
 }));
 _app.use(express.urlencoded({extended: false}));
 _app.use(cookieParser());
-_app.use(express.static('./function/myF/assets'));
+
+_app.use('/assets', express.static(join(process.env.PWD, 'assets')));
 
 const faasServer = http.createServer(_app);
 const _io = require('socket.io')(faasServer);
