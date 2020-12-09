@@ -12,6 +12,7 @@ const path = require('path');
 const {BfastFunctionsController} = require('./controller/BfastFunctionsController');
 
 const _app = express();
+
 _app.use(cors());
 _app.use(logger('dev'));
 _app.use(express.json({
@@ -19,6 +20,8 @@ _app.use(express.json({
 }));
 _app.use(express.urlencoded({extended: false}));
 _app.use(cookieParser());
+_app.use(express.static('./function/myF/assets'));
+
 const faasServer = http.createServer(_app);
 const _io = require('socket.io')(faasServer);
 
