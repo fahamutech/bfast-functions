@@ -9,6 +9,7 @@ function startDev(cb) {
             APPLICATION_ID: 'faas',
             // GIT_USERNAME: '',
             PORT: '3000',
+            PRODUCTION: '1',
             PROJECT_ID: 'demofaas',
             GIT_CLONE_URL: 'https://github.com/joshuamshana/BFastFunctionExample.git'
         }

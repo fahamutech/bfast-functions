@@ -9,7 +9,7 @@ RUN apk add curl
 RUN apk add bash
 
 COPY *.json ./
-RUN npm ci --only=production
+RUN npm install --only=production
 
 COPY ./docker-entrypoint.sh /usr/local/bin/
 RUN ln -s /usr/local/bin/docker-entrypoint.sh / # backwards compat

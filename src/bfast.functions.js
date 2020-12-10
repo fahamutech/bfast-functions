@@ -22,8 +22,6 @@ _app.use(express.json({
 _app.use(express.urlencoded({extended: false}));
 _app.use(cookieParser());
 
-_app.use('/assets', express.static(join(process.env.PWD, 'assets')));
-
 const faasServer = http.createServer(_app);
 const _io = require('socket.io')(faasServer);
 
@@ -79,9 +77,18 @@ class BfastFunctions {
      * @return {Promise<Server>}
      */
     async start() {
+        const production = process.env.PRODUCTION;
+        let staticFiles = '';
+        if (production && production.toString() === '1') {
+            staticFiles = join(process.env.PWD, "src", "function", "myF", "assets");
+        } else {
+            staticFiles = join(process.env.PWD, "assets");
+        }
         if (this._gitCloneUrl && this._gitCloneUrl.startsWith('http')) {
             await this.cloneFunctionsFromGit();
             await this.installFunctionDependency();
+            // serve static files
+            _app.use('/assets', express.static(staticFiles));
         } else if (!this._functionsConfig) {
             console.log("functionConfig option is required or supply gitCloneUrl");
             process.exit(1);
