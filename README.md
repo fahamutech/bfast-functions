@@ -73,7 +73,7 @@ Full BfastFunctions engine option is as follows
         functionsDirPath: string, 
         bfastJsonPath: string
     }} if functionsDirPath is specified bfast::functions engine will not use a git clone url [optional, default is null]
-     * @param functionsController {BfastFunctionsController} your implementation o bfast functions controller or null [optional, default is null]
+     * @param functionsController {FunctionsResolverController} your implementation o bfast functions controllers or null [optional, default is null]
      */
 
   new BfastFunctions({

@@ -1,4 +1,4 @@
-const {BfastFunctionsController} = require('../src/controller/BfastFunctionsController');
+const {BfastFunctionsController} = require('../src/controllers/functions-resolver.controller');
 const mocha = require("mocha");
 const {it, describe, before, after, afterEach} = mocha
 const assert = require('assert');

@@ -1,6 +1,7 @@
 const glob = require('glob');
+const {join} = require('path')
 
-class BfastFunctionsController {
+class FunctionsResolverController {
 
     /**
      * get function from uploaded files. This function return an object which contain name of function as object property
@@ -10,30 +11,32 @@ class BfastFunctionsController {
      * @param options {{
         functionsDirPath: string,
         bfastJsonPath: string
-    }}
+    } | null | undefined}
      * @return Promise<{[string]:{path: string,onRequest: Function, method: string,onGuard: Function}}>
      */
     async getFunctions(options) {
         if (!options) {
             options = {
-                functionsDirPath: `${__dirname}/../function`,
-                bfastJsonPath: `${__dirname}/../function/myF/bfast.json`
+                functionsDirPath: join(__dirname, '../function'),
+                bfastJsonPath: join(__dirname, '../function/myF/bfast.json')
             }
         }
         return new Promise((resolve, reject) => {
             try {
+
                 let bfastConfig;
                 try {
                     bfastConfig = require(options.bfastJsonPath);
                 } catch (e) {
                     console.warn('cant find bfast.json');
                 }
-                glob(`${options.functionsDirPath}/**/*.js`, {
+
+                glob(`${options.functionsDirPath}/**/*.{js,mjs,cjs}`, {
                     absolute: true,
                     ignore: bfastConfig && bfastConfig.ignore && Array.isArray(bfastConfig.ignore) ?
                         bfastConfig.ignore :
-                        ['**/node_modules/**', '**/specs/**', '**/*.specs.js']
-                }, (err, files) => {
+                        ['**/node_modules/**', '**/specs/**', '**/*.specs.js', '**/*.specs.mjs', '**/*.specs.cjs']
+                }, async (err, files) => {
                     if (err) {
                         reject({message: err});
                     }
@@ -45,7 +48,12 @@ class BfastFunctionsController {
                         }
                     };
                     for (const file of files) {
-                        const functionsFile = require(file);
+                        let functionsFile;
+                        if (file.toString().endsWith('.mjs')) {
+                            functionsFile = await import(file);
+                        } else {
+                            functionsFile = require(file);
+                        }
                         const functionNames = Object.keys(functionsFile);
                         for (const functionName of functionNames) {
                             if (functionsFile[functionName] && typeof functionsFile[functionName] === "object") {
@@ -65,5 +73,5 @@ class BfastFunctionsController {
 }
 
 module.exports = {
-    BfastFunctionsController: BfastFunctionsController
+    FunctionsResolverController: FunctionsResolverController
 };

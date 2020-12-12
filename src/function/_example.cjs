@@ -1,6 +1,6 @@
-exports.hello = {
-    path: '/example-functions/hello3',
+exports.helloCommonjs = {
+    path: '/example-functions/hello-c',
     onRequest: (request, response) => {
-        response.json({message: 'Hello3, World!'});
+        response.json({message: 'Hello, World! --> commonjs'});
     }
 };

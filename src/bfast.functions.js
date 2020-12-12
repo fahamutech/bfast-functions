@@ -4,13 +4,9 @@ const logger = require('morgan');
 const cors = require('cors');
 const nodeSchedule = require('node-schedule');
 const http = require('http');
-const git = require('isomorphic-git');
-const gitHttp = require("isomorphic-git/http/node");
-const fs = require('fs');
-const childProcess = require('child_process');
-const path = require('path');
-const {BfastFunctionsController} = require('./controller/BfastFunctionsController');
-const {join} = require('path');
+const {BfastFunctionsController} = require("./controllers/bfast-functions.controller");
+const {ShellController} = require("./controllers/shell.controller");
+const {FunctionsResolverController} = require('./controllers/functions-resolver.controller');
 
 const _app = express();
 
@@ -31,36 +27,83 @@ class BfastFunctions {
      * @param port {string} http server to listen to
      * @param gitCloneUrl {string} a remote git repository
      * @param gitUsername {string} a git username
+     * @param mode {'git' | 'url' | 'npm' } a git username, default is 'git'
      * @param gitToken {string} personal access token ( if a git repository is private )
-     * @param appId {string} bfast::cloud application id
-     * @param projectId {string} bfast::cloud projectId
+     * @param npmTar - {string} npm package name, to download functions in .tgz format which are already packed for running,
+     *                  you must set mode='npm'
+     * @param urlTar - {string} full http url, to download functions in .tgz format which are already packed for running
+     *                  you must set mode='url'
      * @param functionsConfig {{
         functionsDirPath: string,
         bfastJsonPath: string
     }} if functions folder is local supply this, if exist faas engine will not use a git clone url
-     * @param functionsController {BfastFunctionsController}
+     * @param controllers {
+     *     {
+     *         functionsResolverController: FunctionsResolverController,
+     *         shellController: ShellController,
+     *         bfastFunctionsController: BfastFunctionsController
+     *     }
+     * }
      */
-    constructor({
-                    port,
-                    gitCloneUrl,
-                    gitUsername,
-                    gitToken,
-                    appId,
-                    projectId,
-                    functionsConfig,
-                    functionsController
-                }) {
-        this._port = port;
+    constructor(
+        {
+            port,
+            gitCloneUrl,
+            gitUsername,
+            gitToken,
+            npmTar,
+            urlTar,
+            mode,
+            functionsConfig,
+            controllers,
+        } = {
+            port: 3000,
+            gitCloneUrl: null,
+            mode: "git",
+            functionsConfig: null,
+            gitToken: null,
+            gitUsername: null,
+            npmTar: null,
+            urlTar: null,
+            controllers: {
+                functionsResolverController: new FunctionsResolverController(),
+                shellController: new ShellController(),
+                bfastFunctionsController: new BfastFunctionsController()
+            }
+        }
+    ) {
+
+        this._port = port ? port : '3000';
         this._gitCloneUrl = gitCloneUrl;
         this._gitUsername = gitUsername;
         this._gitToken = gitToken;
         this._functionsConfig = functionsConfig;
-        this._appId = appId;
-        this._projectId = projectId;
-        if (functionsController) {
-            this._functionsController = functionsController;
+        this._controllers = controllers;
+        this._npmTar = npmTar;
+        this._urlTar = urlTar;
+        this._mode = mode ? mode : 'git';
+
+        if (this._controllers && this._controllers.functionsResolverController) {
+            this._functionsResolverController = this._controllers.functionsResolverController;
         } else {
-            this._functionsController = new BfastFunctionsController();
+            this._functionsResolverController = new FunctionsResolverController();
+        }
+
+        if (this._controllers && this._controllers.shellController) {
+            this._shellController = this._controllers.shellController;
+        } else {
+            this._shellController = new ShellController();
+        }
+
+        if (this._controllers && this._controllers.bfastFunctionsController) {
+            this._bfastFunctionsController = this._controllers.bfastFunctionsController;
+        } else {
+            this._bfastFunctionsController = new BfastFunctionsController(
+                {
+                    shellController: this._shellController,
+                    functionResolver: this._functionsResolverController
+                }
+            );
         }
     }
 
@@ -77,237 +120,46 @@ class BfastFunctions {
      * @return {Promise<Server>}
      */
     async start() {
-        const production = process.env.PRODUCTION;
-        let staticFiles = '';
-        if (production && production.toString() === '1') {
-            staticFiles = join(process.env.PWD, "src", "function", "myF", "assets");
-        } else {
-            staticFiles = join(process.env.PWD, "assets");
+        await this._prepareFunctions();
+        await this._bfastFunctionsController.deployFunctions(_app, nodeSchedule, _io, this._functionsConfig);
+        return this._bfastFunctionsController.startFaasServer(faasServer, this._port);
+    }
+
+    async _prepareFunctions() {
+        if (this._functionsConfig) {
+            return;
         }
-        if (this._gitCloneUrl && this._gitCloneUrl.startsWith('http')) {
-            await this.cloneFunctionsFromGit();
-            await this.installFunctionDependency();
-            // serve static files
-            _app.use('/assets', express.static(staticFiles));
-        } else if (!this._functionsConfig) {
-            console.log("functionConfig option is required or supply gitCloneUrl");
-            process.exit(1);
-        }
-        await this.deployFunctions(_app, nodeSchedule, _io);
-        return this.startFaasServer();
-    }
-
-    /**
-     * deploy function endpoint from user defined example-functions
-     * @param expressApp
-     * @param nodeSchedule
-     * @param socketIo
-     * @returns {Promise<void>}
-     */
-    async deployFunctions(expressApp, nodeSchedule, socketIo) {
-        const functions = await this._functionsController.getFunctions(this._functionsConfig);
-        if (typeof functions === 'object') {
-            const httpRequestFunctions = this.extractHttpFunctions(functions);
-            const eventRequestFunctions = this.extractEventsFunctions(functions);
-            const httpGuardFunctions = this.extractGuards(functions);
-            const jobFunctions = this.extractJobs(functions);
-            this.mountGuards(httpGuardFunctions, functions, expressApp);
-            this.mountJob(jobFunctions, functions, nodeSchedule);
-            this.mountHttpRoutes(httpRequestFunctions, functions, expressApp);
-            this.mountEventRoutes(eventRequestFunctions, functions, socketIo);
-            return Promise.resolve();
-        } else {
-            throw {message: 'example-functions must be an object'};
-        }
-    };
-
-    /**
-     * get function from a remote repository
-     * @returns {Promise<void>}
-     */
-    async cloneFunctionsFromGit() {
-        return git.clone({
-            fs: fs,
-            http: gitHttp,
-            url: this._gitCloneUrl,
-            dir: path.join(__dirname, './function/myF'),
-            depth: 1,
-            onMessage: message => {
-                console.log(message);
-            },
-            noTags: true,
-            singleBranch: true,
-            onAuth: _ => {
-                return {
-                    username: this._gitUsername && this._gitToken ? this._gitUsername : null,
-                    password: this._gitUsername && this._gitToken ? this._gitToken : null
-                }
-            },
-        });
-    };
-
-    /**
-     * install dependencies from function installed by git
-     * @return {Promise}
-     */
-    async installFunctionDependency() {
-        return new Promise((resolve, reject) => {
-            childProcess.exec(`npm install --production`, {
-                cwd: path.join(__dirname, './function/myF')
-            }, (error, stdout, stderr) => {
-                if (error) {
-                    console.log(stderr.toString());
-                    reject(error);
-                }
-                console.log(stdout.toString());
-                resolve(stdout.toString());
-            });
-        });
-    };
-
-    /**
-     * start node server for listening request
-     */
-    async startFaasServer() {
-        faasServer.listen(this._port);
-        faasServer.on('listening', () => {
-            console.log('BFast::Cloud::Functions Engine Listening on ' + this._port);
-        });
-        faasServer.on('close', () => {
-            console.log('BFast::Cloud::Functions Engine Stop Listening');
-        });
-        return faasServer;
-    }
-
-    /**
-     * @param functions
-     * @return {string[]}
-     */
-    extractHttpFunctions(functions) {
-        return Object.keys(functions).filter(x => {
-            return (functions[x] && typeof functions[x] === "object"
-                && functions[x]['onRequest'] !== null && functions[x]['onRequest'] !== undefined);
-        });
-    }
-
-    /**
-     * @param functions
-     * @return {string[]}
-     */
-    extractEventsFunctions(functions) {
-        return Object.keys(functions).filter(x => {
-            return (
-                functions[x]
-                && typeof functions[x] === "object"
-                && functions[x]['onEvent'] !== null
-                && functions[x]['onEvent'] !== undefined
-                && functions[x]['name']
-                && typeof functions[x]['name'] === "string"
-            );
-        });
-    }
-
-    /**
-     *
-     * @param functions
-     * @return {string[]}
-     */
-    extractGuards(functions) {
-        return Object.keys(functions).filter(x => {
-            return (functions[x] && typeof functions[x] === "object"
-                && functions[x]['onGuard'] !== null && functions[x]['onGuard'] !== undefined);
-        });
-    }
-
-    /**
-     *
-     * @param functions
-     * @return {string[]}
-     */
-    extractJobs(functions) {
-        return Object.keys(functions).filter(x => {
-            return (functions[x]
-                && typeof functions[x] === "object"
-                && functions[x]['onJob'] !== null
-                && functions[x]['rule'] !== null
-                && functions[x]['rule'] !== undefined
-                && functions[x]['onJob'] !== undefined);
-        });
-    }
-
-    /**
-     *
-     * @param httpGuardFunctions{string[]} extracted guards from functions
-     * @param functions{object} your bfast::functions object
-     * @param expressApp this is an instance of `express` npm package for mounting http functions
-     */
-    mountGuards(httpGuardFunctions, functions, expressApp) {
-        httpGuardFunctions.forEach(functionName => {
-            const path = (functions[functionName].path !== undefined
-                && functions[functionName].path !== null
-                && functions[functionName].path !== ''
-                && functions[functionName].path.startsWith('/'))
-                ? functions[functionName].path
-                : '/';
-            if (path === '/') {
-                expressApp.use(functions[functionName].onGuard);
+        if (this._mode === "git") {
+            if (this._gitCloneUrl && this._gitCloneUrl.startsWith('http')) {
+                await this._bfastFunctionsController
+                    .cloneFunctionsFromGit(this._gitCloneUrl, this._gitUsername, this._gitToken);
+                await this._bfastFunctionsController.installFunctionDependency();
+                this._bfastFunctionsController.serveStaticFiles(_app);
             } else {
-                expressApp.use(path, functions[functionName].onGuard);
+                console.log("gitCloneUrl required");
+                process.exit(1);
             }
-        });
-    }
-
-    /**
-     *
-     * @param jobFunctions{string[]} extracted scheduled jobs functions
-     * @param functions {object} bfast::functions object
-     * @param nodeSchedule this is an instance of `node-schedule` npm package for schedule a job
-     */
-    mountJob(jobFunctions, functions, nodeSchedule) {
-        jobFunctions.forEach(functionName => {
-            nodeSchedule.scheduleJob(functions[functionName]['rule'], functions[functionName]['onJob']);
-        });
-    }
-
-    /**
-     *
-     * @param httpRequestFunctions{string[]}
-     * @param functions {object} bfast::functions object
-     * @param expressApp this is an instance of `express` npm package for mounting http functions
-     */
-    mountHttpRoutes(httpRequestFunctions, functions, expressApp) {
-        httpRequestFunctions.forEach(functionName => {
-            const method = typeof functions[functionName].method === 'string'
-                ? functions[functionName].method.toString().toLowerCase()
-                : 'all';
-            if (functions[functionName].path) {
-                expressApp[method](functions[functionName].path, functions[functionName].onRequest);
+        } else if (this._mode === "npm") {
+            if (this._npmTar
+                && this._npmTar.toString() !== ''
+                && this._npmTar.toString() !== 'undefined'
+                && this._npmTar.toString() !== 'null') {
+                await this._bfastFunctionsController.installFunctionsFromNpmTar(this._npmTar);
             } else {
-                expressApp[method](`/functions/${functionName}`, functions[functionName].onRequest);
+                console.log("npm package name required");
+                process.exit(1);
             }
-        });
-    }
-
-    /**
-     *
-     * @param eventRequestFunctions{string[]}
-     * @param functions {object} bfast::functions object
-     * @param socketIo this is an instance of `socket.io` npm package for mounting realtime event functions
-     */
-    mountEventRoutes(eventRequestFunctions, functions, socketIo) {
-        eventRequestFunctions.forEach(functionName => {
-            socketIo.of(functions[functionName].name).on('connection', socket => {
-                socket.on(functions[functionName].name, (data) => {
-                    functions[functionName].onEvent(
-                        {auth: data.auth, body: data.body},
-                        {
-                            socket: socket,
-                            emit: (responseData) => socket.emit(functions[functionName].name, {body: responseData})
-                        }
-                    );
-                });
-            });
-        });
+        } else if (this._mode === "url") {
+            if (this._urlTar
+                && this._urlTar.toString() !== ''
+                && this._urlTar.toString() !== 'undefined'
+                && this._urlTar.toString() !== 'null') {
+                await this._bfastFunctionsController.installFunctionsFromRemoteTar(this._urlTar);
+            } else {
+                console.log("npm package name required");
+                process.exit(1);
+            }
+        }
     }
 }
 

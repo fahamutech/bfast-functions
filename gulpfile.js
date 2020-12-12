@@ -8,9 +8,14 @@ function startDev(cb) {
             NPM_TOKEN: 'no-token',
             APPLICATION_ID: 'faas',
             // GIT_USERNAME: '',
+            MASTER_KEY: 'faas',
+            MODE: 'npm',
+            URL_TAR: 'https://github.com/fahamutech/bfast-database/releases/download/latest/bfast-database-latest.tgz',
+            NPM_TAR: 'bfast-database',
+            MONGO_URL: 'mongodb://localhost/daas',
             PORT: '3000',
             PRODUCTION: '1',
-            PROJECT_ID: 'demofaas',
+            PROJECT_ID: 'faas',
             GIT_CLONE_URL: 'https://github.com/joshuamshana/BFastFunctionExample.git'
         }
     });
