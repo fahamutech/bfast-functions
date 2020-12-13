@@ -261,16 +261,36 @@ class BfastFunctionsController {
         });
     }
 
-    // need more modification will fail if run local and PRODUCTION env is set to '1'
-    serveStaticFiles(expressApp) {
-        const production = process.env.PRODUCTION;
-        let staticFiles;
-        if (production && production.toString() === '1') {
-            staticFiles = join(process.env.PWD, "src", "function", "myF", "assets");
-        } else {
-            staticFiles = join(process.env.PWD, "assets");
+    // in future must use bfast.json to get asset folder
+    async serveStaticFiles(expressApp) {
+        try {
+            await this._checkIsBFastProjectFolder(process.cwd());
+            expressApp.use('/assets', express.static(join(process.cwd(), "assets")));
+        } catch (_) {
+            expressApp.use('/assets', express.static(join(process.cwd(), "src", "function", "myF", "assets")));
         }
-        expressApp.use('/assets', express.static(staticFiles));
+    }
+
+    /**
+     * Get bfast credentials of a current project
+     * @param projectDir {String} path of a bfast functions working directory where <code>bfast</code> command run
+     * @returns {Promise<{projectId}>}. Promise rejected when <code>bfast.json</code> is no found.
+     * @private
+     */
+    async _checkIsBFastProjectFolder(projectDir) {
+        return new Promise((resolve, reject) => {
+            try {
+                const projectCredential = require(`${projectDir}/bfast.json`);
+                if (projectCredential && projectCredential.ignore) {
+                    resolve(projectCredential);
+                } else {
+                    reject('projectId can not be determined, ' +
+                        'check if your current directory is bfast project and bfast.json file exist');
+                }
+            } catch (e) {
+                reject('Not in bfast project folder');
+            }
+        });
     }
 
     async prepareFolder() {

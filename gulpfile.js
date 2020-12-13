@@ -10,10 +10,11 @@ function startDev(cb) {
             // GIT_USERNAME: '',
             MASTER_KEY: 'faas',
             MODE: 'npm',
+            LOGS: '1',
             URL_TAR: 'https://github.com/fahamutech/bfast-database/releases/download/latest/bfast-database-latest.tgz',
             NPM_TAR: 'bfast-database',
             MONGO_URL: 'mongodb://localhost/daas',
-            PORT: '3000',
+            PORT: '3004',
             PRODUCTION: '1',
             PROJECT_ID: 'faas',
             GIT_CLONE_URL: 'https://github.com/joshuamshana/BFastFunctionExample.git'

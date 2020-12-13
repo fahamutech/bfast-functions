@@ -121,6 +121,7 @@ class BfastFunctions {
      */
     async start() {
         await this._prepareFunctions();
+        await this._bfastFunctionsController.serveStaticFiles(_app);
         await this._bfastFunctionsController.deployFunctions(_app, nodeSchedule, _io, this._functionsConfig);
         return this._bfastFunctionsController.startFaasServer(faasServer, this._port);
     }
@@ -134,7 +135,6 @@ class BfastFunctions {
                 await this._bfastFunctionsController
                     .cloneFunctionsFromGit(this._gitCloneUrl, this._gitUsername, this._gitToken);
                 await this._bfastFunctionsController.installFunctionDependency();
-                this._bfastFunctionsController.serveStaticFiles(_app);
             } else {
                 console.log("gitCloneUrl required");
                 process.exit(1);
