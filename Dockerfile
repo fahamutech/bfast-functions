@@ -1,9 +1,11 @@
-FROM node:14-alpine
+FROM docker:stable
 
 WORKDIR /faas
 
 RUN apk update
 RUN apk upgrade
+RUN apk add nodejs
+RUN apk add npm
 RUN apk add curl
 # RUN apk add git
 RUN apk add bash
