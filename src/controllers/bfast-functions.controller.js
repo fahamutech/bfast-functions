@@ -8,8 +8,6 @@ const express = require('express')
 
 class BfastFunctionsController {
 
-    functionsDir = '../function/myF';
-
     /**
      *
      * @param functionResolver - {FunctionsResolverController} functions resolver controller
@@ -21,6 +19,7 @@ class BfastFunctionsController {
     }) {
         this.functionResolver = functionResolver;
         this.shellController = shellController;
+        this.functionsDir = '../function/myF';
     }
 
     /**
