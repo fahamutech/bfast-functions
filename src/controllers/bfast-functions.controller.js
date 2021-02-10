@@ -260,11 +260,20 @@ class BfastFunctionsController {
         });
     }
 
-    // in future must use bfast.json to get asset folder
-    async serveStaticFiles(expressApp) {
+    /**
+     *
+     * @param expressApp
+     * @param functionsConfig {{assets: string}}
+     * @return {Promise<void>}
+     */
+    async serveStaticFiles(expressApp, functionsConfig= undefined) {
         try {
-            await this._checkIsBFastProjectFolder(process.cwd());
-            expressApp.use('/assets', express.static(join(process.cwd(), "assets")));
+            if (functionsConfig && functionsConfig.assets){
+                expressApp.use('/assets', express.static(join(functionsConfig.assets)));
+            }else {
+                await this._checkIsBFastProjectFolder(process.cwd());
+                expressApp.use('/assets', express.static(join(process.cwd(), "assets")));
+            }
         } catch (_) {
             expressApp.use('/assets', express.static(join(process.cwd(), "src", "function", "myF", "assets")));
         }

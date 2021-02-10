@@ -35,6 +35,7 @@ class BfastFunctions {
      *                  you must set mode='url'
      * @param functionsConfig {{
         functionsDirPath: string,
+        assets: string,
         bfastJsonPath: string
     }} if functions folder is local supply this, if exist faas engine will not use a git clone url
      * @param controllers {
@@ -121,13 +122,13 @@ class BfastFunctions {
      */
     async start() {
         await this._prepareFunctions();
-        await this._bfastFunctionsController.serveStaticFiles(_app);
+        await this._bfastFunctionsController.serveStaticFiles(_app, this._functionsConfig);
         await this._bfastFunctionsController.deployFunctions(_app, nodeSchedule, _io, this._functionsConfig);
         return this._bfastFunctionsController.startFaasServer(faasServer, this._port);
     }
 
     async _prepareFunctions() {
-        if (this._functionsConfig) {
+        if (this._functionsConfig && this._functionsConfig.functionsDirPath) {
             return;
         }
         if (this._mode === "git") {
