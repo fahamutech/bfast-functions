@@ -252,7 +252,9 @@ class BfastFunctionsController {
                         {auth: data.auth, body: data.body},
                         {
                             socket: socket,
-                            emit: (responseData) => socket.emit(functions[functionName].name, {body: responseData})
+                            engine: socketIo,
+                            emit: (responseData) => socket.emit(functions[functionName].name, {body: responseData}),
+                            broadcast: (responseData) => socketIo.of(functions[functionName].name).emit(functions[functionName].name, {body: responseData}),
                         }
                     );
                 });
