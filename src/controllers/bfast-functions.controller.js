@@ -253,8 +253,17 @@ class BfastFunctionsController {
                         {
                             socket: socket,
                             engine: socketIo,
+                            topic: (topicName) => {
+                                return {
+                                    announce : (responseData) => socketIo.of(functions[functionName].name).in(topicName).emit(functions[functionName].name, {body: responseData}),
+                                    join : () => socket.join(topicName),
+                                    broadcast: (responseData) => socket.to(topicName).emit(functions[functionName].name, {body: responseData})
+                                }
+                            },
                             emit: (responseData) => socket.emit(functions[functionName].name, {body: responseData}),
-                            broadcast: (responseData) => socketIo.of(functions[functionName].name).emit(functions[functionName].name, {body: responseData}),
+                            broadcast: (responseData) => socket.broadcast.emit(functions[functionName].name, {body: responseData}),
+                            announce: (responseData) => socketIo.of(functions[functionName].name).emit(functions[functionName].name, {body: responseData}),
+                            emitTo: (socketId, responseData) => socketIo.to(socketId).emit(functions[functionName].name, {body: responseData})
                         }
                     );
                 });
