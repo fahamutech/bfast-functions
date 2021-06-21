@@ -1,5 +1,5 @@
 const glob = require('glob');
-const {join} = require('path')
+const {join} = require('path');
 
 class FunctionsResolverController {
 

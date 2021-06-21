@@ -4,7 +4,7 @@ const fs = require('fs');
 const {join} = require('path');
 const {FunctionsResolverController} = require('./functions-resolver.controller');
 const {ShellController} = require('./shell.controller');
-const express = require('express')
+const express = require('express');
 
 class BfastFunctionsController {
 
@@ -50,7 +50,7 @@ class BfastFunctionsController {
     /**
      * get function from a remote repository
      * @returns {Promise<void>}
-     * @deprecated will be removed from 2.x
+     * @deprecated will be removed
      */
     async cloneFunctionsFromGit(cloneUrl, username, token) {
         return git.clone({
@@ -103,6 +103,7 @@ class BfastFunctionsController {
     /**
      * download a tar file which include functions and their dependencies
      * @return {Promise<void>}
+     * @experiment
      */
     async installFunctionsFromRemoteTar(url) {
         const options = {

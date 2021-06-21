@@ -7,9 +7,9 @@ function startDev(cb) {
         env: {
             NPM_TOKEN: 'no-token',
             APPLICATION_ID: 'faas',
-            // GIT_USERNAME: '',
+            GIT_USERNAME: 'joshuamshana',
             MASTER_KEY: 'faas',
-            MODE: 'npm',
+            MODE: 'git',
             LOGS: '1',
             URL_TAR: 'https://github.com/fahamutech/bfast-database/releases/download/latest/bfast-database-latest.tgz',
             NPM_TAR: 'bfast-database',
