@@ -9,8 +9,8 @@ RUN apk add curl
 RUN apk add bash
 RUN apk add docker
 RUN #addgroup username docker
-RUN rc-update add docker boot
-RUN service docker start
+RUN #rc-update add docker boot
+RUN #service docker start
 
 COPY *.json ./
 RUN npm install --only=production
