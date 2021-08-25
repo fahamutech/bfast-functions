@@ -98,6 +98,7 @@ class BfastFunctionsController {
         await this.shellController.run(`tar -xf ./**.tgz`, options);
         await this.shakeFolder(options);
         await this.shellController.run(`rm -r ./**.tgz`, options);
+        await this.shellController.run(`nmp install --production`, options);
     }
 
     /**
@@ -114,6 +115,7 @@ class BfastFunctionsController {
         await this.shellController.run(`tar -xf ./**.tgz`, options);
         await this.shakeFolder(options);
         await this.shellController.run(`rm -r ./**.tgz`, options);
+        await this.shellController.run(`nmp install --production`, options);
     }
 
     /**
