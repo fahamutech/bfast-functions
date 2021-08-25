@@ -8,7 +8,7 @@ RUN apk add curl
 # RUN apk add git
 RUN apk add bash
 RUN apk add docker
-RUN addgroup username docker
+RUN #addgroup username docker
 RUN rc-update add docker boot
 RUN service docker start
 
