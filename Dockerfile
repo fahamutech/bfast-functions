@@ -1,25 +1,20 @@
-FROM node:lts-alpine
+FROM node:lts
 
 WORKDIR /faas
 
-RUN apk update
-RUN apk upgrade
-RUN apk add curl
-# RUN apk add git
-RUN apk add bash
-RUN apk add docker
-RUN #addgroup username docker
-RUN #rc-update add docker boot
-RUN #service docker start
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install -y curl
+
+COPY --from=docker:dind /usr/local/bin/docker /usr/local/bin/
 
 COPY *.json ./
 RUN npm install --only=production
 
 COPY ./docker-entrypoint.sh /usr/local/bin/
-RUN ln -s /usr/local/bin/docker-entrypoint.sh / # backwards compat
+RUN ln -s /usr/local/bin/docker-entrypoint.sh /
 
 COPY . ./
 
 RUN ["chmod", "+x", "/usr/local/bin/docker-entrypoint.sh"]
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-#CMD [ "npm run start" ]

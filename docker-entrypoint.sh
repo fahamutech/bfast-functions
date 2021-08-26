@@ -3,7 +3,7 @@ set -e
 
 #if [ "$1" = 'npm run start' ]; then
 
-rm -r /faas/src/function/myF || echo "remove prev functions"
+#rm -r /faas/src/function/myF || echo "remove prev functions"
 # git clone "${GIT_CLONE_URL}" /faas/src/function/myF
 #
 #  if [ -z "${GIT_TOKEN}" ]; then
