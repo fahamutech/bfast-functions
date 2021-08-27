@@ -1,10 +1,10 @@
-FROM node:lts
+FROM node:lts-buster
 
 WORKDIR /faas
 
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get install -y curl
+#RUN apt-get update
+#RUN apt-get upgrade -y
+#RUN apt-get install -y curl
 
 COPY --from=docker:dind /usr/local/bin/docker /usr/local/bin/
 
