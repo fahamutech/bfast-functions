@@ -94,6 +94,7 @@ class BfastFunctionsController {
             cwd: join(__dirname, this.functionsDir),
         };
         await this.prepareFolder();
+        console.log(`-------${packageName}--------`);
         await this.shellController.run(`npm pack ${packageName}`, options);
         await this.shellController.run(`tar -xf ./**.tgz`, options);
         await this.shakeFolder(options);
