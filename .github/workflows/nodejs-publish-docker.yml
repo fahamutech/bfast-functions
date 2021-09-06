@@ -22,12 +22,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: publish to docker with tag
         run: |
-          npm install
-          npm run build --if-present
-          npm test
-          docker logout
-          echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
-          npm run push
+#          npm install
+#          npm run build --if-present
+#          npm test
+#          docker logout
+#          echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
+#          npm run push
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

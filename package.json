@@ -1,6 +1,6 @@
 {
   "name": "bfast-function",
-  "version": "1.13.5",
+  "version": "1.13.6-beta.0",
   "private": false,
   "main": "src/bfast.functions.js",
   "scripts": {
