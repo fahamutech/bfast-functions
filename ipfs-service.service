@@ -1,0 +1,13 @@
+[Unit]
+Description=IPFS go-node service
+After=network.target
+StartLimitIntervalSec=0
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/local/bin/ipfs daemon
+
+[Install]
+WantedBy=multi-user.target
