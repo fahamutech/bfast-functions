@@ -6,7 +6,6 @@ COPY --from=docker:dind /usr/local/bin/docker /usr/local/bin/
 
 COPY *.json ./
 RUN npm install --only=production
-RUN sudo npm install -g ipfs
 
 COPY ./docker-entrypoint.sh /usr/local/bin/
 RUN ln -s /usr/local/bin/docker-entrypoint.sh /
