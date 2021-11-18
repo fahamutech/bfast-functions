@@ -1,5 +1,6 @@
-const {BfastFunctions} = require('./bfast.functions');
-const bfastFunctions = new BfastFunctions({
+import {start} from "./bfast.functions.mjs";
+
+start({
     port: ((process.env.PORT !== 'undefined') && (process.env.PORT !== 'null')) ? process.env.PORT : '3000',
     gitUsername: process.env.GIT_USERNAME,
     mode: process.env.MODE ? process.env.MODE : 'git',
@@ -7,11 +8,9 @@ const bfastFunctions = new BfastFunctions({
     urlTar: process.env.URL_TAR,
     gitToken: process.env.GIT_TOKEN,
     gitCloneUrl: process.env.GIT_CLONE_URL,
-});
-
-bfastFunctions.start().then(_ => {
+}).then(_ => {
     console.log('bfast-function initiated');
 }).catch(reason => {
-    console.log(reason);
+    console.log(reason,'INFO: Error');
     throw reason;
 });

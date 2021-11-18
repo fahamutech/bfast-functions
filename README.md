@@ -1,4 +1,4 @@
-# BFast::Cloud::Functions
+# BFast::Cloud::BfastFunctions
 
 Serverless function engine for NodeJS on top of ExpressJS and Socket.IO.
 
@@ -41,7 +41,7 @@ module.exports.myHelloFunction = BFast.functions().onHttpRequest('/hello', (requ
 
 ### 4. Start BfastFunctions engine
 
-create index.js file in your root workspace and start the Faas server like the following
+create index.mjs file in your root workspace and start the Faas server like the following
 
 ```javascript
 const {BfastFunctions} = require('bfast-faas');
@@ -56,7 +56,7 @@ faasServer.start().catch(console.log);
 
 ```
 
-then to start listening run  `~$ node index.js`
+then to start listening run  `~$ node index.mjs`
 
 Full BfastFunctions engine option is as follows
 

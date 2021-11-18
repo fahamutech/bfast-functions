@@ -1,20 +1,8 @@
 #!/bin/bash
 set -e
 
-#if [ "$1" = 'npm run start' ]; then
-
-#rm -r /faas/src/function/myF || echo "remove prev functions"
-# git clone "${GIT_CLONE_URL}" /faas/src/function/myF
-#
-#  if [ -z "${GIT_TOKEN}" ]; then
-#    git clone "${GIT_CLONE_URL}" /faas/src/function/myF
-#  fi
-#
-#  if [ -z "$(ls -A "$PGDATA")" ]; then
-#    gosu postgres initdb
-#  fi
-#
-#  exec gosu postgres "$@"
-#fi
-
+#exec ipfs init
+#exec ipfs config --json Addresses.API '["/ip4/127.0.0.1/tcp/5002"]'
+#exec cp /faas/ipfs-service.service /etc/systemd/system
+#exec systemctl start ipfs-service.service
 exec npm run start "$@"

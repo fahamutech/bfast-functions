@@ -23,11 +23,11 @@ jobs:
       - name: publish to docker as latest
         run: |
           npm install
-          npm run build --if-present
-          npm test
-          docker logout
-          echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
-          npm run push:latest
+#          npm run build --if-present
+#          npm test
+#          docker logout
+#          echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
+#          npm run push:latest
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

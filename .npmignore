@@ -23,7 +23,7 @@ docker-entrypoint.sh
 gulpfile.js
 specs
 .github
-src/index.js
+src/index.mjs
 example-functions
 .dockerignore
 src/function/_example.js

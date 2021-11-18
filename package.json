@@ -1,32 +1,34 @@
 {
   "name": "bfast-function",
-  "version": "1.13.5",
+  "version": "2.0.0-alpha.1",
   "private": false,
-  "main": "src/bfast.functions.js",
+  "main": "src/bfast.functions.mjs",
+  "license": "MIT",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node src/index.mjs",
     "pretest": "gulp removeFunctionsFolder",
     "test": "npx mocha ./specs",
-    "devStart": "gulp startDev",
+    "devStart": "PORT=4444 GIT_CLONE_URL=https://github.com/joshuamshana/BFastFunctionExample.git node src/index.mjs",
     "gulp": "gulp",
     "push": "gulp publishContainer",
     "push:latest": "gulp publishContainerLatest"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.5",
+    "cookie-parser": "~1.4.6",
     "cors": "~2.8.5",
-    "debug": "~4.3.1",
+    "jsonschema": "^1.4.0",
+    "debug": "~4.3.2",
     "express": "~4.17.1",
-    "glob": "~7.1.7",
-    "isomorphic-git": "~1.10.0",
+    "glob": "~7.2.0",
+    "isomorphic-git": "~1.10.1",
     "morgan": "~1.10.0",
     "node-schedule": "~2.0.0",
-    "socket.io": "~4.1.3"
+    "socket.io": "~4.4.0"
   },
   "devDependencies": {
     "chai": "~4.3.4",
     "chai-http": "~4.3.0",
     "gulp": "~4.0.2",
-    "mocha": "~9.1.0"
+    "mocha": "~9.1.3"
   }
 }
