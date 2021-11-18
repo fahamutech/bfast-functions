@@ -24,6 +24,7 @@ gulpfile.js
 specs
 .github
 src/index.mjs
+src/index.js
 example-functions
 .dockerignore
 src/function/_example.js

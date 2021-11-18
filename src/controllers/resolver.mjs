@@ -31,7 +31,7 @@ export async function getFunctions(options) {
             bfastJsonPath: join(__dirname, '../function/myF/bfast.json')
         }
     }
-    console.log(options);
+    // console.log(options);
     return new Promise((resolve, reject) => {
         try {
             let bfastConfig;
