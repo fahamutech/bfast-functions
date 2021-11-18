@@ -81,7 +81,6 @@ export async function getFunctions(options) {
                         }
                     }
                     delete functions.mambo;
-                    console.log(functions);
                     resolve(functions);
                 } catch (e23) {
                     console.log(e23);
