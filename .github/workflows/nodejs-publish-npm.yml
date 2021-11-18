@@ -21,9 +21,9 @@ jobs:
       - name: publish to npm registry
         run: |
           npm install
-#          npm run build --if-present
-#          npm test
           npm publish
+ #          npm run build --if-presen
+#          npm test
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           CI: true
