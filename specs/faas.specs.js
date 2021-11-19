@@ -1,6 +1,6 @@
 const chai = require('chai');
 const chai_http = require('chai-http');
-const FaasProxy = require('../src/bfast.functions.mjs').BfastFunctions;
+const FaasProxy = require('../src/core.mjs').BfastFunctions;
 const mocha = require("mocha");
 const {it, describe, before, after, afterEach} = mocha
 

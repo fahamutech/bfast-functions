@@ -21,7 +21,7 @@ jobs:
       - name: publish to npm registry
         run: |
           npm install
-          npm publish
+          npm run publish
  #          npm run build --if-presen
 #          npm test
         env:
