@@ -6,7 +6,9 @@ import {getFunctions} from "./resolver.mjs";
 import express from "express";
 import {run} from "./shell.mjs";
 import {fileURLToPath} from "url";
+import { createRequire } from 'module';
 
+const require = createRequire(import.meta.url);
 const functionsDir = '../function/myF';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
