@@ -1,19 +1,18 @@
 {
   "name": "bfast-function",
-  "version": "2.0.0-alpha.5",
+  "version": "2.0.0-alpha.6",
   "private": false,
-  "main": "dist/index.bundle.js",
+  "main": "src/index.mjs",
   "module": "src/index.mjs",
   "license": "MIT",
   "scripts": {
     "start": "node src/start.mjs",
     "pretest": "gulp removeFunctionsFolder",
     "test": "npx mocha ./specs",
-    "build": "npx webpack --config webpack.js",
     "devStart": "PORT=4444 GIT_CLONE_URL=https://github.com/joshuamshana/BFastFunctionExample.git node src/start.mjs",
     "gulp": "gulp",
     "push": "gulp publishContainer",
-    "publish": "npm run build && npm publish",
+    "publish": "npm publish",
     "push:latest": "gulp publishContainerLatest"
   },
   "dependencies": {
@@ -31,8 +30,6 @@
     "bufferutil": "^4.0.5"
   },
   "devDependencies": {
-    "webpack": "^5.64.1",
-    "webpack-cli": "^4.9.1",
     "chai": "~4.3.4",
     "chai-http": "~4.3.0",
     "gulp": "~4.0.2",
