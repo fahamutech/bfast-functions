@@ -49,7 +49,7 @@ export async function start(
     const v = validate(options, {
         type: 'object',
         properties: {
-            port: {type: 'string'}
+            port: {}
         },
         required: ['port']
     }, {required: true});
