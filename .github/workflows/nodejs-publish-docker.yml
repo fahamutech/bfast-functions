@@ -3,12 +3,12 @@ name: docker with specific tag
 on:
   push:
     branches:
-      - master
+      - image
 
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -22,11 +22,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: publish to docker with tag
         run: |
-          npm install
-          npm test
-          docker logout
-          echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
-          npm run push
+#          npm install
+#          npm test
+#          docker logout
+#          echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
+#          npm run push
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

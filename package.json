@@ -7,13 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node src/start.mjs",
-    "pretest": "gulp removeFunctionsFolder",
-    "test": "npx mocha ./specs",
-    "devStart": "PORT=4444 GIT_CLONE_URL=https://github.com/joshuamshana/BFastFunctionExample.git node src/start.mjs",
-    "gulp": "gulp",
-    "push": "gulp publishContainer",
-    "publish": "npm publish",
-    "push:latest": "gulp publishContainerLatest"
+    "test": "npx mocha ./specs"
   },
   "dependencies": {
     "cookie-parser": "~1.4.6",
@@ -32,7 +26,6 @@
   "devDependencies": {
     "chai": "~4.3.4",
     "chai-http": "~4.3.0",
-    "gulp": "~4.0.2",
     "mocha": "~9.1.3"
   }
 }
