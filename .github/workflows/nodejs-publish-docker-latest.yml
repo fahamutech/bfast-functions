@@ -24,6 +24,7 @@ jobs:
         run: |
           npm install
           npm test
+          docker logout
           echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
           npm run push:latest
         env:
