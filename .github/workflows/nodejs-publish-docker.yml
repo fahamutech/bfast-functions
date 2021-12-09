@@ -3,7 +3,7 @@ name: docker with specific tag
 on:
   push:
     branches:
-      - master
+      - abcdrf
 
 jobs:
   build:
@@ -24,9 +24,6 @@ jobs:
         run: |
           npm install
           npm test
-          docker logout
-          echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
-          npm run push
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
