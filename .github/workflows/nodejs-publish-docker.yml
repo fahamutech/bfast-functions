@@ -23,13 +23,14 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
       - name: install npm and test
         run: |
           npm install
           npm test
+          npm run tag
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
