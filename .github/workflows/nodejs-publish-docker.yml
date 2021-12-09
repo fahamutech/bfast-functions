@@ -3,7 +3,7 @@ name: docker with specific tag
 on:
   push:
     branches:
-      - master
+      - mastiyiutiugyger
 
 jobs:
   build:
@@ -27,7 +27,7 @@ jobs:
         run: |
           npm install
           npm test
-          npm run tag
+#          npm run tag
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1

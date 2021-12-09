@@ -7,8 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node src/start.mjs",
-    "test": "npx mocha ./specs",
-    "tag": "node tag.js"
+    "test": "npx mocha ./specs"
   },
   "dependencies": {
     "cookie-parser": "~1.4.6",
