@@ -30,9 +30,9 @@ jobs:
           npm test
           docker build -t joshuamshana/bfastfunction:latest .
           docker push joshuamshana/bfastfunction:latest
-        with:
-          push: true
-          tags: joshuamshana/bfastfunction:latest
+#        with:
+#          push: true
+#          tags: joshuamshana/bfastfunction:latest
 
 
 #          docker push joshuamshana/bfastfunction:latest
