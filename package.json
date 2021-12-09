@@ -1,6 +1,6 @@
 {
   "name": "bfast-function",
-  "version": "2.0.0-alpha.7",
+  "version": "2.0.0-alpha.8",
   "private": false,
   "main": "src/index.mjs",
   "module": "src/index.mjs",
@@ -19,12 +19,12 @@
     "cookie-parser": "~1.4.6",
     "cors": "~2.8.5",
     "jsonschema": "^1.4.0",
-    "debug": "~4.3.2",
+    "debug": "~4.3.3",
     "express": "~4.17.1",
     "glob": "~7.2.0",
-    "isomorphic-git": "~1.10.1",
+    "isomorphic-git": "~1.10.2",
     "morgan": "~1.10.0",
-    "node-schedule": "~2.0.0",
+    "node-schedule": "~2.1.0",
     "socket.io": "~4.4.0",
     "utf-8-validate": "^5.0.7",
     "bufferutil": "^4.0.5"

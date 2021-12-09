@@ -43,9 +43,9 @@ module.exports.normalhttpWithParams = {
     }
 }
 
-module.exports.sampleJob = {
-    rule: "1 * * * * *",
-    onJob: () => {
-        console.log("jobs run every 2 second: " + new Date());
-    }
-}
+// module.exports.sampleJob = {
+//     rule: "1 * * * * *",
+//     onJob: () => {
+//         console.log("jobs run every 2 second: " + new Date());
+//     }
+// }

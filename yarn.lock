@@ -697,7 +697,7 @@ crc-32@^1.2.0:
     exit-on-epipe "~1.0.1"
     printj "~1.1.0"
 
-cron-parser@^3.1.0:
+cron-parser@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/cron-parser/-/cron-parser-3.5.0.tgz#b1a9da9514c0310aa7ef99c2f3f1d0f8c235257c"
   integrity sha512-wyVZtbRs6qDfFd8ap457w3XVntdvqcwBGxBoTvJQH9KGVKL/fB+h2k3C8AqiVxvUQKN1Ps/Ns46CNViOpVDhfQ==
@@ -733,6 +733,13 @@ debug@^3.1.0:
   integrity sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==
   dependencies:
     ms "^2.1.1"
+
+debug@~4.3.3:
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.3.tgz#04266e0b70a98d4462e6e288e38259213332b664"
+  integrity sha512-/zxw5+vh1Tfv+4Qn7a5nsbcJKPaSvCDhojn6FEl9vupwK2VCSDtEiEtqr8DFtzYFOdz63LBkxec7DYuc2jon6Q==
+  dependencies:
+    ms "2.1.2"
 
 decamelize@^1.1.1:
   version "1.2.0"
@@ -1811,10 +1818,10 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
-isomorphic-git@~1.10.1:
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/isomorphic-git/-/isomorphic-git-1.10.1.tgz#2f3a3d2d41baf6a88e046a21e0527bc13a21d663"
-  integrity sha512-abbPpKkykIVDJ92rtYoD4AOuT5/7PABHR2fDBrsm7H0r2ZT+MGpPL/FynrEJM6nTcFSieaIDxnHNGhfHO/v+bA==
+isomorphic-git@~1.10.2:
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/isomorphic-git/-/isomorphic-git-1.10.2.tgz#c2177db2f626ad8a1fd121c66bcfeb318745d178"
+  integrity sha512-7xOTzip9zUihf+enjUDfCJbyr0MHhnOWuE/xgbAktt86nZi4VLc/FORpnv2aBVBF2idgqichGG8DHYJ9PPPChA==
   dependencies:
     async-lock "^1.1.0"
     clean-git-ref "^2.0.1"
@@ -2173,12 +2180,12 @@ node-gyp-build@^4.3.0:
   resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.3.0.tgz#9f256b03e5826150be39c764bf51e993946d71a3"
   integrity sha512-iWjXZvmboq0ja1pUGULQBexmxq8CV4xBhX7VDOTbL7ZR4FOowwY/VOtRxBN/yKxmdGoIp4j5ysNT4u3S2pDQ3Q==
 
-node-schedule@~2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/node-schedule/-/node-schedule-2.0.0.tgz#73ab4957d056c63708409cc1fab676e0e149c191"
-  integrity sha512-cHc9KEcfiuXxYDU+HjsBVo2FkWL1jRAUoczFoMIzRBpOA4p/NRHuuLs85AWOLgKsHtSPjN8csvwIxc2SqMv+CQ==
+node-schedule@~2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/node-schedule/-/node-schedule-2.1.0.tgz#068ae38d7351c330616f7fe7cdb05036f977cbaf"
+  integrity sha512-nl4JTiZ7ZQDc97MmpTq9BQjYhq7gOtoh7SiPH069gBFBj0PzD8HI7zyFs6rzqL8Y5tTiEEYLxgtbx034YPrbyQ==
   dependencies:
-    cron-parser "^3.1.0"
+    cron-parser "^3.5.0"
     long-timeout "0.1.1"
     sorted-array-functions "^1.3.0"
 
