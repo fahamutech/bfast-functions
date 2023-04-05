@@ -6,7 +6,7 @@ COPY --from=docker:dind /usr/local/bin/docker /usr/local/bin/
 
 COPY *.json ./
 # RUN npm config set user root
-RUN npm config set unsafe-perm true
+# RUN npm config set unsafe-perm true
 RUN npm install --only=production
 #RUN npm i -g ipfs
 
