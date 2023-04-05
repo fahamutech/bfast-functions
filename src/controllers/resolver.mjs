@@ -65,16 +65,12 @@ export async function getFunctions(options) {
                         try {
                             functionsFile = await import(file);
                         } catch (e78788) {
+                            console.log(e78788);
                             functionsFile = undefined;
                         }
                         if (functionsFile === undefined) {
                             functionsFile = require(file);
                         }
-                        // if (file.toString().endsWith('.mjs')) {
-                        //     functionsFile = await import(file);
-                        // } else {
-                        //     functionsFile = require(file);
-                        // }
                         const functionNames = Object.keys(functionsFile);
                         for (const functionName of functionNames) {
                             if (functionsFile[functionName] && typeof functionsFile[functionName] === "object") {
