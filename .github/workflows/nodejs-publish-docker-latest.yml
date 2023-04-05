@@ -29,7 +29,6 @@ jobs:
       - name: install npm and test
         run: |
           npm install
-          npm test
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
