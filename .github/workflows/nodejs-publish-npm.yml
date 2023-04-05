@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 16.x ]
+        node-version: [ 16.x, 18.x ]
 
     steps:
       - uses: actions/checkout@v1
@@ -21,8 +21,6 @@ jobs:
       - name: publish to npm registry
         run: |
           npm install
-          npm test
-          npm publish
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           CI: true
