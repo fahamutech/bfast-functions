@@ -35,4 +35,8 @@ export class Options {
     }}
      */
     functionsConfig
+    /** script to run instead of spin functioins server
+     * @type {string}
+     */
+    startScript
 }

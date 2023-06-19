@@ -6,7 +6,7 @@ import {getFunctions} from "./resolver.mjs";
 import express from "express";
 import {run} from "./shell.mjs";
 import {fileURLToPath} from "url";
-import { createRequire } from 'module';
+import {createRequire} from 'module';
 
 const require = createRequire(import.meta.url);
 const functionsDir = '../function/myF';
@@ -40,7 +40,6 @@ export async function deployFunctions(expressApp, nodeSchedule, socketIo, functi
 /**
  * get function from a remote repository
  * @returns {Promise<void>}
- * @deprecated will be removed
  */
 export async function cloneFunctionsFromGit(cloneUrl, username, token) {
     return clone({
@@ -49,9 +48,9 @@ export async function cloneFunctionsFromGit(cloneUrl, username, token) {
         url: cloneUrl,
         dir: join(__dirname, functionsDir),
         depth: 1,
-        onMessage: message => {
-            console.log(message);
-        },
+        // onMessage: message => {
+        //     console.log(message);
+        // },
         noTags: true,
         singleBranch: true,
         onAuth: _ => {
@@ -66,10 +65,9 @@ export async function cloneFunctionsFromGit(cloneUrl, username, token) {
 /**
  * install dependencies from function installed by git
  * @return {Promise}
- * @deprecated will be removed from 2.x
  */
 export async function installFunctionDependency() {
-    return run(`npm install --production`, {
+    return run(`npm install --omit=dev --production `, {
         cwd: join(__dirname, functionsDir),
     });
 }
@@ -110,15 +108,27 @@ export async function installFunctionsFromRemoteTar(url) {
 /**
  * start node server for listening request
  */
-export async function startFaasServer(faasServer, port) {
-    faasServer.listen(port);
-    faasServer.on('listening', () => {
-        console.log('BFast::Cloud::Functions Engine Listening on ' + port);
-    });
-    faasServer.on('close', () => {
-        console.log('BFast::Cloud::Functions Engine Stop Listening');
-    });
-    return faasServer;
+export async function startFaasServer(faasServer, options) {
+    if (
+        options?.startScript
+        && `${options?.startScript}`.trim() !== 'undefined'
+        && `${options?.startScript}`.trim() !== 'null'
+        && `${options?.startScript}`.trim().length > 0
+    ) {
+        const fsDir = options?.functionsConfig?.functionsDirPath ?? join(__dirname, functionsDir);
+        return run(`${options?.startScript}`, {
+            cwd: fsDir,
+        });
+    } else {
+        faasServer.listen(options?.port ?? '3000');
+        faasServer.on('listening', () => {
+            console.log('BFast::Cloud::Functions Engine Listening on ' +options?.port);
+        });
+        faasServer.on('close', () => {
+            console.log('BFast::Cloud::Functions Engine Stop Listening');
+        });
+        return faasServer;
+    }
 }
 
 /**
@@ -271,8 +281,8 @@ export function mountEventRoutes(eventRequestFunctions, functions, socketIo) {
  */
 export async function serveStaticFiles(expressApp, functionsConfig = undefined) {
     try {
-        if (functionsConfig && functionsConfig.assets) {
-            expressApp.use('/assets', express.static(join(functionsConfig.assets)));
+        if (functionsConfig && functionsConfig?.assets) {
+            expressApp.use('/assets', express.static(join(functionsConfig?.assets)));
         } else {
             await _checkIsBFastProjectFolder(process.cwd());
             expressApp.use('/assets', express.static(join(process.cwd(), "assets")));
@@ -330,6 +340,3 @@ export async function shakeFolder(options) {
     }
 }
 
-// module.exports = {
-//     BfastFunctionsController: Functions
-// };

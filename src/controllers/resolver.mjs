@@ -1,10 +1,13 @@
-import glob from "glob";
-import {join, dirname} from "path";
+import {glob} from "glob";
+import {dirname, join} from "path";
 import {fileURLToPath} from "url";
-import { createRequire } from 'module';
+import {createRequire} from 'module';
+
 const require = createRequire(import.meta.url);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const functionDirToArray = x => Array.isArray(x) ? x : [x];
 
 /**
  * get function from uploaded files. This function return an object which contain name of function as object property
@@ -16,77 +19,67 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
         bfastJsonPath: string
     } | null | undefined}
  * @return Promise<{
-     * [k:string]:{
-         * path: string,
-         * onRequest: Function,
-         * method: string,
-         * onGuard: Function,
-         * onJob: Function,
-         * onEvent: Function
-     * }
+ * [k:string]:{
+ * path: string,
+ * onRequest: Function,
+ * method: string,
+ * onGuard: Function,
+ * onJob: Function,
+ * onEvent: Function
+ * }
  * }>
  */
 export async function getFunctions(options) {
     if (!options) {
         options = {
-            functionsDirPath: join(__dirname, '../function'),
+            functionsDirPath: join(__dirname, '../function/myF/functions'),
             bfastJsonPath: join(__dirname, '../function/myF/bfast.json')
         }
     }
-    // console.log(options);
-    return new Promise((resolve, reject) => {
-        try {
-            let bfastConfig;
-            try {
-                bfastConfig = require(options.bfastJsonPath);
-            } catch (e) {
-                console.warn('cant find bfast.json');
-            }
-            glob(`${options.functionsDirPath}/**/*.{js,mjs,cjs}`, {
-                absolute: true,
-                ignore: bfastConfig && bfastConfig.ignore && Array.isArray(bfastConfig.ignore) ?
-                    bfastConfig.ignore :
-                    ['**/node_modules/**', '**/specs/**', '**/*.specs.js', '**/*.specs.mjs', '**/*.specs.cjs']
-            }, async (err, files) => {
-                if (err) {
-                    reject({message: err});
-                    return;
-                }
-                try {
-                    let functions = {
-                        mambo: {
-                            onRequest: function (request, response) {
-                                response.json({message: 'Powa!'});
-                            }
-                        }
-                    };
-                    for (const file of files) {
-                        let functionsFile;
-                        try {
-                            functionsFile = await import(file);
-                        } catch (e78788) {
-                            console.log(e78788);
-                            functionsFile = undefined;
-                        }
-                        if (functionsFile === undefined) {
-                            functionsFile = require(file);
-                        }
-                        const functionNames = Object.keys(functionsFile);
-                        for (const functionName of functionNames) {
-                            if (functionsFile[functionName] && typeof functionsFile[functionName] === "object") {
-                                functions[functionName] = functionsFile[functionName];
-                            }
-                        }
-                    }
-                    delete functions.mambo;
-                    resolve(functions);
-                } catch (e23) {
-                    console.log(e23);
-                    reject({message: e23});
-                }
-            });
-        } catch (e) {
-            reject({message: e});
+    let bfastConfig;
+    try {
+        bfastConfig = require(options?.bfastJsonPath);
+    } catch (e) {
+        console.log(e);
+        console.warn('cant find bfast.json');
+    }
+    const files = await glob(
+        functionDirToArray(options?.functionsDirPath).map(x => `${x}/**/*.{js,mjs,cjs}`),
+        {
+            absolute: true,
+            ignore: Array.isArray(bfastConfig?.ignore) ?
+                bfastConfig?.ignore :
+                ['**/node_modules/**', '**/specs/**', '**/*.specs.js', '**/*.specs.mjs', '**/*.specs.cjs']
         }
-    });
+    );
+    const functions = {};
+    for (const file of files) {
+        let functionsFile;
+        try {
+            functionsFile = await import(file);
+        } catch (e78788) {
+            console.log(e78788);
+            functionsFile = undefined;
+        }
+        if (functionsFile === undefined) {
+            functionsFile = require(file);
+        }
+        const functionNames = Object.keys(functionsFile);
+        for (const functionName of functionNames) {
+            if (functionsFile[functionName] && typeof functionsFile[functionName] === "object") {
+                functions[functionName] = functionsFile[functionName];
+            }
+        }
+    }
+    return {
+        ...functions,
+        _functions: {
+            path: '/functions-all',
+            onRequest: (_, response) => response.json(functions)
+        },
+        _health: {
+            path: '/functions-health',
+            onRequest: (_, response) => response.json({message: 'running'})
+        }
+    };
 }

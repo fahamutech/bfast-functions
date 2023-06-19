@@ -8,9 +8,10 @@ start({
     urlTar: process.env.URL_TAR,
     gitToken: process.env.GIT_TOKEN,
     gitCloneUrl: process.env.GIT_CLONE_URL,
+    startScript: process.env.START_SCRIPT,
 }).then(_ => {
     console.log('bfast-function initiated');
 }).catch(reason => {
-    console.log(reason,'INFO: Error');
+    console.log(reason, 'INFO: Error');
     throw reason;
 });

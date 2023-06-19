@@ -1,5 +1,4 @@
 import {exec} from "child_process";
-import {promisify} from "util";
 
 /**
  *
@@ -11,14 +10,21 @@ import {promisify} from "util";
  *         timeout: number
  *     }
  * }
- * @return {Promise<string>}
+ * @return {Promise<*>}
  */
 export async function run(command, options) {
-    const result = await promisify(exec)(command, {
-            env: options.env,
-            cwd: options.cwd,
-            timeout: options.timeout
-        }
-    );
-    return result.toString();
+    return new Promise((resolve, reject) => {
+        const childProcess = exec(
+            command, {env: options?.env, cwd: options?.cwd, timeout: options?.timeout}
+        );
+        childProcess.stdout.pipe(process.stdout);
+        childProcess.stderr.pipe(process.stderr);
+        childProcess.on('exit', code => {
+            if (code !== 0) {
+                reject(code);
+            } else {
+                resolve({message: 'run succeed'});
+            }
+        });
+    });
 }
