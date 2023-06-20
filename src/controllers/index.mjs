@@ -67,7 +67,7 @@ export async function cloneFunctionsFromGit(cloneUrl, username, token) {
  * @return {Promise}
  */
 export async function installFunctionDependency() {
-    return run(`npm install --omit=dev --production `, {
+    return run(`npm install --omit=dev `, {
         cwd: join(__dirname, functionsDir),
     });
 }
@@ -99,7 +99,7 @@ export async function installFunctionsFromRemoteTar(url) {
         cwd: join(__dirname, functionsDir),
     };
     await prepareFolder();
-    await run(`curl -O -L ${url}`, options);
+    await run(`curl -o pack.tgz -L ${url}`, options);
     await run(`tar -xf ./**.tgz`, options);
     await shakeFolder(options);
     await run(`rm -r ./**.tgz`, options);
