@@ -9,8 +9,8 @@ module.exports.simpleGuard = {
     path: '/test',
     onGuard: (request, response, next) => {
         console.log('I am a guard');
-        //next();
-        response.send("I am a guard");
+        next();
+        // response.send("I am a guard");
     }
 }
 
@@ -39,7 +39,7 @@ module.exports.normalhttpPublicWithParams = {
 module.exports.normalhttpWithParams = {
     path: '/test/:name',
     onRequest: (request, response) => {
-        response.send('hello, ' + request.params.name + '!');
+        response.status(200).send('hello, ' + request.params.name + '!');
     }
 }
 

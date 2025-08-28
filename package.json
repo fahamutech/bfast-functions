@@ -1,13 +1,31 @@
 {
   "name": "bfast-function",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "private": false,
+  "description": "A serverless function engine for Node.js, built on top of Express.js and Socket.IO.",
   "main": "src/index.mjs",
   "module": "src/index.mjs",
   "license": "MIT",
   "scripts": {
     "start": "node src/start.mjs",
     "test": "npx mocha ./specs"
+  },
+  "keywords": [
+    "serverless",
+    "functions",
+    "faas",
+    "express",
+    "socket.io",
+    "bfast"
+  ],
+  "author": "BFast Cloud",
+  "homepage": "https://github.com/bfast-cloud/bfast-functions",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bfast-cloud/bfast-functions.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bfast-cloud/bfast-functions/issues"
   },
   "dependencies": {
     "cookie-parser": "~1.4.7",

@@ -15,3 +15,4 @@ src/function/myF
 **.tgz
 /**.tgz
 /dist
+yarn-error.log

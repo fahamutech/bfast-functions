@@ -20,11 +20,5 @@ describe('Functions Generation', function () {
         assert(typeof functions === 'object');
         assert(Object.keys(functions).includes('_functions'));
         assert(Object.keys(functions).includes('_health'));
-        // assert(typeof functions['hello'] === 'object');
-        // assert(typeof functions['hello'].onRequest === 'function');
-        // assert(functions['hello'].onRequest.name === 'onRequest');
-        // assert(typeof functions['hello'].path === 'string');
-        // assert(functions['hello'].path === '/hello');
-        // assert(typeof functions['mambo'].onRequest.arguments === 'function');
     });
 });

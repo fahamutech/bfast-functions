@@ -10,24 +10,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const functionDirToArray = x => Array.isArray(x) ? x : [x];
 
 /**
- * get function from uploaded files. This function return an object which contain name of function as object property
- * and value of that property expected to be a function which accept Request (from express) and Response(from express)
- *  options to specify example-functions folder and bfast.json path to get configuration
- *  like files to ignore
- * @param options {{
-        functionsDirPath: string,
-        bfastJsonPath: string
-    } | null | undefined}
- * @return Promise<{
- * [k:string]:{
- * path: string,
- * onRequest: Function,
- * method: string,
- * onGuard: Function,
- * onJob: Function,
- * onEvent: Function
- * }
- * }>
+ * Dynamically loads and resolves user-defined functions from the filesystem.
+ * This function searches for function files (e.g., .js, .mjs, .cjs) in the specified directory,
+ * imports them, and builds an object containing all the discovered functions.
+ * It also provides default functions for health checks and listing all functions.
+ *
+ * @param {object} options - Configuration options for resolving functions.
+ * @param {string | string[]} options.functionsDirPath - The path(s) to the directory containing the function files.
+ * @param {string} options.bfastJsonPath - The path to the 'bfast.json' configuration file, which can specify files to ignore.
+ * @returns {Promise<object>} A promise that resolves to an object containing all the loaded functions.
+ * Each key in the object is a function name, and the value is the function module.
  */
 export async function getFunctions(options) {
     if (!options) {
