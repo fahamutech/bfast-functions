@@ -1,5 +1,4 @@
 import {clone} from "isomorphic-git";
-import gitHttp from "isomorphic-git/http/node/index.cjs";
 import fs from "fs";
 import {dirname, join} from "path";
 import {getFunctions} from "./resolver.mjs";

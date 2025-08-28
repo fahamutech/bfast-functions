@@ -10,21 +10,21 @@
     "test": "npx mocha ./specs"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.6",
+    "cookie-parser": "~1.4.7",
     "cors": "~2.8.5",
-    "jsonschema": "^1.4.1",
-    "express": "~4.18.2",
-    "glob": "~10.2.7",
-    "isomorphic-git": "~1.24.2",
-    "morgan": "~1.10.0",
+    "jsonschema": "^1.5.0",
+    "express": "~5.1.0",
+    "glob": "~11.0.3",
+    "isomorphic-git": "~1.33.1",
+    "morgan": "~1.10.1",
     "node-schedule": "~2.1.1",
-    "socket.io": "~4.6.2",
-    "utf-8-validate": "^6.0.3",
-    "bufferutil": "^4.0.7"
+    "socket.io": "~4.8.1",
+    "utf-8-validate": "^6.0.5",
+    "bufferutil": "^4.0.9"
   },
   "devDependencies": {
-    "chai": "~4.3.7",
-    "chai-http": "~4.4.0",
-    "mocha": "~10.2.0"
+    "chai": "~6.0.1",
+    "chai-http": "~5.1.2",
+    "mocha": "~11.7.1"
   }
 }
