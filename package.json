@@ -32,7 +32,7 @@
     "cors": "~2.8.5",
     "jsonschema": "^1.5.0",
     "express": "~5.1.0",
-    "glob": "~11.0.3",
+    "glob": "~11.1.0",
     "isomorphic-git": "~1.33.1",
     "morgan": "~1.10.1",
     "node-schedule": "~2.1.1",
