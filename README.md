@@ -1,155 +1,460 @@
-# BFast Function
+# bfast-function
 
-[![npm version](https://badge.fury.io/js/bfast-function.svg)](https://badge.fury.io/js/bfast-function)
-[![Build Status](https://travis-ci.org/bfast-cloud/bfast-function.svg?branch=master)](https://travis-ci.org/bfast-cloud/bfast-function)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code Quality](https://api.codacy.com/project/badge/Grade/e0b0c8d1e1b44d7e8a9b0e0e1b0e0e1b)](https://www.codacy.com/gh/bfast-cloud/bfast-function/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=bfast-cloud/bfast-function&amp;utm_campaign=Badge_Grade)
+A lightweight serverless functions engine for Node.js built on Express and Socket.IO.
 
-![BFast Function Banner](https://imgur.com/eJ5w43G.png)
+Run HTTP routes, real‑time Socket.IO events, global/route guards (middleware), and scheduled jobs — all defined as plain JavaScript modules. Use it locally with a folder of functions, or deploy by pulling functions from Git, an npm tarball, or a remote URL. Ships with static assets serving, health and discovery endpoints, and a simple programmatic API.
 
-**A serverless function engine for Node.js, built on top of Express.js and Socket.IO.**
+- npm: https://www.npmjs.com/package/bfast-function
+- License: MIT
+- Runtime: Node.js 18+
 
-BFast Function provides a powerful and flexible way to build and deploy serverless functions. It's designed to be easy to use, with a simple and intuitive API.
+---
 
 ## Features
 
-*   **Easy to use:** A simple and intuitive API for creating and deploying serverless functions.
-*   **Flexible:** Supports both HTTP and Socket.IO functions.
-*   **Scalable:** Built on top of Express.js and Socket.IO, which are known for their scalability.
-*   **Extensible:** Can be easily extended with custom middleware and plugins.
-*   **Open-source:** BFast Function is open-source and available on GitHub.
+- HTTP functions (Express handler shape)
+- Socket.IO event functions (per‑namespace handlers)
+- Guards (Express middleware) at `/` or a specific path
+- Scheduled jobs (cron‑like with `node-schedule`)
+- Static assets served at `/assets`
+- Function auto‑discovery from one or more folders
+- Multiple deployment modes: `local`, `git`, `npm`, `url`
+- Health `GET /functions-health` and discovery `GET /functions-all`
+- Optional custom `startScript` to run any process instead of the built‑in server
 
-## Getting Started
+---
 
-There are several ways to get started with BFast Function:
+## Quick start
 
-**1. From npm:**
-
-The easiest way to get started is to install BFast Function from npm:
-
-```bash
-npm install bfast-function
-```
-
-**2. From Git:**
-
-You can also clone the BFast Function repository from GitHub:
+Install bfast tools cli and create a starter project
 
 ```bash
-git clone https://github.com/bfast-cloud/bfast-function.git
+npm i -g bfast-tools
+bfast fs create <name-of-project> #Example : bfast fs create my-bfast-project
 ```
 
-Then, install the dependencies:
+Create your functions (CommonJS or ESM). Each exported value is a descriptor object.
+
+Example: `functions/example.js`
+
+```js
+// CommonJS
+module.exports.hello = {
+  // Optional: defaults to /functions/hello
+  path: '/hello',
+  // Optional: defaults to Express "all" method
+  method: 'get',
+  // Standard Express handler
+  onRequest: (req, res) => {
+    res.status(200).send('Hello, World!');
+  }
+}
+
+module.exports.guardAll = {
+  // Mount at root as a global middleware
+  path: '/',
+  onGuard: (req, res, next) => {
+    // your auth/logging/etc
+    return next();
+  }
+}
+
+module.exports.sampleEvent = {
+  // Socket.IO namespace AND event name
+  name: '/echo',
+  onEvent: (request, response) => {
+    // request = { auth, body }
+    response.emit({echoed: request.body});
+  }
+}
+
+module.exports.sampleJob = {
+  // node-schedule rule (runs every minute)
+  rule: '* * * * *',
+  onJob: () => {
+    console.log('job tick:', new Date().toISOString());
+  }
+}
+```
+
+Start a server (ESM):
+
+```js
+// index.mjs
+import { start } from 'bfast-function';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+await start({
+  port: '3000',
+  functionsConfig: {
+    // You can pass one folder or an array of folders
+    functionsDirPath: `${__dirname}/functions`,
+    // Optional: location of bfast.json (see “Configuration”)
+    bfastJsonPath: `${__dirname}/bfast.json`,
+    // Optional: custom path where static files live
+    // assets: `${__dirname}/assets`
+  }
+});
+```
+
+Run it:
 
 ```bash
-cd bfast-function
-npm install
+node index.mjs
 ```
 
-**3. From a tarball:**
+Now:
+- HTTP: `GET http://localhost:3000/hello` → "Hello, World!"
+- Health: `GET http://localhost:3000/functions-health`
+- Discovery: `GET http://localhost:3000/functions-all`
+- Static: `GET http://localhost:3000/assets/...` (if you placed files there)
 
-You can also download a tarball of the BFast Function repository from the [releases page](https://github.com/bfast-cloud/bfast-function/releases).
+---
 
-Then, extract the tarball and install the dependencies:
+### Starter template (GitHub)
+
+Use this ready‑to‑go example repo to bootstrap a simple bfast project:
+
+Repo: https://github.com/joshuamshana/BFastFunctionExample
+
+Option A — Local development (clone + run your own entry file)
 
 ```bash
-tar -xvf bfast-function-*.tar.gz
-cd bfast-function-*
-npm install
+# 1) Clone the template
+ git clone https://github.com/joshuamshana/BFastFunctionExample.git
+ cd BFastFunctionExample
+ npm i
 ```
 
-## Usage
+If the template does not include an entry script, create `index.mjs`:
 
-1.  **Create a functions folder:**
+```js
+import { start } from 'bfast-function';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+await start({
+  port: '3000',
+  functionsConfig: {
+    functionsDirPath: `${__dirname}/functions`,
+    // optional: bfastJsonPath: `${__dirname}/bfast.json`
+    // optional: assets: `${__dirname}/assets`
+  }
+});
+```
 
-    ```bash
-    mkdir functions
-    ```
+Run it and try endpoints:
 
-2.  **Create a function file (e.g., `example.js`):**
+```bash
+node index.mjs
+curl http://localhost:3000/functions-health
+curl http://localhost:3000/functions-all
+# If the template provides an HTTP export named `hello` with no explicit `path`:
+curl http://localhost:3000/functions/hello
+```
 
-    ```javascript
-    const bfast = require('bfast');
+Option B — No code: run in Git mode pointing at the template
 
-    exports.myHttpFunction = bfast.functions().onHttpRequest('/hello', (request, response) => {
-        response.status(200).send('Hello, World!');
-    });
+```bash
+PORT=3000 MODE=git \
+GIT_CLONE_URL=https://github.com/joshuamshana/BFastFunctionExample.git \
+node node_modules/bfast-function/src/start.mjs
 
-    exports.mySocketFunction = bfast.functions().onSocketIO('echo', (request, response) => {
-        response.emit('echo', request.body);
-    });
-    ```
+# Then test
+curl http://localhost:3000/functions-health
+curl http://localhost:3000/functions-all
+```
 
-3.  **Start the BFast Function engine:**
+## Authoring functions
 
-    Create an `index.mjs` file in your root workspace and start the Faas server:
+Functions are discovered by scanning the folder(s) you pass in `functionsDirPath` for `*.js, *.mjs, *.cjs` (recursively). Each export must be an object with one of the following shapes.
 
-    ```javascript
-    import {start} from 'bfast-function';
+### HTTP function
 
-    start({
-        port: '3000',
-        functionsConfig: {
-            functionsDirPath: './functions',
-        }
-    }).catch(console.log);
-    ```
+```js
+export const myApi = {
+  // Optional: defaults to /functions/myApi
+  path: '/api',
+  // Optional: one of: get|post|put|patch|delete|all (default "all")
+  method: 'post',
+  // Express signature
+  onRequest: (req, res) => {
+    res.json({ok: true});
+  }
+}
+```
 
-    Then, start the server:
+Notes:
+- If `path` is omitted, the route becomes `/functions/<exportName>`.
+- `method` is lower‑cased internally and defaults to `all` (Express’ `app.all`).
 
-    ```bash
-    node index.mjs
-    ```
+### Guard (middleware)
+
+```js
+export const secure = {
+  // "/" mounts globally, any other path mounts at that prefix
+  path: '/',
+  onGuard: (req, res, next) => {
+    // deny example
+    // return res.status(401).send('Unauthorized');
+    return next();
+  }
+}
+```
+
+### Socket.IO event
+
+```js
+export const chat = {
+  // Used as namespace and event name
+  name: '/chat',
+  onEvent: (request, response) => {
+    // request: { auth, body }
+    // response helpers:
+    // - emit(data)
+    // - broadcast(data)
+    // - announce(data) // to the whole namespace
+    // - emitTo(socketId, data)
+    // - topic(topicName).join()
+    // - topic(topicName).broadcast(data)
+    // - topic(topicName).announce(data)
+  }
+}
+```
+
+Client example:
+
+```js
+import { io } from 'socket.io-client';
+const s = io('http://localhost:3000/chat');
+s.on('/chat', (packet) => {
+  // packet = { body: ... }
+  console.log(packet.body);
+});
+s.emit('/chat', { auth: {token: 'x'}, body: { msg: 'hi' } });
+```
+
+### Scheduled job
+
+```js
+export const everyMinute = {
+  rule: '* * * * *', // node-schedule format
+  onJob: () => {
+    console.log('tick');
+  }
+}
+```
+
+---
+
+## Configuration
+
+### bfast.json (optional)
+
+If present, used to control function discovery ignores. Example:
+
+```json
+{
+  "ignore": [
+    "**/node_modules/**",
+    "**/specs/**",
+    "**/*.specs.js",
+    "**/*.specs.mjs",
+    "**/*.specs.cjs"
+  ]
+}
+```
+
+- Place it at the path you pass in `functionsConfig.bfastJsonPath`.
+- If omitted, sensible defaults are used.
+
+### `start` options
+
+The engine accepts an `Options` object:
+
+```ts
+interface Options {
+  port?: string;                 // default '3000'
+  mode?: 'git'|'npm'|'url'|'local';
+  gitCloneUrl?: string;          // for mode 'git'
+  gitUsername?: string;          // for private repos
+  gitToken?: string;             // for private repos
+  npmTar?: string;               // for mode 'npm' (package name to pack)
+  urlTar?: string;               // for mode 'url' (direct .tgz URL)
+  functionsConfig?: {
+    functionsDirPath: string | string[]; // one or more folders
+    assets?: string;                      // static files root
+    bfastJsonPath?: string;               // path to bfast.json
+  };
+  startScript?: string;           // if set, run this instead of starting HTTP server
+}
+```
+
+See the source for details: `src/models/options.mjs`.
+
+---
+
+## Deployment modes
+
+You can populate the functions directory in four ways.
+
+1) Local (recommended for development)
+
+```js
+await start({
+  port: '3000',
+  functionsConfig: { functionsDirPath: '/abs/path/to/functions' }
+});
+```
+
+Note: When `functionsConfig.functionsDirPath` is provided, local functions are used and remote modes are skipped (the `mode` value is effectively ignored).
+
+2) Git
+
+```js
+await start({
+  port: '3000',
+  mode: 'git',
+  gitCloneUrl: 'https://github.com/you/your-functions.git',
+  gitUsername: process.env.GIT_USERNAME, // optional
+  gitToken: process.env.GIT_TOKEN        // optional
+});
+```
+
+3) npm tarball (package name)
+
+```js
+await start({
+  port: '3000',
+  mode: 'npm',
+  npmTar: 'your-functions-package'
+});
+```
+
+4) Remote URL (.tgz)
+
+```js
+await start({
+  port: '3000',
+  mode: 'url',
+  urlTar: 'https://example.com/your-functions.tgz'
+});
+```
+
+Notes:
+- When using `git`, dependencies inside the functions folder are installed (`npm install --omit=dev`).
+- When using `npm`/`url`, the tarball is extracted and normalized before deployment.
+
+---
+
+## Running with environment variables
+
+You can boot the engine without writing code using env vars that map to the `Options` fields. The built‑in starter reads:
+
+- `PORT` (default `3000`)
+- `MODE` (`git` | `npm` | `url` | `local`, default `git`)
+- `GIT_CLONE_URL`, `GIT_USERNAME`, `GIT_TOKEN`
+- `NPM_TAR`
+- `URL_TAR`
+- `START_SCRIPT`
+
+Example:
+
+```bash
+PORT=3000 MODE=local START_SCRIPT="" node node_modules/bfast-function/src/start.mjs
+```
+
+Or with Git:
+
+```bash
+PORT=8080 MODE=git \
+GIT_CLONE_URL=https://github.com/you/your-functions.git \
+GIT_USERNAME=you GIT_TOKEN=xxxx \
+node node_modules/bfast-function/src/start.mjs
+```
+
+---
 
 ## Docker
 
-You can also run the BFast Function engine in a Docker container.
-
-**1. Build the Docker image:**
+Build (if you cloned this repo):
 
 ```bash
 docker build -t bfast-function .
 ```
 
-**2. Run the Docker container:**
+Run (local functions folder mounted):
 
 ```bash
-docker run -p 3000:3000 bfast-function
+docker run --rm -p 3000:3000 \
+  -e MODE=local \
+  -e PORT=3000 \
+  -v "$(pwd)/functions:/faas/functions" \
+  bfast-function
 ```
 
-This will start the BFast Function engine and expose it on port 3000.
-
-
-You can also mount a local functions folder to the container:
+Run (Git mode):
 
 ```bash
-docker run -p 3000:3000 -v $(pwd)/functions:/app/functions bfast-function
+docker run --rm -p 3000:3000 \
+  -e MODE=git \
+  -e PORT=3000 \
+  -e GIT_CLONE_URL=https://github.com/you/your-functions.git \
+  -e GIT_USERNAME=you -e GIT_TOKEN=xxxx \
+  bfast-function
 ```
 
-This will mount the `functions` folder in your current working directory to the `/app/functions` folder in the container.
+Container entrypoint executes `npm run start`, which invokes the same env‑driven starter as above.
 
-## Configuration
+---
 
-The `bfast.json` file is a JSON file that contains configurations for the BFast Function engine.
+## Static assets
 
-```json
-{
-  "ignore": ["**/node_modules/**"]
-}
-```
+Static files are served from `/assets`.
 
-| Key      | Type    | Description                               |
-| -------- | ------- | ----------------------------------------- |
-| `ignore` | `Array` | An array of glob patterns to ignore when loading functions. |
+Resolution order:
+- If you pass `functionsConfig.assets`, that path is used.
+- Else, if the current working directory contains `assets/`, that folder is served.
+- Else, a built‑in fallback folder is used for development.
 
-## API Reference
+---
 
-For a full list of available options and APIs, please see the [API Reference](./src/models/options.mjs).
+## Built‑in endpoints
+
+- `GET /functions-health` → `{ "message": "running" }`
+- `GET /functions-all` → JSON map of all discovered functions (by export name)
+
+---
+
+## Troubleshooting & tips
+
+- ESM vs CommonJS: your function files can be `.js`, `.mjs`, or `.cjs`. The loader attempts dynamic `import()` first, then falls back to `require()`.
+- Missing routes? Ensure your exports are objects and contain `onRequest`, `onEvent`, `onGuard`, or `onJob` with `rule`.
+- Default paths: if `path` is omitted for HTTP functions, the route is `/functions/<exportName>`.
+- Socket.IO: event `name` is both the namespace and the event key.
+- Jobs: `rule` must be present and valid per `node-schedule`.
+- Ignoring files: provide a `bfast.json` with `ignore` globs if needed.
+
+---
+
+## API reference (source)
+
+- Options shape: `src/models/options.mjs`
+- Core runtime: `src/core.mjs`
+- Function discovery: `src/controllers/resolver.mjs`
+- Mounting & deployment: `src/controllers/index.mjs`
+
+---
 
 ## Contributing
 
-We welcome contributions to BFast Function! If you have an idea for a new feature or have found a bug, please open an issue on our [GitHub repository](https://github.com/bfast-cloud/bfast-function/issues).
+Issues and PRs are welcome. Please read `CONTRIBUTING.md` and our `CODE_OF_CONDUCT.md`.
+
+---
 
 ## License
 
-BFast Function is licensed under the [MIT License](./LICENSE).
+MIT © BFast Cloud

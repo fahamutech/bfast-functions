@@ -3,14 +3,14 @@ name: docker with specific tag
 on:
   push:
     branches:
-      - mastiyiutiugyger
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 18.x ]
+        node-version: [ 22.x ]
 
     steps:
       - uses: actions/checkout@v1

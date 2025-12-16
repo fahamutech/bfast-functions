@@ -1,6 +1,6 @@
 {
   "name": "bfast-function",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "private": false,
   "description": "A serverless function engine for Node.js, built on top of Express.js and Socket.IO.",
   "main": "src/index.mjs",

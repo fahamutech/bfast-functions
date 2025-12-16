@@ -24,8 +24,8 @@ start({
     gitCloneUrl: process.env.GIT_CLONE_URL,
     startScript: process.env.START_SCRIPT,
 }).then(_ => {
-    console.log('bfast-function initiated successfully');
+    console.log('INFO::bfast-function initiated successfully');
 }).catch(reason => {
-    console.error('Failed to start bfast-function:', reason);
+    console.error('ERROR::Failed to start bfast-function:', reason);
     process.exit(1);
 });
