@@ -5,6 +5,10 @@ ENV NODE_ENV=production
 
 COPY --from=docker:27-cli /usr/local/bin/docker /usr/local/bin/
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3 make g++ \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY package*.json ./
 RUN npm install --omit=dev --no-audit --no-fund && npm cache clean --force
 
