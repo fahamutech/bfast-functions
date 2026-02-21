@@ -28,7 +28,7 @@ jobs:
           npm install
           npm test
       - name: Resolve image tag
-        run: echo "D_TAG=$(node -p \"require('./package.json').version\")" >> "$GITHUB_ENV"
+        run: echo "D_TAG=$(node -p 'require(\"./package.json\").version')" >> "$GITHUB_ENV"
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v3
