@@ -1,4 +1,39 @@
 import {start} from "./index.mjs";
+import dotenv from "dotenv";
+import {isAbsolute, resolve} from "path";
+
+dotenv.config();
+
+const normalizeEnvValue = (value) => {
+    if (value === undefined || value === null) {
+        return undefined;
+    }
+    const normalized = `${value}`.trim();
+    if (normalized === '' || normalized === 'undefined' || normalized === 'null') {
+        return undefined;
+    }
+    return normalized;
+};
+
+const normalizePathValue = (value) => {
+    const normalized = normalizeEnvValue(value);
+    if (!normalized) {
+        return undefined;
+    }
+    return isAbsolute(normalized) ? normalized : resolve(process.cwd(), normalized);
+};
+
+const mode = normalizeEnvValue(process.env.MODE) || 'git';
+const functionsDirPath = normalizePathValue(process.env.FUNCTIONS_DIR_PATH);
+const bfastJsonPath = normalizePathValue(process.env.BFAST_JSON_PATH);
+const assets = normalizePathValue(process.env.ASSETS_PATH);
+const functionsConfig = mode === 'local' && functionsDirPath
+    ? {
+        functionsDirPath,
+        bfastJsonPath,
+        assets
+    }
+    : undefined;
 
 /**
  * This script starts the FaaS engine by reading configuration from environment variables.
@@ -15,14 +50,15 @@ import {start} from "./index.mjs";
  * - START_SCRIPT: A custom script to run instead of the default server.
  */
 start({
-    port: ((process.env.PORT !== 'undefined') && (process.env.PORT !== 'null')) ? process.env.PORT : '3000',
-    gitUsername: process.env.GIT_USERNAME,
-    mode: process.env.MODE || 'git',
-    npmTar: process.env.NPM_TAR,
-    urlTar: process.env.URL_TAR,
-    gitToken: process.env.GIT_TOKEN,
-    gitCloneUrl: process.env.GIT_CLONE_URL,
-    startScript: process.env.START_SCRIPT,
+    port: normalizeEnvValue(process.env.PORT) || '3000',
+    gitUsername: normalizeEnvValue(process.env.GIT_USERNAME),
+    mode,
+    npmTar: normalizeEnvValue(process.env.NPM_TAR),
+    urlTar: normalizeEnvValue(process.env.URL_TAR),
+    gitToken: normalizeEnvValue(process.env.GIT_TOKEN),
+    gitCloneUrl: normalizeEnvValue(process.env.GIT_CLONE_URL),
+    startScript: normalizeEnvValue(process.env.START_SCRIPT),
+    functionsConfig,
 }).then(_ => {
     console.log('INFO::bfast-function initiated successfully');
 }).catch(reason => {

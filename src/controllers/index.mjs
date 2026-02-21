@@ -11,6 +11,35 @@ import gitHttp from  "isomorphic-git/http/node";
 const require = createRequire(import.meta.url);
 const functionsDir = '../function/myF';
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const SAFE_NPM_PACKAGE_PATTERN = /^(?:@[\w.-]+\/)?[\w.-]+(?:@[\w.+-]+)?$/;
+
+const _getFunctionsFolderPath = () => {
+    return join(__dirname, functionsDir);
+};
+
+const _normalizeNpmPackageName = (packageName) => {
+    const value = `${packageName ?? ''}`.trim();
+    if (!SAFE_NPM_PACKAGE_PATTERN.test(value)) {
+        throw new Error('Invalid NPM_TAR package spec. Use package, @scope/package, or package@version.');
+    }
+    return value;
+};
+
+const _normalizeRemoteTarUrl = (url) => {
+    const parsed = new URL(`${url ?? ''}`.trim());
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        throw new Error('Only http(s) tarball URLs are allowed for URL_TAR.');
+    }
+    return parsed.toString();
+};
+
+const _listTarballs = async (folderPath) => {
+    const entries = await fs.promises.readdir(folderPath, {withFileTypes: true});
+    return entries
+        .filter((entry) => entry.isFile() && entry.name.endsWith('.tgz'))
+        .map((entry) => join(folderPath, entry.name))
+        .sort();
+};
 
 /**
  * Deploys function endpoints from the user-provided functions.
@@ -69,8 +98,11 @@ export async function cloneFunctionsFromGit(cloneUrl, username, token) {
  * @returns {Promise<any>} A promise that resolves when the dependencies are installed.
  */
 export async function installFunctionDependency() {
-    return run('npm install --omit=dev', {
-        cwd: join(__dirname, functionsDir),
+    return run({
+        command: 'npm',
+        args: ['install', '--omit=dev']
+    }, {
+        cwd: _getFunctionsFolderPath(),
     });
 }
 
@@ -81,14 +113,26 @@ export async function installFunctionDependency() {
  */
 export async function installFunctionsFromNpmTar(packageName) {
     const options = {
-        cwd: join(__dirname, functionsDir),
+        cwd: _getFunctionsFolderPath(),
     };
+    const normalizedPackageName = _normalizeNpmPackageName(packageName);
     await prepareFolder();
-    console.log(`Packing and extracting npm package: ${packageName}`);
-    await run(`npm pack ${packageName}`, options);
-    await run('tar -xf ./**.tgz', options);
+    console.log(`Packing and extracting npm package: ${normalizedPackageName}`);
+    await run({
+        command: 'npm',
+        args: ['pack', normalizedPackageName]
+    }, options);
+    const tarballs = await _listTarballs(options.cwd);
+    if (tarballs.length !== 1) {
+        throw new Error('Expected exactly one npm tarball after npm pack.');
+    }
+    const tarballPath = tarballs[0];
+    await run({
+        command: 'tar',
+        args: ['-xf', tarballPath]
+    }, options);
     await shakeFolder(options);
-    await run('rm -r ./**.tgz', options);
+    await fs.promises.rm(tarballPath, {force: true});
 }
 
 /**
@@ -98,14 +142,22 @@ export async function installFunctionsFromNpmTar(packageName) {
  */
 export async function installFunctionsFromRemoteTar(url) {
     const options = {
-        cwd: join(__dirname, functionsDir),
+        cwd: _getFunctionsFolderPath(),
     };
+    const normalizedUrl = _normalizeRemoteTarUrl(url);
+    const tarballPath = join(options.cwd, 'pack.tgz');
     await prepareFolder();
-    console.log(`Downloading and extracting functions from: ${url}`);
-    await run(`curl -o pack.tgz -L ${url}`, options);
-    await run('tar -xf ./**.tgz', options);
+    console.log(`Downloading and extracting functions from: ${normalizedUrl}`);
+    await run({
+        command: 'curl',
+        args: ['--fail', '--show-error', '--location', '--output', tarballPath, normalizedUrl]
+    }, options);
+    await run({
+        command: 'tar',
+        args: ['-xf', tarballPath]
+    }, options);
     await shakeFolder(options);
-    await run('rm -r ./**.tgz', options);
+    await fs.promises.rm(tarballPath, {force: true});
 }
 
 /**
@@ -121,18 +173,20 @@ export async function startFaasServer(faasServer, options) {
         && `${options?.startScript}`.trim() !== 'null'
         && `${options?.startScript}`.trim().length > 0
     ) {
-        const fsDir = options?.functionsConfig?.functionsDirPath ?? join(__dirname, functionsDir);
+        const fsDir = options?.functionsConfig?.functionsDirPath ?? _getFunctionsFolderPath();
         console.log(`Executing custom start script: ${options.startScript}`);
         return run(`${options?.startScript}`, {
             cwd: fsDir,
         });
     } else {
         const port = options?.port ?? '3000';
+        faasServer.removeAllListeners('listening');
+        faasServer.removeAllListeners('close');
         faasServer.listen(port);
-        faasServer.on('listening', () => {
+        faasServer.once('listening', () => {
             console.log(`BFast::Cloud::Functions Engine Listening on ${port}`);
         });
-        faasServer.on('close', () => {
+        faasServer.once('close', () => {
             console.log('BFast::Cloud::Functions Engine Stop Listening');
         });
         return faasServer;
@@ -315,8 +369,8 @@ export async function _checkIsBFastProjectFolder(projectDir) {
             if (projectCredential && projectCredential.ignore) {
                 resolve(projectCredential);
             } else {
-                reject('projectId can not be determined, ' +
-                    'check if your current directory is bfast project and bfast.json file exist');
+                reject('bfast project can not be determined, ' +
+                    'check if your current directory is a bfast project and bfast.json exists');
             }
         } catch (e) {
             reject('Not in bfast project folder');
@@ -329,17 +383,14 @@ export async function _checkIsBFastProjectFolder(projectDir) {
  * @returns {Promise<void>}
  */
 export async function prepareFolder() {
+    const targetPath = _getFunctionsFolderPath();
     try {
-        await run(`rm -r ${functionsDir}/*`, {
-            cwd: __dirname
-        });
+        await fs.promises.rm(targetPath, {recursive: true, force: true});
     } catch (e) {
         console.log(e.toString());
     }
     try {
-        await run(`mkdir ${functionsDir}`, {
-            cwd: __dirname
-        });
+        await fs.promises.mkdir(targetPath, {recursive: true});
     } catch (e) {
         console.log(e.toString());
     }
@@ -352,11 +403,18 @@ export async function prepareFolder() {
  * @returns {Promise<void>}
  */
 export async function shakeFolder(options) {
+    const cwd = options?.cwd ?? _getFunctionsFolderPath();
+    const packageDir = join(cwd, 'package');
     try {
-        await run(`mv package/* .`, options);
-        await run(`rm -r package`, options);
+        const packageEntries = await fs.promises.readdir(packageDir, {withFileTypes: true});
+        for (const entry of packageEntries) {
+            const source = join(packageDir, entry.name);
+            const destination = join(cwd, entry.name);
+            await fs.promises.rm(destination, {recursive: true, force: true});
+            await fs.promises.rename(source, destination);
+        }
+        await fs.promises.rm(packageDir, {recursive: true, force: true});
     } catch (e) {
         console.log(e.toString());
     }
 }
-

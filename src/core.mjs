@@ -17,13 +17,41 @@ import {
 import {Options} from './models/options.mjs'
 import {validate} from "jsonschema";
 
+const bodyLimit = process.env.BFAST_BODY_LIMIT || '2mb';
+// const allowedCorsOrigins = `${process.env.BFAST_CORS_ORIGINS ?? ''}`
+//     .split(',')
+//     .map(origin => origin.trim())
+//     .filter(Boolean);
+// const corsOptions = allowedCorsOrigins.length > 0
+//     ? {
+//         origin: (origin, callback) => {
+//             if (!origin || allowedCorsOrigins.includes(origin)) {
+//                 callback(null, true);
+//                 return;
+//             }
+//             callback(new Error('CORS origin is not allowed'));
+//         }
+//     }
+//     : {origin: false};
+
 const _app = express();
+_app.disable('x-powered-by');
+_app.use((_, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+    next();
+});
 _app.use(cors());
 _app.use(logger('dev'));
 _app.use(express.json({
-    limit: '2024mb'
+    limit: bodyLimit
 }));
-_app.use(express.urlencoded({extended: false}));
+_app.use(express.urlencoded({
+    extended: false,
+    limit: bodyLimit,
+    parameterLimit: 1000
+}));
 _app.use(cookieParser());
 
 const faasServer = createServer(_app);
@@ -38,6 +66,32 @@ const defaultOptions = {
     gitUsername: null,
     npmTar: null,
     urlTar: null
+};
+
+const normalizedOptionKeys = [
+    'port',
+    'gitCloneUrl',
+    'mode',
+    'functionsConfig',
+    'gitToken',
+    'gitUsername',
+    'npmTar',
+    'urlTar',
+    'startScript'
+];
+
+const normalizeOptions = (options = defaultOptions) => {
+    const input = (options && typeof options === 'object') ? options : {};
+    const normalized = {};
+    normalizedOptionKeys.forEach((key) => {
+        if (Object.prototype.hasOwnProperty.call(input, key)) {
+            normalized[key] = input[key];
+        }
+    });
+    return {
+        ...defaultOptions,
+        ...normalized
+    };
 };
 
 /**
@@ -64,24 +118,33 @@ export async function stop() {
  * @throws {Error} Throws an error if the provided options are invalid.
  */
 export async function start(options = defaultOptions) {
-    const v = validate(options, {
+    const normalizedOptions = normalizeOptions(options);
+    const v = validate(normalizedOptions, {
         type: 'object',
         properties: {
-            port: {}
+            port: {
+                anyOf: [
+                    {type: 'string', pattern: '^\\d{1,5}$'},
+                    {type: 'number', minimum: 1, maximum: 65535}
+                ]
+            },
+            mode: {
+                enum: ['git', 'npm', 'url', 'local']
+            }
         },
-        required: ['port']
+        required: ['port', 'mode']
     }, {required: true});
 
     if (v.valid === false) {
         throw new Error(`Options validation failed: ${v.errors.map(x => x.message).join(', ')}`);
     }
 
-    console.log('Starting FaaS engine with the following options:', options);
+    console.log('Starting FaaS engine with the following options:', normalizedOptions);
 
-    await _prepareFunctions(options);
-    await serveStaticFiles(_app, options?.functionsConfig);
-    await deployFunctions(_app, nodeSchedule, _io, options?.functionsConfig);
-    return startFaasServer(faasServer, options);
+    await _prepareFunctions(normalizedOptions);
+    await serveStaticFiles(_app, normalizedOptions?.functionsConfig);
+    await deployFunctions(_app, nodeSchedule, _io, normalizedOptions?.functionsConfig);
+    return startFaasServer(faasServer, normalizedOptions);
 }
 
 /**
@@ -100,7 +163,18 @@ async function _prepareFunctions(options = defaultOptions) {
     switch (options?.mode) {
         case "git":
             if (`${options?.gitCloneUrl}`?.startsWith('http')) {
-                await cloneFunctionsFromGit(options?.gitCloneUrl, options?.gitUsername, options?.gitToken);
+                let gitCloneUrl;
+                try {
+                    const parsed = new URL(`${options?.gitCloneUrl}`.trim());
+                    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+                        throw new Error('Invalid protocol');
+                    }
+                    gitCloneUrl = parsed.toString();
+                } catch (_) {
+                    console.log("gitCloneUrl [ GIT_CLONE_URL ] must be a valid http(s) URL");
+                    process.exit(1);
+                }
+                await cloneFunctionsFromGit(gitCloneUrl, options?.gitUsername, options?.gitToken);
                 console.log('project cloned from remote git');
                 await installFunctionDependency();
             } else {
@@ -130,8 +204,12 @@ async function _prepareFunctions(options = defaultOptions) {
                 process.exit(1);
             }
             break;
+        case "local":
+            console.log("local mode requires FUNCTIONS_DIR_PATH (and optionally BFAST_JSON_PATH/ASSETS_PATH) when using src/start.mjs");
+            process.exit(1);
+            break;
         default:
-            console.log("gitCloneUrl [ GIT_CLONE_URL ] required");
+            console.log("MODE must be one of: git, npm, url, local");
             process.exit(1);
             break;
     }

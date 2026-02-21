@@ -1,24 +1,18 @@
-FROM node:lts-buster
+FROM node:22-bookworm-slim
 
 WORKDIR /faas
+ENV NODE_ENV=production
 
-COPY --from=docker:dind /usr/local/bin/docker /usr/local/bin/
+COPY --from=docker:27-cli /usr/local/bin/docker /usr/local/bin/
 
-COPY *.json ./
-# RUN npm config set user root
-# RUN npm config set unsafe-perm true
-RUN npm install --only=production
-#RUN npm i -g ipfs
+COPY package*.json ./
+RUN npm install --omit=dev --no-audit --no-fund && npm cache clean --force
 
 COPY ./docker-entrypoint.sh /usr/local/bin/
-RUN ln -s /usr/local/bin/docker-entrypoint.sh /
+RUN ln -s /usr/local/bin/docker-entrypoint.sh / \
+    && chmod 0755 /usr/local/bin/docker-entrypoint.sh
 
 COPY . ./
-
-#RUN wget https://dist.ipfs.io/go-ipfs/v0.9.1/go-ipfs_v0.9.1_linux-amd64.tar.gz
-#RUN tar -xvzf go-ipfs_v0.9.1_linux-amd64.tar.gz
-#RUN cd go-ipfs && bash install.sh && cd ..
-#RUN ipfs --version
-
-RUN ["chmod", "+x", "/usr/local/bin/docker-entrypoint.sh"]
+RUN chown -R node:node /faas
+USER node
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

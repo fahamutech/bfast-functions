@@ -1,6 +1,6 @@
 {
   "name": "bfast-function",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "private": false,
   "description": "A serverless function engine for Node.js, built on top of Express.js and Socket.IO.",
   "main": "src/index.mjs",
@@ -28,21 +28,22 @@
     "url": "https://github.com/bfast-cloud/bfast-functions/issues"
   },
   "dependencies": {
+    "bufferutil": "~4.1.0",
     "cookie-parser": "~1.4.7",
-    "cors": "~2.8.5",
+    "cors": "~2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "~5.2.1",
+    "glob": "~13.0.6",
+    "isomorphic-git": "~1.37.1",
     "jsonschema": "^1.5.0",
-    "express": "~5.1.0",
-    "glob": "~11.1.0",
-    "isomorphic-git": "~1.33.1",
     "morgan": "~1.10.1",
     "node-schedule": "~2.1.1",
-    "socket.io": "~4.8.1",
-    "utf-8-validate": "^6.0.5",
-    "bufferutil": "^4.0.9"
+    "socket.io": "~4.8.3",
+    "utf-8-validate": "~6.0.6"
   },
   "devDependencies": {
-    "chai": "~6.0.1",
+    "chai": "~6.2.2",
     "chai-http": "~5.1.2",
-    "mocha": "~11.7.1"
+    "mocha": "~11.7.5"
   }
 }
