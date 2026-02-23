@@ -24,6 +24,14 @@ module.exports.normalhttp = {
 module.exports.normalhttpPublic = {
     method: 'get',
     path: '/hi',
+    request: {
+        headers: {
+            authorization: 'Bearer <token>'
+        }
+    },
+    response: {
+        message: 'hello, mam!'
+    },
     onRequest: (request, response) => {
         response.send('hello, mam!');
     }

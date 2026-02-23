@@ -99,6 +99,9 @@ describe('FaaS start and discoverability journey', function () {
         const html = await htmlDiscovery.text();
         assert(html.includes('Functions Documentation'));
         assert(html.includes('normalhttpPublic'));
+        assert(html.includes('Request / Response'));
+        assert(html.includes('<summary>Request</summary>'));
+        assert(html.includes('hello, mam!'));
 
         const forcedHtmlDiscovery = await fetch(`${baseUrl}/functions-all?format=html`, {
             headers: {

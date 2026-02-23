@@ -135,11 +135,37 @@ const renderCodeBlock = (title, value) => {
     `;
 };
 
+const toCompactCodeText = (value, maxLength = 900) => {
+    const codeText = toCodeText(value).trim();
+    if (codeText.length <= maxLength) {
+        return codeText;
+    }
+    return `${codeText.slice(0, maxLength)}\n...`;
+};
+
+const renderSummarySample = (title, value) => {
+    if (value === undefined || value === null || value === '') {
+        return '';
+    }
+    const codeText = toCompactCodeText(value);
+    if (codeText.trim() === '') {
+        return '';
+    }
+    return `
+      <details class="inline-sample">
+        <summary>${escapeHtml(title)}</summary>
+        <pre><code>${escapeHtml(codeText)}</code></pre>
+      </details>
+    `;
+};
+
 const renderDocumentationPage = (functions) => {
     const descriptors = toExportedDescriptors(functions);
     const summaryRows = descriptors.map((entry) => {
         const descriptor = entry.descriptor ?? {};
         const description = descriptor?.description ?? descriptor?.doc ?? '';
+        const requestSample = descriptor?.requestSample ?? descriptor?.request;
+        const responseSample = descriptor?.responseSample ?? descriptor?.response;
         const endpoint = getEndpointLabel(entry.name, descriptor, entry.descriptorType);
         const method = entry.descriptorType === 'http'
             ? (typeof descriptor?.method === 'string' ? descriptor.method.toUpperCase() : 'ALL')
@@ -147,6 +173,7 @@ const renderDocumentationPage = (functions) => {
         const path = entry.descriptorType === 'http'
             ? (descriptor?.path ? `${descriptor.path}` : `/functions/${entry.name}`)
             : endpoint;
+        const summarySamples = `${renderSummarySample('Request', requestSample)}${renderSummarySample('Response', responseSample)}`;
         return `
           <tr class="function-row"
             data-name="${escapeHtml(entry.name)}"
@@ -159,6 +186,7 @@ const renderDocumentationPage = (functions) => {
             <td>${escapeHtml(entry.descriptorType.toUpperCase())}</td>
             <td><code>${escapeHtml(endpoint)}</code></td>
             <td>${escapeHtml(description || '-')}</td>
+            <td>${summarySamples || '-'}</td>
           </tr>
         `;
     }).join('');
@@ -256,6 +284,27 @@ const renderDocumentationPage = (functions) => {
       vertical-align: top;
     }
     th { font-size: .85rem; text-transform: uppercase; color: var(--muted); }
+    .inline-sample + .inline-sample {
+      margin-top: .4rem;
+    }
+    .inline-sample summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-size: .82rem;
+    }
+    .inline-sample pre {
+      margin: .35rem 0 0;
+      max-width: 380px;
+      max-height: 190px;
+      overflow: auto;
+      background: var(--code-bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: .5rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: .82rem;
+    }
     code {
       color: var(--code);
       background: var(--code-bg);
@@ -487,6 +536,7 @@ const renderDocumentationPage = (functions) => {
             <th>Type</th>
             <th>Endpoint / Trigger</th>
             <th>Description</th>
+            <th>Request / Response</th>
           </tr>
         </thead>
         <tbody>
