@@ -45,7 +45,12 @@ _app.use((_, res, next) => {
 _app.use(cors());
 _app.use(logger('dev'));
 _app.use(express.json({
-    limit: bodyLimit
+    limit: bodyLimit,
+    verify: (request, _, buffer) => {
+        if (process.env.BFAST_RAW_BODY === 'true') {
+            request.rawBody = buffer;
+        }
+    }
 }));
 _app.use(express.urlencoded({
     extended: false,

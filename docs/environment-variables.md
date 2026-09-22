@@ -15,6 +15,9 @@
 - `FUNCTIONS_DIR_PATH` (used when `MODE=local`)
 - `BFAST_JSON_PATH` (optional, used when `MODE=local`)
 - `ASSETS_PATH` (optional, used when `MODE=local`)
+- `BFAST_BODY_LIMIT` (JSON/form body size limit; default: `2mb`)
+- `BFAST_RAW_BODY` (set to `true` to expose the original JSON bytes as a Buffer
+  at `request.rawBody` for webhook signature verification; disabled by default)
 
 ## Examples
 

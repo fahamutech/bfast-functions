@@ -1,3 +1,12 @@
+module.exports.rawJson = {
+    method: 'post',
+    path: '/raw-json-test',
+    onRequest: (request, response) => response.json({
+        body: request.body,
+        rawBody: request.rawBody?.toString('utf8') ?? null
+    })
+};
+
 module.exports.sampleSocket = {
     name: '/test',
     onEvent: (request, response) => {

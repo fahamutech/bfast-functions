@@ -76,6 +76,32 @@ describe('FaaS start and discoverability journey', function () {
         assert.strictEqual(await hiName.text(), 'hello, codex!');
     });
 
+    it('preserves exact JSON bytes only when raw body capture is enabled', async function () {
+        const previous = process.env.BFAST_RAW_BODY;
+        try {
+            server = await start({
+                port: await getFreePort(),
+                mode: 'local',
+                functionsConfig: {functionsDirPath: sampleFunctionsDir, bfastJsonPath: sampleBfastJson}
+            });
+            const body = '{\n  "message": "hello café", "count": 1\n}\n';
+            const send = () => fetch(`${createBaseUrl(server.address())}/raw-json-test`, {
+                method: 'POST', headers: {'content-type': 'application/json'}, body
+            });
+            delete process.env.BFAST_RAW_BODY;
+            const disabled = await send();
+            assert.strictEqual(disabled.status, 200);
+            assert.deepStrictEqual(await disabled.json(), {body: JSON.parse(body), rawBody: null});
+            process.env.BFAST_RAW_BODY = 'true';
+            const enabled = await send();
+            assert.strictEqual(enabled.status, 200);
+            assert.deepStrictEqual(await enabled.json(), {body: JSON.parse(body), rawBody: body});
+        } finally {
+            if (previous === undefined) delete process.env.BFAST_RAW_BODY;
+            else process.env.BFAST_RAW_BODY = previous;
+        }
+    });
+
     it('should expose discovery endpoint in json and html formats', async function () {
         const port = await getFreePort();
         server = await start({
