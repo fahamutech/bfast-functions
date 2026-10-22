@@ -40,6 +40,12 @@ error names the environment variable and file path but never logs the secret val
 - `BFAST_JSON_PATH` (optional, used when `MODE=local`)
 - `ASSETS_PATH` (optional, used when `MODE=local`)
 - `BFAST_BODY_LIMIT` (JSON/form body size limit; default: `2mb`)
+- `BFAST_ACCESS_LOG` (`off` turns the per-request access log off; `dev`, `combined`,
+  `common`, `short` or `tiny` pick the format; default: `dev`)
+- `BFAST_SHUTDOWN_TIMEOUT_MS` (how long running requests may finish after SIGTERM or
+  SIGINT before the process exits anyway; default: `8000`, below Docker's 10 s stop wait)
+- `BFAST_HEALTHCHECK` (set to `off` to disable the image health check, for example when
+  `START_SCRIPT` runs a server that does not serve `/functions-health` on `PORT`)
 - `BFAST_RAW_BODY` (set to `true` to expose the original JSON bytes as a Buffer
   at `request.rawBody` for webhook signature verification; disabled by default)
 

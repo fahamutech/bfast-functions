@@ -34,6 +34,24 @@ const bodyLimit = process.env.BFAST_BODY_LIMIT || '2mb';
 //     }
 //     : {origin: false};
 
+const ACCESS_LOG_OFF = ['off', 'false', '0', 'none', 'silent'];
+const ACCESS_LOG_FORMATS = ['dev', 'combined', 'common', 'short', 'tiny'];
+
+/**
+ * The per-request access log (morgan). BFAST_ACCESS_LOG=off turns it off, for services
+ * whose own code already logs every request; dev, combined, common, short or tiny pick
+ * the format. Default: dev.
+ * @param {object} env - The environment to read, process.env by default.
+ * @returns {Function | null} The express middleware, or null when the access log is off.
+ */
+export function accessLogMiddleware(env = process.env) {
+    const value = `${env.BFAST_ACCESS_LOG ?? 'dev'}`.trim().toLowerCase();
+    if (ACCESS_LOG_OFF.includes(value)) {
+        return null;
+    }
+    return logger(ACCESS_LOG_FORMATS.includes(value) ? value : 'dev');
+}
+
 const _app = express();
 _app.disable('x-powered-by');
 _app.use((_, res, next) => {
@@ -43,7 +61,10 @@ _app.use((_, res, next) => {
     next();
 });
 _app.use(cors());
-_app.use(logger('dev'));
+const _accessLog = accessLogMiddleware();
+if (_accessLog) {
+    _app.use(_accessLog);
+}
 _app.use(express.json({
     limit: bodyLimit,
     verify: (request, _, buffer) => {
@@ -112,6 +133,77 @@ export async function stop() {
         console.error('Error while stopping the FaaS server:', e);
     }
     process.exit(0);
+}
+
+/**
+ * Stops the engine without cutting running requests: no new connections, running
+ * requests and sockets get timeoutMs to finish, scheduled jobs stop, then the process
+ * exits 0. When something is still open after timeoutMs the process exits 1.
+ * Docker waits 10 s after SIGTERM by default, so the default timeout is 8 s.
+ * @param {object} deps - What to stop; every part is replaceable in tests.
+ * @param {object} deps.server - The HTTP server.
+ * @param {object} deps.io - The socket.io server; closing it closes the HTTP server too.
+ * @param {object} deps.scheduler - node-schedule.
+ * @param {number} deps.timeoutMs - How long running work may take.
+ * @param {Function} deps.exit - Ends the process.
+ * @param {Function} deps.log - Writes a log line.
+ * @returns {Promise<void>}
+ */
+export async function gracefulShutdown({
+    server = faasServer,
+    io = _io,
+    scheduler = nodeSchedule,
+    timeoutMs = 8000,
+    exit = process.exit,
+    log = console.log
+} = {}) {
+    log('FaaS engine stopping: no new requests, waiting for the running ones');
+    const timer = setTimeout(() => {
+        log(`FaaS engine still busy after ${timeoutMs}ms, exiting anyway`);
+        exit(1);
+    }, timeoutMs);
+    try {
+        await scheduler?.gracefulShutdown?.();
+        await new Promise((resolve, reject) => {
+            const done = (error) => error && error.code !== 'ERR_SERVER_NOT_RUNNING' ? reject(error) : resolve();
+            if (io) {
+                io.close(done);
+            } else {
+                server.close(done);
+            }
+        });
+        clearTimeout(timer);
+        log('FaaS engine stopped');
+        exit(0);
+    } catch (error) {
+        clearTimeout(timer);
+        log(`FaaS engine stop failed: ${error}`);
+        exit(1);
+    }
+}
+
+/**
+ * Stops the engine gracefully on SIGTERM and SIGINT (a docker or swarm stop, a redeploy).
+ * A second signal exits at once. BFAST_SHUTDOWN_TIMEOUT_MS sets how long running work
+ * may take (default 8000).
+ * @param {object} env - The environment to read, process.env by default.
+ * @param {object} proc - The process to listen on, the real one by default.
+ * @param {Function} shutdown - What runs on the first signal.
+ */
+export function registerShutdownHandlers(env = process.env, proc = process, shutdown = gracefulShutdown) {
+    const configured = Number(env.BFAST_SHUTDOWN_TIMEOUT_MS);
+    const timeoutMs = Number.isFinite(configured) && configured > 0 ? configured : 8000;
+    let stopping = false;
+    ['SIGTERM', 'SIGINT'].forEach((signal) => {
+        proc.on(signal, () => {
+            if (stopping) {
+                proc.exit(1);
+                return;
+            }
+            stopping = true;
+            shutdown({timeoutMs, exit: (code) => proc.exit(code)});
+        });
+    });
 }
 
 /**

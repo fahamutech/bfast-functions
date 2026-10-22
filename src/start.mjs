@@ -1,10 +1,11 @@
-import {start} from "./index.mjs";
+import {registerShutdownHandlers, start} from "./index.mjs";
 import dotenv from "dotenv";
 import {isAbsolute, resolve} from "node:path";
 import {hydrateSecretEnvironment} from './environment.mjs';
 
 dotenv.config();
 hydrateSecretEnvironment();
+registerShutdownHandlers();
 
 const normalizeEnvValue = (value) => {
     if (value === undefined || value === null) {

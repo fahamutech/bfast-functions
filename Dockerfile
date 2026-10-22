@@ -19,4 +19,9 @@ RUN ln -s /usr/local/bin/docker-entrypoint.sh / \
 COPY . ./
 RUN chown -R node:node /faas
 USER node
+# /functions-health is served by the engine itself. The start period covers the clone and
+# npm ci a start does first. BFAST_HEALTHCHECK=off disables it (for a START_SCRIPT server
+# that is not on PORT).
+HEALTHCHECK --interval=30s --timeout=5s --start-period=180s --retries=3 \
+    CMD node -e "if(process.env.BFAST_HEALTHCHECK==='off')process.exit(0);fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/functions-health').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
