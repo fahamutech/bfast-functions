@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
 import nodeSchedule from "node-schedule";
-import {createServer} from "http";
+import {createServer} from "node:http";
 import {Server} from 'socket.io';
 import {
     cloneFunctionsFromGit,
@@ -144,7 +144,10 @@ export async function start(options = defaultOptions) {
         throw new Error(`Options validation failed: ${v.errors.map(x => x.message).join(', ')}`);
     }
 
-    console.log('Starting FaaS engine with the following options:', normalizedOptions);
+    console.log('Starting FaaS engine with the following options:', {
+        ...normalizedOptions,
+        gitToken: normalizedOptions.gitToken ? '[redacted]' : null
+    });
 
     await _prepareFunctions(normalizedOptions);
     await serveStaticFiles(_app, normalizedOptions?.functionsConfig);

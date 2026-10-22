@@ -1,8 +1,10 @@
 import {start} from "./index.mjs";
 import dotenv from "dotenv";
-import {isAbsolute, resolve} from "path";
+import {isAbsolute, resolve} from "node:path";
+import {hydrateSecretEnvironment} from './environment.mjs';
 
 dotenv.config();
+hydrateSecretEnvironment();
 
 const normalizeEnvValue = (value) => {
     if (value === undefined || value === null) {

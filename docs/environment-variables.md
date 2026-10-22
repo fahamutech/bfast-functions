@@ -2,6 +2,30 @@
 
 `src/start.mjs` maps environment variables to `start(options)`.
 
+Before the function project is loaded, BFast resolves application environment
+values that point to Docker secrets. For example, when a service has a secret
+mounted as `/run/secrets/database-password`:
+
+```bash
+DATABASE_PASSWORD=/run/secrets/database-password
+```
+
+BFast reads that file and exposes its contents through
+`process.env.DATABASE_PASSWORD`. The content is preserved exactly, including
+whitespace and a trailing newline. Create secrets without a trailing newline when
+that matters.
+
+Only values below `/run/secrets/` are resolved. Other absolute paths remain paths.
+Variables whose names end in `_FILE` also remain paths, allowing applications and
+libraries that support the conventional file-based setting to read them directly:
+
+```bash
+DATABASE_PASSWORD_FILE=/run/secrets/database-password
+```
+
+Startup fails if an automatically resolved secret is missing or unreadable. The
+error names the environment variable and file path but never logs the secret value.
+
 ## Supported Variables
 
 - `PORT` (default: `3000`)

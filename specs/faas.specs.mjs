@@ -102,6 +102,31 @@ describe('FaaS start and discoverability journey', function () {
         }
     });
 
+    it('redacts the Git token from startup logs', async function () {
+        const port = await getFreePort();
+        const token = 'secret-token-that-must-not-be-logged';
+        const messages = [];
+        const originalLog = console.log;
+        console.log = (...values) => messages.push(values);
+        try {
+            server = await start({
+                port,
+                mode: 'local',
+                gitToken: token,
+                functionsConfig: {
+                    functionsDirPath: sampleFunctionsDir,
+                    bfastJsonPath: sampleBfastJson
+                }
+            });
+        } finally {
+            console.log = originalLog;
+        }
+
+        const serialized = JSON.stringify(messages);
+        assert(!serialized.includes(token));
+        assert(serialized.includes('[redacted]'));
+    });
+
     it('should expose discovery endpoint in json and html formats', async function () {
         const port = await getFreePort();
         server = await start({
