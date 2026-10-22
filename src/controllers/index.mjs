@@ -94,15 +94,30 @@ export async function cloneFunctionsFromGit(cloneUrl, username, token) {
 }
 
 /**
+ * Picks the npm command that installs production dependencies of a functions project.
+ * A project with a lock file gets `npm ci`: it installs exactly what the lock file says
+ * and fails when the lock file and package.json disagree. A project without one gets
+ * `npm install`, as before.
+ * @param {string} folderPath - The functions project folder.
+ * @returns {string[]} The npm arguments.
+ */
+export function dependencyInstallArgs(folderPath) {
+    const hasLockFile = ['package-lock.json', 'npm-shrinkwrap.json']
+        .some(name => fs.existsSync(join(folderPath, name)));
+    return [hasLockFile ? 'ci' : 'install', '--omit=dev'];
+}
+
+/**
  * Installs dependencies for the functions cloned from Git.
  * @returns {Promise<any>} A promise that resolves when the dependencies are installed.
  */
 export async function installFunctionDependency() {
+    const cwd = _getFunctionsFolderPath();
     return run({
         command: 'npm',
-        args: ['install', '--omit=dev']
+        args: dependencyInstallArgs(cwd)
     }, {
-        cwd: _getFunctionsFolderPath(),
+        cwd,
     });
 }
 
